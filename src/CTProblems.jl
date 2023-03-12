@@ -19,5 +19,6 @@ Problems() = examples
 
 #
 export Problems, Problem
+export plot
 
 end # module CTProblems
