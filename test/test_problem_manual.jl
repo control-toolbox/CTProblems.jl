@@ -7,10 +7,10 @@ end
 
 using CTProblems
 
-prob = Problem(:integrator, :dim2)
+prob = Problem(:integrator, :dim1)
 
 display(prob.model)
 
 plot(prob.solution)
 
-println(prob.message)
+#println(prob.message) #if not commented the plot window does not show
