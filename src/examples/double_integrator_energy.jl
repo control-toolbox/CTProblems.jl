@@ -13,7 +13,7 @@ EXAMPLE=(:integrator, :dim2, :energy)
     tf=1.0
     x0=[-1.0, 0.0]
     xf=[0.0, 0.0]
-    ocp = Model{:autonomous}()
+    ocp = Model()
     state!(ocp, n)   # dimension of the state
     control!(ocp, m) # dimension of the control
     time!(ocp, [t0, tf])
