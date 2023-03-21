@@ -15,7 +15,7 @@ makedocs(
     ],
     pages = [
         "Introduction" => "index.md",
-        "Examples" => Any["double_integrator_energy.md","simple_integrator_energy.md"],
+        "Examples" => Any["double_integrator_energy.md","simple_integrator_energy.md","simple_integrator_energy_free.md"],
         "API" => "api.md"
     ]
 )
