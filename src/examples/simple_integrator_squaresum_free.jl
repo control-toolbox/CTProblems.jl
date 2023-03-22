@@ -1,35 +1,36 @@
-EXAMPLE=(:integrator, :dim1, :energy, :free)
+EXAMPLE=(:integrator, :dim1, :squaresum, :free)
 
 @eval function OptimalControlProblem{EXAMPLE}()
     # should return an OptimalControlProblem{example} with a message, a model and a solution
 
     # 
-    msg = "simple integrator - energy min - free"
+    msg = "simple integrator - min - free"
 
     # the model
     n=1
     m=1
     t0=0.0
     #tf=1.0
-    x0=[-1.0]
-    #xf=[0.0]
+    x0=[0.0]
+    xf=[1.0]
     ocp = Model{:autonomous}()
     state!(ocp, n)   # dimension of the state
     control!(ocp, m) # dimension of the control
     time!(ocp, :initial, t0)
     constraint!(ocp, :initial, x0)
+    constraint!(ocp, :final, xf)
     A = [ 0.0 ]
     B = [ 1.0 ]
     constraint!(ocp, :dynamics, (x, u) -> A*x + B*u[1])
-    constraint!(ocp, :boundary, (t0, x0, tf, xf) -> xf-tf-10, 0.0)
-    objective!(ocp, :lagrange, (x, u) -> 0.5*(u[1]^2)) # default is to minimise
+    objective!(ocp, :lagrange, (x, u) -> 0.5*(u[1]^2+x[1]^2)) # default is to minimise
 
     # the solution
-    tf = 10
-    x(t) = [t*(tf+10)/tf]
-    p(t) = [(tf+10)/tf]
+    tf = atanh(sqrt(xf[1]^2/(2+xf[1]^2)))
+    p0 = [xf[1]/sinh(tf)]
+    x(t) = [p0[1]*sinh(t)]
+    p(t) = [p0[1]*cosh(t)]
     u(t) = p(t)
-    objective = 1/2 * ((tf+10)^2)/tf
+    objective = tf + 0.5*xf[1]^2*1/tanh(tf)
     #
     N=201
     times = range(t0, tf, N)
