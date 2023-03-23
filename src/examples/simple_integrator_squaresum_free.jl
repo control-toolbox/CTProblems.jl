@@ -11,9 +11,9 @@ EXAMPLE=(:integrator, :dim1, :squaresum, :free)
     m=1
     t0=0.0
     #tf=1.0
-    x0=[0.0]
-    xf=[1.0]
-    ocp = Model{:autonomous}()
+    x0=0.0
+    xf=1.0
+    ocp = Model()
     state!(ocp, n)   # dimension of the state
     control!(ocp, m) # dimension of the control
     time!(ocp, :initial, t0)
@@ -21,16 +21,16 @@ EXAMPLE=(:integrator, :dim1, :squaresum, :free)
     constraint!(ocp, :final, xf)
     A = [ 0.0 ]
     B = [ 1.0 ]
-    constraint!(ocp, :dynamics, (x, u) -> A*x + B*u[1])
-    objective!(ocp, :lagrange, (x, u) -> 0.5*(u[1]^2+x[1]^2)) # default is to minimise
+    constraint!(ocp, :dynamics, (x, u) -> u)
+    objective!(ocp, :lagrange, (x, u) -> 0.5*(u^2+x^2)) # default is to minimise
 
     # the solution
-    tf = atanh(sqrt(xf[1]^2/(2+xf[1]^2)))
-    p0 = [xf[1]/sinh(tf)]
-    x(t) = [p0[1]*sinh(t)]
-    p(t) = [p0[1]*cosh(t)]
+    tf = atanh(sqrt(xf^2/(2+xf^2)))
+    p0 = xf[1]/sinh(tf)
+    x(t) = p0*sinh(t)
+    p(t) = p0*cosh(t)
     u(t) = p(t)
-    objective = tf + 0.5*xf[1]^2*1/tanh(tf)
+    objective = tf + 0.5*xf^2*1/tanh(tf)
     #
     N=201
     times = range(t0, tf, N)
@@ -40,7 +40,7 @@ EXAMPLE=(:integrator, :dim1, :squaresum, :free)
     sol.control_dimension = m
     sol.times = times
     sol.state = x
-    sol.state_labels = [ "x" * ctindices(i) for i ∈ range(1, n)]
+    sol.state_labels = [ "x" ]
     sol.adjoint = p
     sol.control = u
     sol.control_labels = [ "u" ]
