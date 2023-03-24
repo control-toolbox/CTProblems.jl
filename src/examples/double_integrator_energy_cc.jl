@@ -9,21 +9,21 @@ EXAMPLE=(:integrator, :dim2, :energy , :constraint)
     # the model
     n=2
     m=1
-    t0=0.0
-    tf=1.0
-    x0=[-1.0, 0.0]
-    xf=[0.0, 0.0]
-    γ = 2.0
+    t0=0
+    tf=1
+    x0=[-1, 0]
+    xf=[0, 0]
+    γ = 4
     ocp = Model()
     state!(ocp, n)   # dimension of the state
     control!(ocp, m) # dimension of the control
     time!(ocp, [t0, tf])
     constraint!(ocp, :initial, x0)
     constraint!(ocp, :final,   xf)
-    A = [ 0.0 1.0
-        0.0 0.0 ]
-    B = [ 0.0
-        1.0 ]
+    A = [ 0 1
+        0 0 ]
+    B = [ 0
+        1 ]
     constraint!(ocp, :dynamics, (x, u) -> A*x + B*u[1])
     constraint!(ocp, :control, u -> u, -γ, γ)
     objective!(ocp, :lagrange, (x, u) -> 0.5u[1]^2) # default is to minimise
@@ -36,13 +36,13 @@ EXAMPLE=(:integrator, :dim2, :energy , :constraint)
     t2(α,β) = (β+γ)/α
 
     # arc 1
-    x_arc_1(t,α,β) = [b + γ*t, a + b*t + 0.5*γ*t^2]
+    x_arc_1(t,α,β) = [ a + b*t + 0.5*γ*t^2, b + γ*t]
 
     c(α,β) = x_arc_1(t1(α,β),α,β)[1]
-    d(α,β) = x_arc_1(t2(α,β),α,β)[2] 
+    d(α,β) = x_arc_1(t1(α,β),α,β)[2] 
 
     # arc 2
-    dp(α,β) = d(α,β) - (-0.5*α*t1(α,β) + β*t1(α,β))
+    dp(α,β) = d(α,β) - (-0.5*α*t1(α,β)^2 + β*t1(α,β))
     cp(α,β) = c(α,β) - (dp(α,β)*t1(α,β) - α/6*t1(α,β)^3 + β/2*t1(α,β)^2)
     x_arc_2(t,α,β) = [cp(α,β) + (dp(α,β)*t  - α/6*t^3 + β/2*t^2), dp(α,β) - α/2*t^2 + β*t]
 
@@ -51,8 +51,8 @@ EXAMPLE=(:integrator, :dim2, :energy , :constraint)
 
     # arc 3
     fp(α,β) = f(α,β) + γ*t2(α,β)
-    ep(α,β) = e(α,β) - fp(α,γ)*t2(α,β) + γ/2*t2(α,β)^2
-    x_arc_3(t,α,β) = [fp(α,β) - γ*t, ep(α,β) + fp(α,β)*t - γ/2*t^2]
+    ep(α,β) = e(α,β) - fp(α,β)*t2(α,β) + γ/2*t2(α,β)^2
+    x_arc_3(t,α,β) = [ep(α,β) + fp(α,β)*t - γ/2*t^2, fp(α,β) - γ*t]
 
     g(α,β) = x_arc_3(tf,α,β)[1]
     h(α,β) = x_arc_3(tf,α,β)[2]
@@ -62,20 +62,22 @@ EXAMPLE=(:integrator, :dim2, :energy , :constraint)
     function shoot!(s,α,β)
         s[1] = g(α,β) - xf[1]
         s[2] = h(α,β) - xf[2]
-        s
     end
 
     #using MINPACK
-    p0_ini = [20.0, 10.0]
+    p0_ini = [1.5*2*γ/tf, 1.5*γ]
     ξ = [p0_ini[1],p0_ini[2]]
     nle = (s, ξ) -> shoot!(s, ξ[1], ξ[2])
     indirect_sol = fsolve(nle, ξ, show_trace = true)
     println(indirect_sol)
      
     # the result of the newton method is [11.740941920178892, 4.5719839686247665]
-    p0 = [11.740941920178892, 4.5719839686247665] 
-    println(t1(p0[1],p0[2]),"      ",t2(p0[1],p0[2]))
-
+    p0 = indirect_sol.x
+    println(t1(p0[1],p0[2]),"  ",t2(p0[1],p0[2]))
+    x(t) = (t ≤ t1(p0[1],p0[2]))*x_arc_1(t,p0[1],p0[2]) + (t1(p0[1],p0[2])<t<t2(p0[1],p0[2]))*x_arc_2(t,p0[1],p0[2]) + (t ≥ t2(p0[1],p0[2]))*x_arc_3(t,p0[1],p0[2])
+    p(t) = [p0[1],-p0[1]*t + p0[2]]
+    u(t) = (t<t1(p0[1],p0[2]))*γ + (t1(p0[1],p0[2])<t<t2(p0[1],p0[2]))*p(t)[2] + (t>t2(p0[1],p0[2]))*(-γ)
+    objective = 0.0
 
     #
     N=201
