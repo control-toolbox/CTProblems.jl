@@ -7,7 +7,7 @@ end
 
 using CTProblems
 
-prob = Problem(:integrator, :dim1, :absolute)
+prob = Problem(:integrator, :dim2, :energy, :constraint)
 
 display(prob.model)
 
