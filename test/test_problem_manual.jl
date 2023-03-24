@@ -6,8 +6,9 @@ catch
 end
 
 using CTProblems
+using MINPACK
 
-prob = Problem(:integrator, :dim1, :energy)
+prob = Problem(:integrator, :dim2, :energy, :constraint)
 
 display(prob.model)
 

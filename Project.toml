@@ -5,6 +5,7 @@ version = "0.1.3"
 
 [deps]
 CTBase = "54762871-cc72-4466-b8e8-f6c8b58076cd"
+MINPACK = "4854310b-de5a-5eb6-a2a5-c1dee2bd17f9"
 
 [compat]
 CTBase = "0.5"
