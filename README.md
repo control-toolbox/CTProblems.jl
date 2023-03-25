@@ -8,4 +8,4 @@
 
 [![Build Status][gh-ci-img]][gh-ci-url] 
 [![Covering Status][gh-co-img]][gh-co-url]
-[![](https://img.shields.io/badge/docs-stable-blue.svg)](http://control-toolbox.github.io/CTProblems.jl)
+[![Documentation](https://img.shields.io/badge/docs-dev-blue.svg)](http://control-toolbox.github.io/CTProblems.jl/dev)
