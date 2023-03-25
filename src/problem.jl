@@ -2,16 +2,30 @@
 abstract type AbstractCTProblem end
 
 struct OptimalControlProblem{example} <: AbstractCTProblem
-    message::String
+    description::String
     model::OptimalControlModel
     solution::OptimalControlSolution
 end
 
-#
-Problems() = examples
+function Base.show(io::IO, ::MIME"text/plain", prob::OptimalControlProblem)
+    println(io, "description     = ", prob.description)
+    println(io, "model    (Type) = ", typeof(prob.model))
+    println(io, "solution (Type) = ", typeof(prob.solution))
+end
+
+"""
+    $(SIGNATURES)
+
+Print the list of available examples.
+"""
+function Problems()
+    for description ∈ examples
+        :dummy ∉ description ? println(description) : nothing
+    end
+end
 
 function Problem(description...) 
-    example = getFullDescription(makeDescription(description...), Problems())
+    example = getFullDescription(makeDescription(description...), examples)
     return OptimalControlProblem{example}()
 end
 

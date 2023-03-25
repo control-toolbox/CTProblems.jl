@@ -2,6 +2,7 @@ module CTProblems
 
 #
 using CTBase
+using DocStringExtensions
 #
 
 #

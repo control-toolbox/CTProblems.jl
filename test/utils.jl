@@ -62,13 +62,4 @@ function test_by_shooting(shoot!, ξ, flow, fparams, sol, atol, title, display=f
         # x, p, objective (need augmented system)
     end
 
-    # afficher dans un tableau style dataframe
-    #times = range(t0, tf, 10)
-    #println("p⁺ = ", p⁺.(times))
-    #println("u⁺ = ", u⁺.(times))
-    #println("")
-    #println("p = ", sol.adjoint.(times))
-    #println("u = ", sol.control.(times))
-    #println("")
-
 end

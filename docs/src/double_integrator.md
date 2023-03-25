@@ -1,4 +1,4 @@
-# Double integrator - energy min
+# Double integrator
 
 ```@example main
 using CTProblems
