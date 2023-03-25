@@ -9,6 +9,8 @@ include("utils.jl")
 
 @testset verbose = true showtiming = true "CTProblems" begin
     for name ∈ (
+        :problem,
+        :goddard,
         :simple_integrator,
         :double_integrator,
         )

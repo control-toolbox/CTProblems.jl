@@ -16,8 +16,7 @@ examples = ()
 examples = add(examples, (:integrator, :dim2, :energy))
 examples = add(examples, (:goddard, :state_constraint))
 examples = add(examples, (:integrator, :dim1, :energy))
-
-Problems() = examples
+examples = add(examples, (:dummy, )) # to test exception not implemented
 
 #
 export Problems, Problem

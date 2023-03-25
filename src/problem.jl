@@ -7,6 +7,14 @@ struct OptimalControlProblem{example} <: AbstractCTProblem
     solution::OptimalControlSolution
 end
 
+#
+Problems() = examples
+
+function Problem(description...) 
+    example = getFullDescription(makeDescription(description...), Problems())
+    return OptimalControlProblem{example}()
+end
+
 # exception
 abstract type CTTestProbemsException <: Exception end
 
@@ -22,9 +30,4 @@ end
 
 function OptimalControlProblem{example}() where {example}
     throw(MethodNotImplemented("Problem", example))
-end
-
-function Problem(description...) 
-    example = getFullDescription(makeDescription(description...), Problems())
-    return OptimalControlProblem{example}()
 end
