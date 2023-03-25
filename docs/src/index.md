@@ -2,10 +2,12 @@
 
 ```@contents
 Pages = ["index.md"]
-Depth = 2
+Depth = 3
 ```
 
 ## Control-toolbox ecosystem
+
+### Presentation
 
 The `CTProblems.jl` package is part of the [control-toolbox ecosystem](https://github.com/control-toolbox)
 which gathers `Julia` packages for mathematical control and applications. It is an outcome of a research initiative supported by the [Centre Inria of Université Côte d'Azur](https://www.inria.fr/en/inria-centre-universite-cote-azur) and a sequel to previous developments, notably [Bocop](https://www.bocop.org) and [Hampath](https://www.hampath.org). See also: [ct gallery](https://ct.gitlabpages.inria.fr/gallery). The root package is [OptimalControl.jl](https://github.com/control-toolbox/OptimalControl.jl) which aims to provide tools to solve optimal control problems by direct and indirect methods.
@@ -36,7 +38,7 @@ and other constraints such as
 \end{array}
 ```
 
-## Installation
+### Installation
 
 To install a package from the control-toolbox ecosystem, you must add its registry into your `Julia` configuration.
 
@@ -67,7 +69,7 @@ Finally, you can install any package as usual. For instance:
 pkg> add CTProblems
 ```
 
-## Main repositories
+### Main repositories
 
 The [main repositories](https://github.com/orgs/control-toolbox/repositories?type=all) of the control-toolbox ecosystem are:
 
@@ -81,7 +83,7 @@ The [main repositories](https://github.com/orgs/control-toolbox/repositories?typ
 * [`OptimalControl.jl`](https://github.com/control-toolbox/OptimalControl.jl): main package
 * [`PathFollowing.jl`](https://github.com/control-toolbox/PathFollowing.jl): path following methods
 
-## Discussions
+### Discussions
 
 We discuss about the control-toolbox ecosystem here:
 
