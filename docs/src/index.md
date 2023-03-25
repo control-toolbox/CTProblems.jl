@@ -1,4 +1,4 @@
-# CTProblems.jl
+# Introduction
 
 ```@contents
 Pages = ["index.md"]
