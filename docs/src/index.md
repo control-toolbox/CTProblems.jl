@@ -35,8 +35,8 @@ and other constraints such as
 ```math
 \begin{array}{llcll}
 ~\xi_l  &\le& \xi(t, u(t))        &\le& \xi_u, \\
-\psi_l &\le& \psi(t, x(t), u(t)) &\le& \psi_u, \\
 \eta_l &\le& \eta(t, x(t))       &\le& \eta_u, \\
+\psi_l &\le& \psi(t, x(t), u(t)) &\le& \psi_u, \\
 \phi_l &\le& \phi(t_0, x(t_0), t_f, x(t_f)) &\le& \phi_u.
 \end{array}
 ```
