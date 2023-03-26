@@ -1,16 +1,19 @@
-# Introduction
+# Introduction to the `CTProblems.jl` package
+
+The `CTProblems.jl` package is part of the [control-toolbox ecosystem](https://github.com/control-toolbox). We present below the control-toolbox ecosystem, then we give an overview ot the `CTProblems.jl` package and finally, in the last part, you can find the list of available optimal control problems.
+
+**Contents.**
 
 ```@contents
-Pages = ["index.md"]
+Pages = ["index.md", "problems.md", "api.md"]
 Depth = 3
 ```
 
 ## Control-toolbox ecosystem
 
-### Presentation
+### Solvers of optimal control problems
 
-The `CTProblems.jl` package is part of the [control-toolbox ecosystem](https://github.com/control-toolbox)
-which gathers `Julia` packages for mathematical control and applications. It is an outcome of a research initiative supported by the [Centre Inria of Université Côte d'Azur](https://www.inria.fr/en/inria-centre-universite-cote-azur) and a sequel to previous developments, notably [Bocop](https://www.bocop.org) and [Hampath](https://www.hampath.org). See also: [ct gallery](https://ct.gitlabpages.inria.fr/gallery). The root package is [OptimalControl.jl](https://github.com/control-toolbox/OptimalControl.jl) which aims to provide tools to solve optimal control problems by direct and indirect methods.
+The [control-toolbox ecosystem](https://github.com/control-toolbox) gathers `Julia` packages for mathematical control and applications. It is an outcome of a research initiative supported by the [Centre Inria of Université Côte d'Azur](https://www.inria.fr/en/inria-centre-universite-cote-azur) and a sequel to previous developments, notably [Bocop](https://www.bocop.org) and [Hampath](https://www.hampath.org). See also: [ct gallery](https://ct.gitlabpages.inria.fr/gallery). The root package is [OptimalControl.jl](https://github.com/control-toolbox/OptimalControl.jl) which aims to provide tools to solve optimal control problems by direct and indirect methods.
 
 [![doc OptimalControl.jl](https://img.shields.io/badge/doc-OptimalControl.jl-blue)](https://control-toolbox.github.io/OptimalControl.jl)
 
@@ -94,11 +97,11 @@ We discuss about the control-toolbox ecosystem here:
 ## Overview of `CTProblems.jl`
 
 The `CTProblems.jl` package provides a list of optimal control problems, each of them is made of a description, the model and the solution. You can get access to any problem by a simple `description`, see [`CTBase.jl`](https://github.com/control-toolbox/CTBase.jl).
-For instance, to get the energy-min one dimensional integrator problem, simply
+For instance, to get the energy-min one dimensional exponential problem, simply
 
 ```@example main
 using CTProblems
-prob = Problem(:integrator, :dim1, :energy)
+prob = Problem(:exponential, :dim1, :energy)
 ```
 
 Then, the model is given by

@@ -2,8 +2,8 @@
 
 ```@contents
 Pages = [
-    "simple_integrator.md",
-    "double_integrator.md",
+    "problems/simple_exponential.md",
+    "problems/double_integrator.md",
 ]
 Depth = 1
 ```

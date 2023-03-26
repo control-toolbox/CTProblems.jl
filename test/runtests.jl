@@ -10,9 +10,9 @@ include("utils.jl")
 @testset verbose = true showtiming = true "CTProblems" begin
     for name ∈ (
         :problem,
-        :goddard,
-        :simple_integrator,
+        :simple_exponential,
         :double_integrator,
+        :goddard,
         )
         @testset "$(name)" begin
             test_name = Symbol(:test_, name)

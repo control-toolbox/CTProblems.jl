@@ -1,10 +1,10 @@
-EXAMPLE=(:integrator, :dim1, :energy)
+EXAMPLE=(:exponential, :dim1, :energy)
 
 @eval function OptimalControlProblem{EXAMPLE}()
     # should return an OptimalControlProblem{example} with a message, a model and a solution
 
     # 
-    msg = "simple integrator - energy min"
+    msg = "simple exponential - energy min"
 
     # the model
     n=1

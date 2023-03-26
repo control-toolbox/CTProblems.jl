@@ -1,7 +1,7 @@
-function test_simple_integrator()
+function test_simple_exponential()
 
     # problem = model + solution
-    prob = Problem(:integrator, :dim1, :energy) 
+    prob = Problem(:exponential, :dim1, :energy) 
     ocp = prob.model
     sol = prob.solution
 

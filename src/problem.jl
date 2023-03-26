@@ -16,16 +16,16 @@ end
 """
     $(SIGNATURES)
 
-Print the list of available examples.
+Print the list of available problems.
 """
 function Problems()
-    for description ∈ examples
+    for description ∈ problems
         :dummy ∉ description ? println(description) : nothing
     end
 end
 
 function Problem(description...) 
-    example = getFullDescription(makeDescription(description...), examples)
+    example = getFullDescription(makeDescription(description...), problems)
     return OptimalControlProblem{example}()
 end
 
