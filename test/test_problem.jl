@@ -1,11 +1,11 @@
-#
-prob = Problem(:integrator, :dim2, :energy)
-@test prob isa CTProblems.OptimalControlProblem
+function test_problem()
+   
+    @test typeof(Problems()) == Nothing
 
-#
-prob = Problem(:goddard, :state_constraint)
-@test prob isa CTProblems.OptimalControlProblem
+    e = CTProblems.MethodNotImplemented("dummy", (:dummy, ))
+    @test_throws ErrorException error(e)
+    @test typeof(sprint(showerror, e)) == String
 
-#
-prob = Problem(:integrator, :dim1, :energy)
-@test prob isa CTProblems.OptimalControlProblem
+    @test_throws CTProblems.MethodNotImplemented Problem(:dummy)
+
+end

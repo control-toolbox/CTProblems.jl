@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - develop
     tags: '*'
   pull_request:
 jobs:
@@ -32,6 +31,6 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           registry: control-toolbox/ct-registry
       - uses: julia-actions/julia-runtest@latest
-      #- uses: julia-actions/julia-uploadcodecov@latest
-      #  env:
-      #    CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      - uses: julia-actions/julia-uploadcodecov@latest
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
