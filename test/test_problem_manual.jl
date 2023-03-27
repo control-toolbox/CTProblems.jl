@@ -8,7 +8,7 @@ end
 using CTProblems
 using MINPACK
 
-prob = Problem(:integrator, :dim2, :energy, :constraint)
+prob = Problem(:exponential, :dim1, :energy)
 
 display(prob.model)
 
