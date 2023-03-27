@@ -94,7 +94,7 @@ We discuss about the control-toolbox ecosystem here:
 * [![GitHub Discussions](https://img.shields.io/github/discussions/control-toolbox/control-toolbox.github.io?color=green)](https://github.com/orgs/control-toolbox/discussions)
 * [![GitHub Wiki](https://img.shields.io/badge/wiki-ct-green)](https://github.com/control-toolbox/control-toolbox.github.io/wiki)
 
-## Overview of `CTProblems.jl`
+## Overview of CTProblems.jl
 
 The `CTProblems.jl` package provides a list of optimal control problems, each of them is made of a description, the model and the solution. You can get access to any problem by a simple `description`, see [`CTBase.jl`](https://github.com/control-toolbox/CTBase.jl).
 For instance, to get the energy-min one dimensional exponential problem, simply

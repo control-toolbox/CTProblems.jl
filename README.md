@@ -11,9 +11,9 @@
 
 The `CTProblems.jl` package is part of the [control-toolbox ecosystem](https://github.com/control-toolbox).
 
-[![Build Status][gh-ci-img]][gh-ci-url]
-[![Covering Status][gh-co-img]][gh-co-url]
-[![Documentation][gh-doc-img]][gh-doc-url]
+| **Documentation**                                                               | **Build Status**                                                                                |
+|:-------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------:|
+| [![Documentation][gh-doc-img]][gh-doc-url] | [![Build Status][gh-ci-img]][gh-ci-url] [![Covering Status][gh-co-img]][gh-co-url] |
 
 ---
 
