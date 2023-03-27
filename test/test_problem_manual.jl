@@ -7,7 +7,7 @@ end
 
 using CTProblems
 
-prob = Problem(:exponential, :dim1, :energy)
+prob = Problem(:turnpike, :dim1)
 
 display(prob.model)
 
