@@ -14,7 +14,9 @@ module CTProblems
 
 #
 using CTBase
+using CTFlows
 using DocStringExtensions
+using MINPACK
 #
 
 #

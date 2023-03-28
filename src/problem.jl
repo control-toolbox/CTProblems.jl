@@ -127,7 +127,7 @@ end
 """
 $(TYPEDSIGNATURES)
 
-A binding to [`CTBase.plot`](@ref) function.
+A binding to [CTBase.jl](https://control-toolbox.github.io/CTBase.jl) plot function.
 
 """
 function CTProblems.plot(sol; kwargs...)
