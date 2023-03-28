@@ -23,7 +23,7 @@ function test_simple_exponential()
     a = xf_ - x0*exp(-tf)
     b = sinh(tf)
     ξ = [a/b] # MINPACK needs a vector of Float64
-    fparams(ξ) = (t0, x0, ξ[1], tf)
-    test_by_shooting(shoot!, ξ, f, fparams, sol, 1e-3, "energy")
+    fparams(ξ) = (t0, x0, ξ[1], tf, f)
+    test_by_shooting(shoot!, ξ, fparams, sol, 1e-3, "energy")
 
 end

@@ -37,7 +37,7 @@ function final_condition(ocp::OptimalControlModel) # pre-condition: there is a x
     return xf
 end
 
-function test_by_shooting(shoot!, ξ, flow, fparams, sol, atol, title, display=false)
+function test_by_shooting(shoot!, ξ, fparams, sol, atol, title, display=false)
 
     # solve
     shoot_sol = fsolve(shoot!, ξ, show_trace=display)
@@ -45,9 +45,9 @@ function test_by_shooting(shoot!, ξ, flow, fparams, sol, atol, title, display=f
     ξ⁺ = shoot_sol.x
 
     # compute optimal control solution    
-    t0, x0, p0⁺, tf = fparams(ξ⁺)
+    t0, x0, p0⁺, tf, f = fparams(ξ⁺)
     #
-    ocp⁺ = CTFlows.OptimalControlSolution(flow((t0, tf), x0, p0⁺))
+    ocp⁺ = CTFlows.OptimalControlSolution(f((t0, tf), x0, p0⁺))
     x⁺(t) = ocp⁺.state(t)
     p⁺(t) = ocp⁺.adjoint(t)
     u⁺(t) = ocp⁺.control(t)
