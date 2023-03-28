@@ -6,51 +6,23 @@
 [gh-co-img]: https://codecov.io/gh/control-toolbox/CTProblems.jl/branch/main/graph/badge.svg?token=YM5YQQUSO3
 [gh-co-url]: https://codecov.io/gh/control-toolbox/CTProblems.jl
 
-[gh-doc-img]: https://img.shields.io/badge/docs-dev-blue.svg
-[gh-doc-url]: http://control-toolbox.github.io/CTProblems.jl/dev
+[gh-doc-dev-img]: https://img.shields.io/badge/docs-dev-blue.svg
+[gh-doc-dev-url]: http://control-toolbox.github.io/CTProblems.jl/dev
+
+[gh-doc-stable-img]: https://img.shields.io/badge/docs-stable-blue.svg
+[gh-doc-stable-url]: http://control-toolbox.github.io/CTProblems.jl/stable
 
 The `CTProblems.jl` package is part of the [control-toolbox ecosystem](https://github.com/control-toolbox).
 
-[![Build Status][gh-ci-img]][gh-ci-url]
-[![Covering Status][gh-co-img]][gh-co-url]
-[![Documentation][gh-doc-img]][gh-doc-url]
-
----
+| **Documentation**                                                               | **Build Status**                                                                                |
+|:-------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------:|
+| [![Documentation][gh-doc-stable-img]][gh-doc-stable-url] [![Documentation][gh-doc-dev-img]][gh-doc-dev-url] | [![Build Status][gh-ci-img]][gh-ci-url] [![Covering Status][gh-co-img]][gh-co-url] |
 
 ## Installation
 
-To install a package from the control-toolbox ecosystem, you must add its registry into your `Julia` configuration.
+To install a package from the control-toolbox ecosystem, please visit the [installation page](https://github.com/control-toolbox#installation).
 
-Start `Julia`:
-
-```shell
-shell> julia
-
-   _       _ _(_)_     |  Documentation: https://docs.julialang.org
-  (_)     | (_) (_)    |
-   _ _   _| |_  __ _   |  Type "?" for help, "]?" for Pkg help.
-  | | | | | | |/ _` |  |
-  | | |_| | | | (_| |  |  Version 1.8.2 (2022-09-29)
- _/ |\__'_|_|_|\__'_|  |  Official https://julialang.org/ release
-|__/                   |
-```
-
-Then, add `ct-registry` to the list of known registries:
-
-```shell
-julia> ]
-pkg> registry add https://github.com/control-toolbox/ct-registry.git
-```
-
-Finally, you can install any package as usual. For instance:
-
-```shell
-pkg> add CTProblems
-```
-
----
-
-## Overview of `CTProblems.jl`
+## Overview of CTProblems.jl
 
 The `CTProblems.jl` package provides a list of optimal control problems, each of them is made of a description, the model and the solution. You can get access to any problem by a simple `description`, see [`CTBase.jl`](https://github.com/control-toolbox/CTBase.jl).
 For instance, to get the energy-min one dimensional exponential problem, simply

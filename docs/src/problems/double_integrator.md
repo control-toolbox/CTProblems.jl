@@ -36,7 +36,9 @@ with $a$, $b \in \mathbb{R}$, $x_f \in \mathbb{R}^2$ and $t_f \ge t_0 = 0$ fixed
 ```
 
 ```@raw html
+</br>
 <img src="../assets/di_energy_u.svg" style="display: block; margin: 0 auto;">
+</br>
 ```
 
 Thus, solving this optimal control problem leads to solve the following boundary value problem:
@@ -102,6 +104,13 @@ $\det A = t_f^4/12$ and the solution is then given by
     p^*_0 = A^{-1} B.
 ```
 
+For an illusration we set $t_f=1$, $x_0 = (-1, 0)$ and $x_f = (0, 0)$, see the following figure.
+The red sphere represents the solution.
+
+```@raw html
+<img src="../assets/di_energie_u_sfun.png" style="display: block; margin: 0 auto;">
+```
+
 ### The problem from CTProblems.jl
 
 You can access the problem from the `CTProblems.jl` package:
@@ -120,5 +129,5 @@ prob.model
 You can plot the solution.
 
 ```@example main
-plot(prob.solution)
+plot(prob.solution, size=(700, 700))
 ```
