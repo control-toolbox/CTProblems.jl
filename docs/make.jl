@@ -1,9 +1,9 @@
 using Documenter
 using CTProblems
-using Plots
 
 makedocs(
-    doctest=true,
+    doctest = true,
+    modules = [CTProblems],
     sitename = "CTProblems.jl",
     format = Documenter.HTML(prettyurls = false),
     strict = [

@@ -12,7 +12,7 @@ $(TYPEDEF)
 $(TYPEDFIELDS)
 
 # Example
-```jldoctest
+```@example
 julia> using CTProblems
 julia> using CTBase
 julia> description = "My empty optimal control problem"
