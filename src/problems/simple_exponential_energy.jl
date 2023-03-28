@@ -29,7 +29,7 @@ EXAMPLE=(:exponential, :dim1, :energy)
     x(t) = p0*sinh(t) + x0*exp(-t)
     p(t) = exp(t)*p0
     u(t) = p(t)
-    objective = (exp(2)-1)*p0/4 
+    objective = (exp(2)-1)*p0^2/4 
     #
     N=201
     times = range(t0, tf, N)
