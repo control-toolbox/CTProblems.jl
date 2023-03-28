@@ -15,6 +15,7 @@ include("problems/goddard.jl")
 include("problems/double_integrator_energy_cc.jl")
 include("problems/double_integrator_consum_cc.jl")
 include("problems/double_integrator_time_cc.jl")
+include("problems/double_integrator_energy_distance.jl")
 
 # list of problems
 problems = ()
@@ -24,6 +25,7 @@ problems = add(problems, (:goddard, :state_constraint))
 problems = add(problems, (:integrator, :dim2, :energy, :constraint))
 problems = add(problems, (:integrator, :dim2, :consum, :constraint))
 problems = add(problems, (:integrator, :dim2, :time, :constraint))
+problems = add(problems, (:integrator, :dim2, :energy, :distance))
 problems = add(problems, (:dummy, )) # to test exception not implemented
 
 #

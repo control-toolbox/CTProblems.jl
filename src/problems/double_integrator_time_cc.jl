@@ -12,7 +12,7 @@ EXAMPLE=(:integrator, :dim2, :time , :constraint)
     t0=0
     x0=[-1, 0]
     xf=[0, 0]
-    γ = 4
+    γ = 1
     ocp = Model()
     state!(ocp, n)   # dimension of the state
     control!(ocp, m) # dimension of the control
@@ -62,9 +62,10 @@ EXAMPLE=(:integrator, :dim2, :time , :constraint)
     indirect_sol = fsolve(nle, ξ, show_trace = true)
     println(indirect_sol)
      
-    # the result of the newton method is [12.90994448735837, 6.454972243678883]
+    # the result of the newton method
     p0 = indirect_sol.x
-    println(t1(p0[1],p0[2]),"  ",tf(p0[1],p0[2]))
+    println("α = ", p0[1], " β = ", p0[2])
+    println("Times ",t1(p0[1],p0[2]),"  ",tf(p0[1],p0[2]))
     x(t) = (t ≤ t1(p0[1],p0[2]))*x_arc_1(t,p0[1],p0[2]) + (t1(p0[1],p0[2])≤t)*x_arc_2(t,p0[1],p0[2])
     p(t) = [p0[1],-p0[1]*t + p0[2]]
     u(t) = (t<t1(p0[1],p0[2]))*γ + (t1(p0[1],p0[2])≤t)*(-γ)
