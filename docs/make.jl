@@ -3,6 +3,7 @@ using CTProblems
 using Plots
 
 makedocs(
+    doctest=true,
     sitename = "CTProblems.jl",
     format = Documenter.HTML(prettyurls = false),
     strict = [

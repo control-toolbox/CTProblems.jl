@@ -37,5 +37,5 @@ prob.model
 You can plot the solution.
 
 ```@example main
-plot(prob.solution)
+plot(prob.solution, size=(700, 400))
 ```

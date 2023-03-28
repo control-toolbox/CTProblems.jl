@@ -21,7 +21,7 @@ function test_double_integrator()
 
     # tests
     ξ = [12.0, 6.0] # MINPACK needs Float64
-    fparams(ξ) = (t0, x0, ξ, tf)
-    test_by_shooting(shoot!, ξ, f, fparams, sol, 1e-3, "energy")
+    fparams(ξ) = (t0, x0, ξ, tf, f)
+    test_by_shooting(shoot!, ξ, fparams, sol, 1e-3, "energy")
 
 end
