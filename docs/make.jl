@@ -1,6 +1,5 @@
 using Documenter
 using CTProblems
-using Plots
 
 makedocs(
     doctest=true,
