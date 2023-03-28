@@ -38,4 +38,4 @@ and to print the complete list of [Problems](@ref):
 Problems()
 ```
 
-For more details, see the [documentation][gh-doc-url].
+For more details, see the documentation.
