@@ -6,9 +6,8 @@ catch
 end
 
 using CTProblems
-using MINPACK
 
-prob = Problem(:integrator, :dim2, :time , :constraint)
+prob = Problem(:lqr, :dim2, :ricatti)
 
 display(prob.model)
 

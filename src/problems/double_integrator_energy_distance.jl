@@ -4,7 +4,7 @@ EXAMPLE=(:integrator, :dim2, :energy, :distance)
     # should return an OptimalControlProblem{example} with a message, a model and a solution
 
     # 
-    msg = "Double integrator - energy min distance max"
+    msg = "Double integrator - energy min - distance max"
 
     # the model
     n=2

@@ -1,46 +1,56 @@
-EXAMPLE=(:integrator, :dim2, :time , :constraint)
+EXAMPLE=(:lqr, :dim2, :ricatti)
 
 @eval function OptimalControlProblem{EXAMPLE}()
     # should return an OptimalControlProblem{example} with a message, a model and a solution
 
     # 
-    msg = "Double integrator - time min - control constraint"
+    msg = "lqr - dimension 2 - ricatti"
 
     # the model
     n=2
     m=1
     t0=0
-    x0=[-1, 0]
-    xf=[0, 0]
-    γ = 1
+    tf=1
+    x0=[0, 1]
     ocp = Model()
     state!(ocp, n)   # dimension of the state
     control!(ocp, m) # dimension of the control
-    time!(ocp, :initial, t0)
+    time!(ocp, [t0, tf])
     constraint!(ocp, :initial, x0)
-    constraint!(ocp, :final,   xf)
     A = [ 0 1
-        0 0 ]
+        -1 0 ]
     B = [ 0
         1 ]
     constraint!(ocp, :dynamics, (x, u) -> A*x + B*u)
-    constraint!(ocp, :control, u -> u, -γ, γ)
-    objective!(ocp, :mayer,  (t0, x0, tf, xf) -> tf, :min) 
+    objective!(ocp, :lagrange, (x, u) -> 0.5*(x[1]^2 + x[2]^2 + u^2))
 
     # the solution
+    Q = I
+    R = I
+    Rm1 = I 
     a = x0[1]
     b = x0[2]
+    
+    function LQ_solve(tf)
 
-    t1 = sqrt(-a)
-    tf = 2*t1
-    α = 1/t1
-    β = 1
-    p(t) = [α, -α*t + β]
-    u(t) = (t<t1)*γ + (t1≤t)*(-γ)
-    x2_arc1(t) = t*γ + b
-    x2_arc2(t) = (tf-t)*γ + xf[2] 
-    x(t) = (t<t1)*[ 0.5*x2_arc1(t)^2 + a, x2_arc1(t)] + (t1≤t)*[-0.5*x2_arc2(t)^2, x2_arc2(t)]
-    objective = tf
+        ricatti(S, params, t) = S*B*Rm1*B'*S - (S*A + A'*S + Q)
+        Sf = zeros(2, 2)
+        tspan = (tf, 0)
+        prob = ODEProblem(ricatti,Sf,tspan)
+        S = solve(prob, Tsit5(), reltol=1e-12, abstol=1e-12)
+
+        tspan = (0, tf)
+        dyn(x, params, t) = A*x + B*Rm1*B'*S(t)*x
+        prob = ODEProblem(dyn,x0,tspan)
+        x = solve(prob, Tsit5(), reltol=1e-8, abstol=1e-8)
+
+        return x,S
+    end
+
+    x,S = LQ_solve(tf)
+    p(t) = 0
+    u(t) = 0
+    objective = 0
 
     #
     N=201
