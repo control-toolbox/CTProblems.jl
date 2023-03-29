@@ -8,4 +8,8 @@ function test_problem()
 
     @test_throws CTProblems.NonExistingProblem Problem(:dummy)
 
+    @test display(Problem(:integrator)) isa Nothing
+
+    @test (CTProblems.plot(Problem(:integrator).solution); true)
+
 end

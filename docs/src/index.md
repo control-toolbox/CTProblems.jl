@@ -5,7 +5,7 @@ The `CTProblems.jl` package is part of the [control-toolbox ecosystem](https://g
 **Contents.**
 
 ```@contents
-Pages = ["index.md", "problems.md", "api.md"]
+Pages = ["index.md", "problems.md", "api.md", "developers.md"]
 Depth = 2
 ```
 
