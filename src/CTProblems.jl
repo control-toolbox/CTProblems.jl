@@ -27,6 +27,11 @@ include("problem.jl")
 include("problems/simple_exponential_energy.jl")
 include("problems/double_integrator_energy.jl")
 include("problems/goddard.jl")
+include("problems/simple_integrator_abs.jl")
+include("problems/simple_integrator_energy_free.jl")
+include("problems/simple_integrator_squaresum_free.jl")
+include("problems/simple_integrator_time_free.jl")
+include("problems/simple_turnpike.jl")
 
 #
 export Problems, Problem
