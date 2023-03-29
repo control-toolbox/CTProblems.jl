@@ -20,14 +20,11 @@ function test_goddard()
     function F0(x)
         r, v, m = x
         D = Cd * v^2 * exp(-β*(r - 1))
-        F = [ v, -D/m - 1/r^2, 0 ]
-        return F
+        return [ v, -D/m - 1/r^2, 0 ]
     end
-
     function F1(x)
         r, v, m = x
-        F = [ 0, Tmax/m, -b*Tmax ]
-        return F
+        return [ 0, Tmax/m, -b*Tmax ]
     end
 
     # flows
@@ -44,11 +41,9 @@ function test_goddard()
     us(x, p) = -H001(x, p) / H101(x, p)
 
     # boundary control
-    remove_constraint!(ocp, :state_constraint_1)
-    remove_constraint!(ocp, :state_constraint_3)
-    constraint!(ocp, :boundary, (t0, x0, tf, xf) -> xf[3], mf, :boundary_constraint_1) # one value => equality (not boxed inequality); changed to equality constraint for shooting
+    remove_constraint!(ocp, :state_constraint_r)
     #
-    g(x) = vmax-constraint(ocp, :state_constraint_2)(x) # g(x, u) ≥ 0 (cf. nonnegative multiplier)
+    g(x) = vmax-constraint(ocp, :state_constraint_v)(x) # g(x, u) ≥ 0 (cf. nonnegative multiplier)
     ub(x, _) = -Ad(F0, g)(x) / Ad(F1, g)(x)
     μb(x, p) = H01(x, p) / Ad(F1, g)(x)
 
@@ -67,7 +62,7 @@ function test_goddard()
         x2, p2 = fs(t1, x1, p1, t2)
         x3, p3 = fb(t2, x2, p2, t3)
         xf, pf = f0(t3, x3, p3, tf)
-        s[1] = mf-constraint(ocp, :boundary_constraint_1)(t0, x0, tf, xf)
+        s[1] = mf-constraint(ocp, :final_constraint)(xf)
         s[2:3] = pf[1:2] - [ 1, 0 ]
         s[4] = H1(x1, p1)
         s[5] = H01(x1, p1)
