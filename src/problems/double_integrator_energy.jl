@@ -9,28 +9,28 @@ EXAMPLE=(:integrator, :dim2, :energy)
     # the model
     n=2
     m=1
-    t0=0.0
-    tf=1.0
-    x0=[-1.0, 0.0]
-    xf=[0.0, 0.0]
+    t0=0
+    tf=1
+    x0=[-1, 0]
+    xf=[0, 0]
     ocp = Model()
     state!(ocp, n)   # dimension of the state
     control!(ocp, m) # dimension of the control
     time!(ocp, [t0, tf])
     constraint!(ocp, :initial, x0)
     constraint!(ocp, :final,   xf)
-    A = [ 0.0 1.0
-        0.0 0.0 ]
-    B = [ 0.0
-        1.0 ]
+    A = [ 0 1
+        0 0 ]
+    B = [ 0
+        1 ]
     constraint!(ocp, :dynamics, (x, u) -> A*x + B*u)
     objective!(ocp, :lagrange, (x, u) -> 0.5u^2) # default is to minimise
 
     # the solution
     a = x0[1]
     b = x0[2]
-    C = [-(tf-t0)^3/6.0 (tf-t0)^2/2.0
-         -(tf-t0)^2/2.0 (tf-t0)]
+    C = [-(tf-t0)^3/6 (tf-t0)^2/2
+         -(tf-t0)^2/2 (tf-t0)]
     D = [-a-b*(tf-t0), -b]+xf
     p0 = C\D
     α = p0[1]

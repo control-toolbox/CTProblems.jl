@@ -9,10 +9,10 @@ EXAMPLE=(:exponential, :dim1, :energy)
     # the model
     n=1
     m=1
-    t0=0.0
-    tf=1.0
-    x0=-1.0
-    xf=0.0
+    t0=0
+    tf=1
+    x0=-1
+    xf=0
     ocp = Model()
     state!(ocp, n)   # dimension of the state
     control!(ocp, m) # dimension of the control

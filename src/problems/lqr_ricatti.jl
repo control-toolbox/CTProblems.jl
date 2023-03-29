@@ -10,7 +10,7 @@ EXAMPLE=(:lqr, :dim2, :ricatti)
     n=2
     m=1
     t0=0
-    tf=1
+    tf=5
     x0=[0, 1]
     ocp = Model()
     state!(ocp, n)   # dimension of the state
@@ -23,39 +23,44 @@ EXAMPLE=(:lqr, :dim2, :ricatti)
     objective!(ocp, :lagrange, (x, u) -> 0.5*(x[1]^2 + x[2]^2 + u^2))
 
     # the solution
-    Id = [1 0 ; 0 1]
-    Q = Id
-    R = Id 
-    Rm1 = Id
+    #Id = [1 0 ; 0 1]
+    Q = I
+    R = I
+    Rm1 = I
     a = x0[1]
     b = x0[2]
 
-    ricatti(S, params, t) = S*(B'*Rm1*B)*S - (S*A + A'*S + Q)
+    # computing S
+    ricatti(S, params, t) = -S*B*Rm1*B'*S - (-Q + A'*S+S*A)
     Sf = zeros(size(A))
     tspan = (tf, 0)
     prob = ODEProblem(ricatti,Sf,tspan)
-    sol_S = solve(prob, Tsit5(), reltol=1e-12, abstol=1e-12)
+    S = solve(prob, Tsit5(), reltol=1e-12, abstol=1e-12)
 
-    function S(t)
-        i = argmin(abs.(t.-sol_S.t))
-        return sol_S.u[i]
-    end    
-
+    # computing x
+    dyn(x, params, t) = A*x + B*Rm1*B'*S(t)*x
     tspan = (0, tf)
-    dyn(x, params, t) = A*x + (B'*Rm1*B)*S(t)*x
     prob = ODEProblem(dyn,x0,tspan)
-    sol_x = solve(prob, Tsit5(), reltol=1e-8, abstol=1e-8)
+    x = solve(prob, Tsit5(), reltol=1e-8, abstol=1e-8)
 
-    function x(t)
-        i = argmin(abs.(t.-sol_x.t))
-        return sol_x.u[i]
-    end    
-    u(t) = -((Rm1*B)'*S(t))*x(t) 
-    h = 1e-8
-    up(t) = (u(t+h)-u(t))/h
-    p(t) = [x(t)[2]-up(t),u(t)]
-    objective = 0
+    # computing u
+    u(t) = -Rm1*B'*S(t)*x(t) 
+    
+    # computing p
+    ϕ(p, params, t) =  inv(A)*p - x(t) # [p[2]+x(t)[1] ; x(t)[2]-p[1]]
+    pf = [0;0]
+    tspan = (tf, 0)
+    prob = ODEProblem(ϕ,pf,tspan)
+    p = solve(prob, Tsit5(), reltol=1e-8, abstol=1e-8)
 
+    # computing objective
+    ψ(c,params,t) = 0.5*(x(t)[1]^2 + x(t)[2] + u(t)^2)
+    tspan = (0,tf)
+    c0 = 0
+    prob = ODEProblem(ψ,0,tspan)
+    obj = solve(prob, Tsit5(), reltol=1e-8, abstol=1e-8)
+    objective = obj(tf)
+    
     #
     N=201
     times = range(t0, tf, N)
@@ -64,9 +69,9 @@ EXAMPLE=(:lqr, :dim2, :ricatti)
     sol.state_dimension = n
     sol.control_dimension = m
     sol.times = times
-    sol.state = x
+    sol.state = t -> x(t)
     sol.state_labels = [ "x" * ctindices(i) for i ∈ range(1, n)]
-    sol.adjoint = p
+    sol.adjoint = t -> p(t)
     sol.control = u
     sol.control_labels = [ "u" ]
     sol.objective = objective

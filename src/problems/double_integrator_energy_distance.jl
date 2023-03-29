@@ -9,18 +9,18 @@ EXAMPLE=(:integrator, :dim2, :energy, :distance)
     # the model
     n=2
     m=1
-    t0=0.0
-    tf=1.0
-    x0=[0.0, 0.0]
+    t0=0
+    tf=1
+    x0=[0, 0]
     ocp = Model()
     state!(ocp, n)   # dimension of the state
     control!(ocp, m) # dimension of the control
     time!(ocp, [t0, tf])
     constraint!(ocp, :initial, x0)
-    A = [ 0.0 1.0
-        0.0 0.0 ]
-    B = [ 0.0
-        1.0 ]
+    A = [ 0 1
+        0 0 ]
+    B = [ 0
+        1 ]
     constraint!(ocp, :dynamics, (x, u) -> A*x + B*u)
     objective!(ocp, :lagrange, (x, u) -> 0.5u^2)
     objective!(ocp, :mayer,  (t0, x0, tf, xf) -> -0.5xf[1], :min) 
