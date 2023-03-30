@@ -7,7 +7,7 @@ end
 
 using CTProblems
 
-prob = Problem(:exponential, :dim1, :mixed_constraint)
+prob = Problem((:exponential, :dim1, :state_constraint, :non_autonomous))
 
 display(prob.model)
 

@@ -33,6 +33,7 @@ include("problems/simple_integrator_squaresum_free.jl")
 include("problems/simple_integrator_time_free.jl")
 include("problems/simple_turnpike.jl")
 include("problems/simple_exponential_mixed_constraint.jl")
+include("problems/simple_exponential_state_constraint_non_autonomous.jl")
 
 #
 export Problems, Problem
