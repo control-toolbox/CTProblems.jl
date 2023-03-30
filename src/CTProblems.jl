@@ -34,6 +34,7 @@ include("problems/double_integrator_consum_cc.jl")
 include("problems/double_integrator_time_cc.jl")
 include("problems/double_integrator_energy_distance.jl")
 include("problems/lqr_ricatti.jl")
+include("problems/double_integrator_energy_state_constraint.jl")
 
 #
 export Problems, Problem
