@@ -27,6 +27,7 @@ include("problem.jl")
 include("problems/simple_exponential_energy.jl")
 include("problems/double_integrator_energy.jl")
 include("problems/goddard.jl")
+include("problems/orbital_transfert_time_min.jl")
 
 #
 export Problems, Problem

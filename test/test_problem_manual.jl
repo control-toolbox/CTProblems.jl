@@ -7,7 +7,7 @@ end
 
 using CTProblems
 
-prob = Problem(:exponential, :dim1, :energy)
+prob = Problem(:orbital_transfert, :dim4, :time)
 
 display(prob.model)
 
