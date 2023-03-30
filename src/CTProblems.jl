@@ -29,6 +29,11 @@ include("problem.jl")
 include("problems/simple_exponential_energy.jl")
 include("problems/double_integrator_energy.jl")
 include("problems/goddard.jl")
+include("problems/double_integrator_energy_cc.jl")
+include("problems/double_integrator_consum_cc.jl")
+include("problems/double_integrator_time_cc.jl")
+include("problems/double_integrator_energy_distance.jl")
+include("problems/lqr_ricatti.jl")
 
 #
 export Problems, Problem

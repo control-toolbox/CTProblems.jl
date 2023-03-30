@@ -47,7 +47,7 @@ EXAMPLE=(:lqr, :dim2, :ricatti)
     u(t) = -Rm1*B'*S(t)*x(t) 
     
     # computing p
-    ϕ(p, params, t) =  inv(A)*p - x(t) # [p[2]+x(t)[1] ; x(t)[2]-p[1]]
+    ϕ(p, params, t) =  [p[2]+x(t)[1] ; x(t)[2]-p[1]]
     pf = [0;0]
     tspan = (tf, 0)
     prob = ODEProblem(ϕ,pf,tspan)
