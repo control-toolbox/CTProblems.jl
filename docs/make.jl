@@ -1,9 +1,9 @@
 using Documenter
 using CTProblems
-using Plots
 
 makedocs(
-    doctest=true,
+    doctest = true,
+    modules = [CTProblems],
     sitename = "CTProblems.jl",
     format = Documenter.HTML(prettyurls = false),
     strict = [
@@ -17,7 +17,8 @@ makedocs(
     pages = [
         "Introduction" => "index.md",
         "Problems" => "problems.md",
-        "API" => "api.md"
+        "API" => "api.md",
+        "Developers" => "developers.md"
     ]
 )
 

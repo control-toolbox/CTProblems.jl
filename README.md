@@ -22,7 +22,7 @@ The `CTProblems.jl` package is part of the [control-toolbox ecosystem](https://g
 
 To install a package from the control-toolbox ecosystem, please visit the [installation page](https://github.com/control-toolbox#installation).
 
-## Overview of CTProblems.jl
+## Overview
 
 The `CTProblems.jl` package provides a list of optimal control problems, each of them is made of a description, the model and the solution. You can get access to any problem by a simple `description`, see [`CTBase.jl`](https://github.com/control-toolbox/CTBase.jl).
 For instance, to get the energy-min one dimensional exponential problem, simply
@@ -32,10 +32,10 @@ using CTProblems
 prob = Problem(:exponential, :dim1, :energy)
 ```
 
-and to print the complete list of [Problems](@ref):
+and to print the complete list of problems:
 
 ```julia
 Problems()
 ```
 
-For more details, see the [documentation][gh-doc-url].
+For more details, see the documentation.
