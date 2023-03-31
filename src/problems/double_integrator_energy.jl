@@ -1,4 +1,5 @@
 EXAMPLE=(:integrator, :dim2, :energy)
+add_to_list_of_problems = true
 
 @eval function OptimalControlProblem{EXAMPLE}()
     # should return an OptimalControlProblem{example} with a message, a model and a solution
