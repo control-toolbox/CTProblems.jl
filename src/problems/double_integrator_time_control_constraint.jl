@@ -17,14 +17,14 @@ EXAMPLE=(:integrator, :dim2, :time , :control_constraint)
     state!(ocp, n)   # dimension of the state
     control!(ocp, m) # dimension of the control
     time!(ocp, :initial, t0)
-    constraint!(ocp, :initial, x0)
-    constraint!(ocp, :final,   xf)
+    constraint!(ocp, :initial, x0, :initial_constraint)
+    constraint!(ocp, :final,   xf, :final_constraint)
+    constraint!(ocp, :control, -γ, γ, :control_constraint)
     A = [ 0 1
         0 0 ]
     B = [ 0
         1 ]
     constraint!(ocp, :dynamics, (x, u) -> A*x + B*u)
-    constraint!(ocp, :control, u -> u, -γ, γ)
     objective!(ocp, :mayer,  (t0, x0, tf, xf) -> tf, :min) 
 
     # the solution

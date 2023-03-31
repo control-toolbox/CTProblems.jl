@@ -17,8 +17,8 @@ EXAMPLE=(:exponential, :dim1, :energy)
     state!(ocp, n)   # dimension of the state
     control!(ocp, m) # dimension of the control
     time!(ocp, [t0, tf])
-    constraint!(ocp, :initial, x0)
-    constraint!(ocp, :final,   xf)
+    constraint!(ocp, :initial, x0, :initial_constraint)
+    constraint!(ocp, :final,   xf, :final_constraint)
     constraint!(ocp, :dynamics, (x, u) -> -x + u)
     objective!(ocp, :lagrange, (x, u) -> 0.5u^2) # default is to minimise
 

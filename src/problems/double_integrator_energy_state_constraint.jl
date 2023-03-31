@@ -18,9 +18,9 @@ EXAMPLE=(:integrator, :dim2, :energy, :state_constraint)
     state!(ocp, n, ["x","v"])   # dimension of the state
     control!(ocp, m) # dimension of the control
     time!(ocp, [t0, tf])
-    constraint!(ocp, :initial, x0)
-    constraint!(ocp, :final,   xf)
-    constraint!(ocp, :state, Index(1), -Inf, l)
+    constraint!(ocp, :initial, x0, :initial_constraint)
+    constraint!(ocp, :final,   xf, :final_constraint)
+    constraint!(ocp, :state, Index(1), -Inf, l, :state_constraint)
     A = [ 0 1
         0 0 ]
     B = [ 0

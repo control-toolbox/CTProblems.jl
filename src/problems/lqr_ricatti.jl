@@ -16,9 +16,7 @@ EXAMPLE=(:lqr, :dim2, :ricatti)
     state!(ocp, n)   # dimension of the state
     control!(ocp, m) # dimension of the control
     time!(ocp, [t0, tf])
-    constraint!(ocp, :initial, x0)
-    A = [ 0 1 ; -1 0 ]
-    B = [ 0 ; 1 ]
+    constraint!(ocp, :initial, x0, :initial_constraint)
     constraint!(ocp, :dynamics, (x, u) -> A*x + B*u)
     objective!(ocp, :lagrange, (x, u) -> 0.5*(x[1]^2 + x[2]^2 + u^2))
 
@@ -77,7 +75,7 @@ EXAMPLE=(:lqr, :dim2, :ricatti)
     sol.objective = objective
     sol.iterations = 0
     sol.stopping = :dummy
-    sol.message = "analytical solution"
+    sol.message = "numerical solution"
     sol.success = true
 
     #
