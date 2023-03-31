@@ -16,10 +16,10 @@ EXAMPLE=(:exponential, :dim1, :mixed_constraint)
     state!(ocp, n)   # dimension of the state
     control!(ocp, m) # dimension of the control
     time!(ocp, [t0, tf])
-    constraint!(ocp, :initial, x0)
-    constraint!(ocp, :control, u -> u, -Inf, 0)
+    constraint!(ocp, :initial, x0, :initial_constraint)
+    constraint!(ocp, :control, -Inf, 0, :control_constraint)
+    constraint!(ocp, :mixed, (x,u) -> x - u, -Inf, 0, :mixed_constraint)
     constraint!(ocp, :dynamics, (x, u) -> -u)
-    constraint!(ocp, :mixed, (x,u) -> x - u, -Inf, 0)
     objective!(ocp, :lagrange, (x, u) -> u)
 
     # the solution

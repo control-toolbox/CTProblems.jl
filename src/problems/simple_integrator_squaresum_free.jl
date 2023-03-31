@@ -4,23 +4,20 @@ EXAMPLE=(:integrator, :dim1, :squaresum, :free)
     # should return an OptimalControlProblem{example} with a message, a model and a solution
 
     # 
-    msg = "simple integrator - min - free"
+    msg = "simple integrator - square-sum min - free"
 
     # the model
     n=1
     m=1
-    t0=0.0
-    #tf=1.0
-    x0=0.0
-    xf=1.0
+    t0=0
+    x0=0
+    xf=1
     ocp = Model()
     state!(ocp, n)   # dimension of the state
     control!(ocp, m) # dimension of the control
     time!(ocp, :initial, t0)
-    constraint!(ocp, :initial, x0)
-    constraint!(ocp, :final, xf)
-    A = [ 0.0 ]
-    B = [ 1.0 ]
+    constraint!(ocp, :initial, x0, :initial_constraint)
+    constraint!(ocp, :final, xf, :final_constraint)
     constraint!(ocp, :dynamics, (x, u) -> u)
     objective!(ocp, :lagrange, (x, u) -> 0.5*(u^2+x^2)) # default is to minimise
 

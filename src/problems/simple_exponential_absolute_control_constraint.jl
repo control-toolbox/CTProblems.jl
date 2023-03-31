@@ -1,35 +1,34 @@
-EXAMPLE=(:exponential, :dim1, :state_constraint, :non_autonomous)
+EXAMPLE=(:exponential, :dim1, :absolute, :control_constraint)
 
 @eval function OptimalControlProblem{EXAMPLE}()
     # should return an OptimalControlProblem{example} with a message, a model and a solution
 
     # 
-    msg = "simple exponential - state constraint"
+    msg = "simple exponential - absolute min - control constraint"
 
     # the model
     n=1
     m=1
     t0=0
-    tf=3
-    x0=0
-    α=1 
-    ocp = Model(time_dependence=:nonautonomous)
+    tf=1
+    x0=-1
+    xf=0
+    ocp = Model()
     state!(ocp, n)   # dimension of the state
     control!(ocp, m) # dimension of the control
     time!(ocp, [t0, tf])
-    constraint!(ocp, :initial, x0)
-    constraint!(ocp, :control, u -> u, 0, 3)
-    #control!(ocp, [0,3])
-    constraint!(ocp, :state, (x,u) -> 1 - x(t) - (t-2)^2, -Inf, 0)
-    constraint!(ocp, :dynamics, (x, u) -> u)
-    objective!(ocp, :lagrange, (x, u) -> exp(-α*t)*u)
+    constraint!(ocp, :initial, x0, :initial_constraint)
+    constraint!(ocp, :final, xf, :final_constraint)
+    constraint!(ocp, :control, -1, 1, :control_constraint) 
+    constraint!(ocp, :dynamics, (x, u) -> -x + u)
+    objective!(ocp, :lagrange, (x, u) -> abs(u)) # default is to minimise
 
     # the solution
-    arc(t) = [0 ≤ t < 1, 1 ≤ t < 2 , 2 ≤ t ≤ 3]
-    x(t) = arc(t)[1]*0 + arc(t)[2]*(1-(t-2)^2) + arc(t)[3]*1
-    p(t) = arc(t)[1]*(-exp(-α)) + arc(t)[2]*0 + arc(t)[3]*0
-    u(t) = arc(t)[1]*0 + arc(t)[2]*(-2*(t-2)) + arc(t)[3]*0
-    objective = 2/α*(2*exp(-α)-exp(-2*α))
+    p0 = 1/(x0-(xf-1)/exp(-tf))
+    p(t) = exp(t)*p0
+    u(t) = (abs(p(t)) > 1) ? sign(p(t)) : 0
+    x(t) = (abs(p(t)) < 1) ? (x0*exp(-t)) : ((xf-1)*exp(tf-t) + 1) 
+    objective = 1 + log(p0)
     #
     N=201
     times = range(t0, tf, N)

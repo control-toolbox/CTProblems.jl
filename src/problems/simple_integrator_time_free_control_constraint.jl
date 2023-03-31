@@ -1,4 +1,4 @@
-EXAMPLE=(:integrator, :dim1, :time, :free, :constraint)
+EXAMPLE=(:integrator, :dim1, :time, :free, :control_constraint)
 
 @eval function OptimalControlProblem{EXAMPLE}()
     # should return an OptimalControlProblem{example} with a message, a model and a solution
@@ -9,20 +9,19 @@ EXAMPLE=(:integrator, :dim1, :time, :free, :constraint)
     # the model
     n=1
     m=1
-    t0=0.0
-    #tf=1.0
-    x0=-1.0
-    xf=0.0
-    γ = 0.5
+    t0=0
+    x0=-1
+    xf=0
+    γ=0.5
     ocp = Model()
     state!(ocp, n)   # dimension of the state
     control!(ocp, m) # dimension of the control
     time!(ocp, :initial, t0)
-    constraint!(ocp, :initial, x0)
-    constraint!(ocp, :final, xf)
+    constraint!(ocp, :initial, x0, :initial_constraint)
+    constraint!(ocp, :final, xf, :final_constraint)
+    constraint!(ocp, :control, -γ, γ, :control_constraint) # constraints can be labeled or not
     constraint!(ocp, :dynamics, (x, u) -> -x + u)
-    constraint!(ocp, :control, u -> u, -γ, γ) # constraints can be labeled or not
-    objective!(ocp, :mayer,  (t0, x0, tf, xf) -> tf, :min)
+    objective!(ocp, :mayer, (t0, x0, tf, xf) -> tf, :min)
 
     # the solution
     tf = log((-1-γ)/(xf-γ))
@@ -30,6 +29,7 @@ EXAMPLE=(:integrator, :dim1, :time, :free, :constraint)
     p(t) = exp(t-tf)/(γ-xf)
     u(t) = γ*sign(p(t))
     objective = tf
+
     #
     N=201
     times = range(t0, tf, N)

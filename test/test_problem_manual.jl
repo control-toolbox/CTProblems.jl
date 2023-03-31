@@ -7,7 +7,7 @@ end
 
 using CTProblems
 
-prob = Problem((:exponential, :dim1, :state_constraint, :non_autonomous))
+prob = Problem((:turnpike, :dim1))
 
 display(prob.model)
 

@@ -17,10 +17,10 @@ EXAMPLE=(:turnpike, :dim1)
     state!(ocp, n)   # dimension of the state
     control!(ocp, m) # dimension of the control
     time!(ocp, [t0, tf])
-    constraint!(ocp, :initial, x0)
-    constraint!(ocp, :final,   xf)
+    constraint!(ocp, :initial, x0, :initial_constraint)
+    constraint!(ocp, :final, xf, :final_constraint)
+    constraint!(ocp, :control, -1, 1, :control_constraint)
     constraint!(ocp, :dynamics, (x, u) -> u)
-    constraint!(ocp, :control, u -> u, -1., 1.) # constraints can be labeled or not
     objective!(ocp, :lagrange, (x, u) -> x^2) # default is to minimise
 
     # the solution

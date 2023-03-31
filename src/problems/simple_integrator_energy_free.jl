@@ -9,17 +9,15 @@ EXAMPLE=(:integrator, :dim1, :energy, :free)
     # the model
     n=1
     m=1
-    t0=0.0
-    #tf=1.0
-    x0=-1.0
-    #xf=[0.0]
+    t0=0
+    x0=-1
     ocp = Model()
     state!(ocp, n)   # dimension of the state
     control!(ocp, m) # dimension of the control
     time!(ocp, :initial, t0)
     constraint!(ocp, :initial, x0)
     constraint!(ocp, :dynamics, (x, u) -> u)
-    constraint!(ocp, :boundary, (t0, x0, tf, xf) -> xf-tf-10, 0.0)
+    constraint!(ocp, :boundary, (t0, x0, tf, xf) -> xf-tf-10, 0)
     objective!(ocp, :lagrange, (x, u) -> 0.5u^2) # default is to minimise
 
     # the solution
