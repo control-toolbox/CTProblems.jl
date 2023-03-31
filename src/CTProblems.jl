@@ -27,6 +27,7 @@ include("problem.jl")
 include("problems/simple_exponential_energy.jl")
 include("problems/double_integrator_energy.jl")
 include("problems/goddard.jl")
+include("problems/goddard_all_constraints.jl")
 
 #
 export Problems, Problem
