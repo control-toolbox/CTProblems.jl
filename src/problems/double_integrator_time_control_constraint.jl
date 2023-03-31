@@ -1,4 +1,4 @@
-EXAMPLE=(:integrator, :dim2, :time , :constraint)
+EXAMPLE=(:integrator, :dim2, :time , :control_constraint)
 
 @eval function OptimalControlProblem{EXAMPLE}()
     # should return an OptimalControlProblem{example} with a message, a model and a solution

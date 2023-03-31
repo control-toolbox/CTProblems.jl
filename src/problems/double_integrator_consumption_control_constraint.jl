@@ -1,10 +1,10 @@
-EXAMPLE=(:integrator, :dim2, :energy , :constraint)
+EXAMPLE=(:integrator, :dim2, :consumption , :control_constraint)
 
 @eval function OptimalControlProblem{EXAMPLE}()
     # should return an OptimalControlProblem{example} with a message, a model and a solution
 
     # 
-    msg = "Double integrator - energy min - control constraint"
+    msg = "Double integrator - consum min - control constraint"
 
     # the model
     n=2
@@ -26,14 +26,14 @@ EXAMPLE=(:integrator, :dim2, :energy , :constraint)
         1 ]
     constraint!(ocp, :dynamics, (x, u) -> A*x + B*u)
     constraint!(ocp, :control, u -> u, -γ, γ)
-    objective!(ocp, :lagrange, (x, u) -> 0.5u^2) # default is to minimise
+    objective!(ocp, :lagrange, (x, u) -> abs(u)) # default is to minimise
 
     # the solution
     a = x0[1]
     b = x0[2]
 
-    t1(α,β) = (β-γ)/α
-    t2(α,β) = (β+γ)/α
+    t1(α,β) = (β-1)/α
+    t2(α,β) = (β+1)/α
 
     # arc 1
     x_arc_1(t,α,β) = [ a + b*t + 0.5*γ*t^2, b + γ*t]
@@ -42,9 +42,7 @@ EXAMPLE=(:integrator, :dim2, :energy , :constraint)
     d(α,β) = x_arc_1(t1(α,β),α,β)[2] 
 
     # arc 2
-    dp(α,β) = d(α,β) - (-0.5*α*t1(α,β)^2 + β*t1(α,β))
-    cp(α,β) = c(α,β) - (dp(α,β)*t1(α,β) - α/6*t1(α,β)^3 + β/2*t1(α,β)^2)
-    x_arc_2(t,α,β) = [cp(α,β) + (dp(α,β)*t  - α/6*t^3 + β/2*t^2), dp(α,β) - α/2*t^2 + β*t]
+    x_arc_2(t,α,β) = [c(α,β)+ d(α,β)*(t-t1(α,β)), d(α,β)]
 
     e(α,β) = x_arc_2(t2(α,β),α,β)[1]
     f(α,β) = x_arc_2(t2(α,β),α,β)[2]
@@ -65,19 +63,18 @@ EXAMPLE=(:integrator, :dim2, :energy , :constraint)
     end
 
     #using MINPACK
-    p0_ini = [1.5*2*γ/tf, 1.5*γ]
+    p0_ini = [4.472135954998979, 2.2360679774998067]#[1.5*2/tf, 1.5]
     ξ = [p0_ini[1],p0_ini[2]]
     nle = (s, ξ) -> shoot!(s, ξ[1], ξ[2])
     indirect_sol = fsolve(nle, ξ, show_trace = true)
     println(indirect_sol)
      
-    # the result of the newton method is [12.90994448735837, 6.454972243678883]
+    # using the result of the newton method ([4.472135954998979, 2.2360679774998067])
     p0 = indirect_sol.x
-    println(t1(p0[1],p0[2]),"  ",t2(p0[1],p0[2]))
-    x(t) = (t ≤ t1(p0[1],p0[2]))*x_arc_1(t,p0[1],p0[2]) + (t1(p0[1],p0[2])<t<t2(p0[1],p0[2]))*x_arc_2(t,p0[1],p0[2]) + (t ≥ t2(p0[1],p0[2]))*x_arc_3(t,p0[1],p0[2])
+    x(t) = (t ≤ t1(p0[1],p0[2]))*x_arc_1(t,p0[1],p0[2]) + (t1(p0[1],p0[2]) < t < t2(p0[1],p0[2]))*x_arc_2(t,p0[1],p0[2]) + (t ≥ t2(p0[1],p0[2]))*x_arc_3(t,p0[1],p0[2])
     p(t) = [p0[1],-p0[1]*t + p0[2]]
-    u(t) = (t<t1(p0[1],p0[2]))*γ + (t1(p0[1],p0[2])<t<t2(p0[1],p0[2]))*p(t)[2] + (t>t2(p0[1],p0[2]))*(-γ)
-    objective = 0.5*γ^2*(t1(p0[1],p0[2]) + tf - t2(p0[1],p0[2])) + 0.5*p0[1]*(t1(p0[1],p0[2])^2 - t2(p0[1],p0[2])^2) + p0[2]*(t2(p0[1],p0[2]) - t1(p0[1],p0[2]))
+    u(t) = (t ≤ t1(p0[1],p0[2]))*γ + (t1(p0[1],p0[2]) < t < t2(p0[1],p0[2]))*0 + (t ≥ t2(p0[1],p0[2]))*(-γ)
+    objective = γ*(t1(p0[1],p0[2]) + tf - t2(p0[1],p0[2]))
 
     #
     N=201
