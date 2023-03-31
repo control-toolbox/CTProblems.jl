@@ -1,7 +1,7 @@
 EXAMPLE=(:exponential, :dim1, :energy)
 
-@eval function OptimalControlProblem{EXAMPLE}()
-    # should return an OptimalControlProblem{example} with a message, a model and a solution
+@eval function OCPDef{EXAMPLE}()
+    # should return an OptimalControlProblem with a message, a model and a solution
 
     # 
     msg = "simple exponential - energy min"
@@ -50,6 +50,6 @@ EXAMPLE=(:exponential, :dim1, :energy)
     sol.success = true
 
     #
-    return OptimalControlProblem{EXAMPLE}(msg, ocp, sol)
+    return OptimalControlProblem(msg, ocp, sol)
 
 end

@@ -43,17 +43,8 @@ touch src/problems/orbital_planar.jl
 Then, you can write into this file the following empty template:
 
 ```julia
-EXAMPLE=(:orbital, :planar) # same description as in src/list_of_problems.jl 
-
-"""
-$(TYPEDSIGNATURES)
-
-Returns an OptimalControlProblem with a description, a model and a solution.
-
-Planar orbital transfer
-
-"""
-@eval function OptimalControlProblem{EXAMPLE}()
+EXAMPLE=(:orbital, :planar)
+@eval function OCPDef{EXAMPLE}()
 
     # the description
     description = "Planar orbital transfer"
@@ -65,7 +56,7 @@ Planar orbital transfer
     sol = OptimalControlSolution()
 
     #
-    return OptimalControlProblem{EXAMPLE}(msg, ocp, sol)
+    return OptimalControlProblem(msg, ocp, sol)
 
 end
 ```
