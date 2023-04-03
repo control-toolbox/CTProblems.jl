@@ -1,5 +1,4 @@
 EXAMPLE=(:orbital_transfert, :dim4, :time)
-add_to_list_of_problems = true
 
 @eval function OCPDef{EXAMPLE}()
     # should return an OptimalControlProblem{example} with a message, a model and a solution
@@ -29,10 +28,92 @@ add_to_list_of_problems = true
     constraint!(ocp, :boundary, (t0, x0, tf, xf) -> [sqrt(xf[1]^2 + xf[2]^2)-rf, xf[3] + α*xf[2], xf[4] - α*xf[1]],[0,0,0])
     A = [ 0 0 1 0; 0 0 0 1; 1 0 0 0; 0 1 0 0]
     B = [ 0 0; 0 0; 1 0; 0 1 ]
-    constraint!(ocp, :dynamics, (x, u) -> A*[-μ*x[1]/(sqrt(x[1]^2 + x[2]^2)^3);-μ*x[2]/(sqrt(x[1]^2 + x[2]^2)^3);x[3];x[4]] + B*u)
+
+    constraint!(ocp, :dynamics, (x, u) -> A*([-μ*x[1]/(sqrt(x[1]^2 + x[2]^2)^3);-μ*x[2]/(sqrt(x[1]^2 + x[2]^2)^3);x[3];x[4]]) + B*u)
     objective!(ocp, :mayer, (t0, x0, tf, xf) -> tf) # default is to minimise
 
     # the solution
+
+    # # Contrôle maximisant
+    # function control(p)
+    #     u = zeros(eltype(p),2)
+    #     u[1] = p[3]*γ_max/sqrt(p[3]^2 + p[4]^2)
+    #     u[2] = p[4]*γ_max/sqrt(p[3]^2 + p[4]^2)
+    #     return u
+    # end;
+
+    # # Hamiltonien maximisé
+    # function hfun(x, p)
+    #     u = control(p)
+    #     h = p[1]*x[3] + p[2]*x[4] + p[3]*(-μ*x[1]/(sqrt(x[1]^2+x[2]^2))^3 + u[1]) + p[4]*(-μ*x[2]/(sqrt(x[1]^2+x[2]^2))^3 + u[2])
+    #     return h
+    # end
+
+    # # Système hamiltonien
+    # function hv(x, p)
+    #     n  = size(x, 1)
+    #     hv = zeros(eltype(x), 2*n)
+    #     u = control(p)
+    #     hv[1] = x[3]
+    #     hv[2] = x[4]
+    #     hv[3] = -μ*x[1]/(sqrt(x[1]^2+x[2]^2)^3) + p[3]*γ_max/(sqrt(p[3]^2 + p[4]^2))
+    #     hv[4] = -μ*x[2]/(sqrt(x[1]^2+x[2]^2)^3) + p[4]*γ_max/(sqrt(p[3]^2 + p[4]^2))
+    #     hv[5] = p[3]*μ*(x[1]^2+x[2]^2)^(-3/2) - p[3]*μ*(x[1]^2)*3*(x[1]^2+x[2]^2)^(-5/2) - p[4]*µ*x[1]*x[2]*3*(x[1]^2+x[2]^2)^(-5/2)
+    #     hv[6] = p[4]*μ*(x[1]^2+x[2]^2)^(-3/2) - p[4]*μ*(x[2]^2)*3*(x[1]^2+x[2]^2)^(-5/2) - p[3]*µ*x[1]*x[2]*3*(x[1]^2+x[2]^2)^(-5/2)
+    #     hv[7] = -p[1]
+    #     hv[8] = -p[2]
+    #     return hv
+    # end
+
+    # # Function to get the flow of a Hamiltonian system
+    # function Flow(hv)
+
+    #     function rhs!(dz, z, dummy, t)
+    #         n = size(z, 1)÷2
+    #         dz[:] = hv(z[1:n], z[n+1:2*n])
+    #     end
+        
+    #     function f(tspan, x0, p0; abstol=1e-12, reltol=1e-12, saveat=0.1)
+    #         z0 = [ x0 ; p0 ]
+    #         ode = ODEProblem(rhs!, z0, tspan)
+    #         sol = DifferentialEquations.solve(ode, Tsit5(), abstol=abstol, reltol=reltol, saveat=saveat)
+    #         return sol
+    #     end
+        
+    #     function f(t0, x0, p0, t; abstol=1e-12, reltol=1e-12, saveat=[])
+    #         sol = f((t0, t), x0, p0; abstol=abstol, reltol=reltol, saveat=saveat)
+    #         n = size(x0, 1)
+    #         return sol[1:n, end], sol[n+1:2*n, end]
+    #     end
+        
+    #     return f
+
+    # end;
+
+    # f = Flow(hv);
+
+    # # Fonction de tir
+    # function shoot!(s, p0, tf)
+        
+    #     s = zeros(eltype(p0), 5)
+    #     xf, pf = f(t0,x0,p0,tf)
+    #     s[1] = sqrt(xf[1]^2 + xf[2]^2) - rf
+    #     s[2] = xf[3] + α*xf[2]
+    #     s[3] = xf[4] - α*xf[1]
+    #     s[4] = xf[2]*(pf[1]+α*pf[4]) - xf[1]*(pf[2]-α*pf[3])
+    #     s[5] = hfun(xf,pf) - 1
+    # end;
+
+    
+
+    # #using MINPACK
+    # ξ = [1.0323e-4, 4.915e-5, 3.568e-4, -1.554e-4, 13.4]   # pour F_max = 100N
+    # nle = (s, ξ) -> shoot!(s, ξ[1:4], ξ[5])
+    # indirect_sol = fsolve(nle, ξ, show_trace = true)
+    # println(indirect_sol)
+    
+
+
     x(t) = [0,0,0,0]
     p(t) = [0,0,0,0]
     u(t) = [0,0]
