@@ -1,6 +1,7 @@
 EXAMPLE=(:integrator, :dim2, :energy, :control_constraint)
+add_to_list_of_problems = true
 
-@eval function OptimalControlProblem{EXAMPLE}()
+@eval function OCPDef{EXAMPLE}()
     # should return an OptimalControlProblem{example} with a message, a model and a solution
 
     # 
@@ -99,6 +100,6 @@ EXAMPLE=(:integrator, :dim2, :energy, :control_constraint)
     sol.success = true
 
     #
-    return OptimalControlProblem{EXAMPLE}(msg, ocp, sol)
+    return OptimalControlProblem(msg, ocp, sol)
 
 end
