@@ -1,37 +1,34 @@
-EXAMPLE=(:integrator, :dim1, :time, :free, :control_constraint)
-add_to_list_of_problems = true
-
+EXAMPLE=(:integrator, :dim1, :state_constraint, :control_constraint, :non_autonomous)
 
 @eval function OCPDef{EXAMPLE}()
     # should return an OptimalControlProblem{example} with a message, a model and a solution
 
     # 
-    msg = "simple integrator - time min - free - control constraint"
+    msg = "simple integrator - state and control constraint"
 
     # the model
     n=1
     m=1
     t0=0
-    x0=-1
-    xf=0
-    γ=0.5
-    ocp = Model()
+    tf=3
+    x0=0
+    α=1 
+    ocp = Model(time_dependence=:nonautonomous)
     state!(ocp, n)   # dimension of the state
     control!(ocp, m) # dimension of the control
-    time!(ocp, :initial, t0)
+    time!(ocp, [t0, tf])
     constraint!(ocp, :initial, x0, :initial_constraint)
-    constraint!(ocp, :final, xf, :final_constraint)
-    constraint!(ocp, :control, -γ, γ, :control_constraint) # constraints can be labeled or not
-    constraint!(ocp, :dynamics, (x, u) -> -x + u)
-    objective!(ocp, :mayer, (t0, x0, tf, xf) -> tf, :min)
+    constraint!(ocp, :control, 0, 3, :control_constraint)
+    constraint!(ocp, :state, (x,u) -> 1 - x(t) - (t-2)^2, -Inf, 0, :state_constraint)
+    constraint!(ocp, :dynamics, (x, u) -> u)
+    objective!(ocp, :lagrange, (x, u) -> exp(-α*t)*u)
 
     # the solution
-    tf = log((-1-γ)/(xf-γ))
-    x(t) = (-1-γ)*exp(-t) + γ
-    p(t) = exp(t-tf)/(γ-xf)
-    u(t) = γ*sign(p(t))
-    objective = tf
-
+    arc(t) = [0 ≤ t < 1, 1 ≤ t < 2 , 2 ≤ t ≤ 3]
+    x(t) = arc(t)[1]*0 + arc(t)[2]*(1-(t-2)^2) + arc(t)[3]*1
+    p(t) = arc(t)[1]*(-exp(-α)) + arc(t)[2]*0 + arc(t)[3]*0
+    u(t) = arc(t)[1]*0 + arc(t)[2]*(-2*(t-2)) + arc(t)[3]*0
+    objective = 2/α*(2*exp(-α)-exp(-2*α))
     #
     N=201
     times = range(t0, tf, N)

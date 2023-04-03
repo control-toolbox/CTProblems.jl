@@ -1,5 +1,4 @@
 EXAMPLE=(:integrator, :dim2, :energy)
-add_to_list_of_problems = true
 
 @eval function OCPDef{EXAMPLE}()
     # should return an OptimalControlProblem with a message, a model and a solution
@@ -25,7 +24,7 @@ add_to_list_of_problems = true
         0 0 ]
     B = [ 0
         1 ]
-    constraint!(ocp, :dynamics, (x, u) -> A*x + B*u[1])
+    constraint!(ocp, :dynamics, (x, u) -> A*x + B*u)
     objective!(ocp, :lagrange, (x, u) -> 0.5u^2) # default is to minimise
 
     # the solution

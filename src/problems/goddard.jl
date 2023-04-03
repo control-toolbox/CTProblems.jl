@@ -1,5 +1,4 @@
 EXAMPLE=(:goddard, :state_constraint)
-add_to_list_of_problems = false
 
 @eval function OCPDef{EXAMPLE}()
     # should return an OptimalControlProblem with a message, a model and a solution

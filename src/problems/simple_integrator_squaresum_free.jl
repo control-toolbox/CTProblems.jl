@@ -1,5 +1,4 @@
 EXAMPLE=(:integrator, :dim1, :squaresum, :free)
-add_to_list_of_problems = true
 
 @eval function OCPDef{EXAMPLE}()
     # should return an OptimalControlProblem{example} with a message, a model and a solution

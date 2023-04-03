@@ -1,11 +1,10 @@
-EXAMPLE=(:exponential, :dim1, :mixed_constraint)
-add_to_list_of_problems = true
+EXAMPLE=(:integrator, :dim1, :mixed_constraint)
 
 @eval function OCPDef{EXAMPLE}()
     # should return an OptimalControlProblem{example} with a message, a model and a solution
 
     # 
-    msg = "simple exponential - state constraint"
+    msg = "simple integrator - mixed constraint"
 
     # the model
     n=1
@@ -18,15 +17,15 @@ add_to_list_of_problems = true
     control!(ocp, m) # dimension of the control
     time!(ocp, [t0, tf])
     constraint!(ocp, :initial, x0, :initial_constraint)
-    constraint!(ocp, :control, -Inf, 0, :control_constraint)
-    constraint!(ocp, :mixed, (x,u) -> x - u, -Inf, 0, :mixed_constraint)
-    constraint!(ocp, :dynamics, (x, u) -> -u)
-    objective!(ocp, :lagrange, (x, u) -> u)
+    constraint!(ocp, :control, 0, Inf, :control_constraint)
+    constraint!(ocp, :mixed, (x,u) -> x + u, -Inf, 0, :mixed_constraint)
+    constraint!(ocp, :dynamics, (x, u) -> u)
+    objective!(ocp, :lagrange, (x, u) -> -u)
 
     # the solution
     x(t) = -exp(-t)
     p(t) = 1-exp(t-1)
-    u(t) = x(t)
+    u(t) = -x(t)
     objective = exp(-1) - 1
     #
     N=201
