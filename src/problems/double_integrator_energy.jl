@@ -1,8 +1,8 @@
 EXAMPLE=(:integrator, :dim2, :energy)
 add_to_list_of_problems = true
 
-@eval function OptimalControlProblem{EXAMPLE}()
-    # should return an OptimalControlProblem{example} with a message, a model and a solution
+@eval function OCPDef{EXAMPLE}()
+    # should return an OptimalControlProblem with a message, a model and a solution
 
     # 
     msg = "Double integrator - energy min"
@@ -60,6 +60,6 @@ add_to_list_of_problems = true
     sol.success = true
 
     #
-    return OptimalControlProblem{EXAMPLE}(msg, ocp, sol)
+    return OptimalControlProblem(msg, ocp, sol)
 
 end
