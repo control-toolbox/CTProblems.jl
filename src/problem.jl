@@ -29,7 +29,7 @@ julia> prob isa CTProblems.OptimalControlProblem{(:ocp, :empty, :dummy)}
 false
 ```
 """
-struct OptimalControlProblem{example} <: AbstractCTProblem
+struct OptimalControlProblem <: AbstractCTProblem
     description::String
     model::OptimalControlModel
     solution::OptimalControlSolution
@@ -53,30 +53,6 @@ function Base.show(io::IO, ::MIME"text/plain", prob::OptimalControlProblem)
     println(io, "description     = ", prob.description)
     println(io, "model    (Type) = ", typeof(prob.model))
     println(io, "solution (Type) = ", typeof(prob.solution))
-end
-
-"""
-$(TYPEDSIGNATURES)
-
-Print the list of available problems, see [List of problems](@ref) for details.
-
-"""
-function Problems()
-    for description ∈ problems
-        :dummy ∉ description ? println(description) : nothing
-    end
-end
-
-"""
-$(TYPEDSIGNATURES)
-
-Returns the optimal control problem described by `description`.
-See [Overview of CTProblems.jl](@ref) and [Problems](@ref) for details.
-
-"""
-function Problem(description...) 
-    example = getFullDescription(makeDescription(description...), problems)
-    return OptimalControlProblem{example}()
 end
 
 # exception
@@ -108,20 +84,45 @@ function Base.showerror(io::IO, e::NonExistingProblem)
 end
 
 """
-
-    OptimalControlProblem{example}() where {example}
+$(TYPEDEF)
 
 Throw a [`NonExistingProblem`](@ref) exception if there is no optimal control problem described by `example`.
 
 # Example
 ```julia-repl
-julia> CTProblems.OptimalControlProblem{(:ocp, :dummy)}()
+julia> CTProblems.OCPDef{(:ocp, :dummy)}()
 ERROR: there is no optimal control problem described by (:ocp, :dummy)
 ```
 
 """
-function OptimalControlProblem{example}() where {example}
-    throw(NonExistingProblem(example))
+struct OCPDef{description} 
+    function OCPDef{description}() where {description}
+        throw(NonExistingProblem(description))
+    end
+end
+
+"""
+$(TYPEDSIGNATURES)
+
+Print the list of available problems, see [List of problems](@ref) for details.
+
+"""
+function Problems()
+    for description ∈ problems
+        :dummy ∉ description ? println(description) : nothing
+    end
+end
+
+"""
+$(TYPEDSIGNATURES)
+
+Returns the optimal control problem described by `description`.
+See [Overview of CTProblems.jl](@ref) and [Problems](@ref) for details.
+
+"""
+function Problem(description...) 
+    example = getFullDescription(makeDescription(description...), problems)
+    return OCPDef{example}()
 end
 
 """
