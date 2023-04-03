@@ -1,5 +1,5 @@
 EXAMPLE=(:exponential, :dim1, :energy) 
-add_to_list_of_problems = true
+#add_to_list_of_problems = true
 
 @eval function OCPDef{EXAMPLE}()
     # should return an OptimalControlProblem with a message, a model and a solution

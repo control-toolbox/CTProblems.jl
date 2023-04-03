@@ -7,7 +7,7 @@ end
 
 using CTProblems
 
-prob = Problem(:exponential, :dim1, :energy)
+prob = Problem(:goddard, :state_constraint)
 
 display(prob.model)
 
