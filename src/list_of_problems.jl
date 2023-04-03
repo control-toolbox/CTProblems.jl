@@ -3,7 +3,7 @@ function get_info_problem(path)
     code = read(path,String)
     expr = Meta.parseall(code)
     EXAMPLE=eval(expr.args[2].args[2])
-    add_to_list_of_problems=eval(expr.args[4].args[2])
+    add_to_list_of_problems=true#eval(expr.args[4].args[2])
     return EXAMPLE, add_to_list_of_problems
 end
 
