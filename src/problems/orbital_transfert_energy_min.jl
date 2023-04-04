@@ -13,7 +13,7 @@ EXAMPLE=(:orbital_transfert, :dim4, :energy)
     x0     = [-42272.67, 0, 0, -5796.72] # état initial
     μ      = 5.1658620912*1e12
     rf     = 42165.0 ;
-    F_max  = 100.0
+    F_max  = 100#20.0
     γ_max  = F_max*3600.0^2/(2000.0*10^3)
     t0     = 0.0
     rf3    = rf^3  ;
@@ -92,8 +92,7 @@ EXAMPLE=(:orbital_transfert, :dim4, :energy)
 
     f = Flow(hv);
 
-    # Fonction de tir
-    function shoot!(s, p0, tf)
+    function shoot(p0, tf)
         
         s = zeros(eltype(p0), 5)
         xf, pf = f(t0,x0,p0,tf)
@@ -102,16 +101,22 @@ EXAMPLE=(:orbital_transfert, :dim4, :energy)
         s[3] = xf[4] - α*xf[1]
         s[4] = xf[2]*(pf[1]+α*pf[4]) - xf[1]*(pf[2]-α*pf[3])
         s[5] = hfun(xf,pf)
+        return s
     end;
 
     
 
     # using MINPACK
-    ξ = [1.0323e-4, 4.915e-5, 3.568e-4, -1.554e-4, 13.4]   # pour F_max = 100N
-    nle = (s, ξ) -> shoot!(s, ξ[1:4], ξ[5])
-    indirect_sol = fsolve(nle, ξ, show_trace = true)
-    println(indirect_sol)
-    
+    ξ_guess =  [1.0323e-4, 4.915e-5, 3.568e-4, -1.554e-4, 13.4]   # pour F_max = 100N
+    #ξ_guess = [-0.0013615, -7.34989e-6, -5.359923e-5, -0.00858271, 50.8551668] # for F_max = 20N
+
+
+    foo(ξ) = shoot(ξ[1:4], ξ[5])
+    jfoo(ξ) = ForwardDiff.jacobian(foo, ξ)
+    foo!(s, ξ) = ( s[:] = foo(ξ); nothing )
+    jfoo!(js, ξ) = ( js[:] = jfoo(ξ); nothing )
+
+    indirect_sol = fsolve(foo!, jfoo!, ξ_guess, show_trace=true); println(indirect_sol)
 
     tf = (indirect_sol.x)[5]
     p0 = (indirect_sol.x)[1:4]
@@ -122,7 +127,7 @@ EXAMPLE=(:orbital_transfert, :dim4, :energy)
     x(t) = ode_sol(t)[1:4]#[0,0,0,0]
     p(t) = ode_sol(t)[5:8]#[0,0,0,0]
     u(t) = control(ode_sol(t)[5:8])#[0,0]
-    objective = tf
+    objective = 0
     
     #
     N=201
