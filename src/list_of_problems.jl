@@ -28,5 +28,7 @@ for file in list_problem_files
             global problems = add(problems, EXAMPLE)
         end
     end
-
 end
+
+# just for test
+problems = add(problems, (:dummy, ))

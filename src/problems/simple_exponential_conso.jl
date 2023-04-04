@@ -1,10 +1,8 @@
-EXAMPLE=(:exponential, :dim1, :absolute, :control_constraint)
+EXAMPLE=(:exponential, :dim1, :consumption)
 
 @eval function OCPDef{EXAMPLE}()
-    # should return an OptimalControlProblem{example} with a message, a model and a solution
-
     # 
-    msg = "simple exponential - absolute min - control constraint"
+    msg = "simple exponential - conso min"
 
     # the model
     n=1
@@ -45,8 +43,9 @@ EXAMPLE=(:exponential, :dim1, :absolute, :control_constraint)
     sol.objective = objective
     sol.iterations = 0
     sol.stopping = :dummy
-    sol.message = "analytical solution"
+    sol.message = "structure: B0B+"
     sol.success = true
+    sol.infos[:resolution] = :analytical
 
     #
     return OptimalControlProblem(msg, ocp, sol)

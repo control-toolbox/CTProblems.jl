@@ -27,8 +27,8 @@ function Base.show(io::IO, ::MIME"text/plain", descriptions::Tuple{Vararg{Descri
 end
 
 #
-include("list_of_problems.jl")
 include("problem.jl")
+include("list_of_problems.jl")
 
 #
 export Problems, Problem

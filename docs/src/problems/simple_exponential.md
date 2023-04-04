@@ -78,7 +78,7 @@ You can access the problem in the CTProblems package:
 
 ```@example main
 using CTProblems
-prob = Problem(:exponential, :dim1, :absolute, :control_constraint)
+prob = Problem(:exponential, :dim1, :consumption)
 ```
 
 Then, the model is given by
@@ -121,7 +121,7 @@ You can access the problem in the CTProblems package:
 
 ```@example main
 using CTProblems
-prob = Problem(:integrator, :dim1, :time, :free, :control_constraint)
+prob = Problem(:integrator, :dim1, :time)
 ```
 
 Then, the model is given by

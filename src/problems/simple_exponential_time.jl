@@ -1,11 +1,11 @@
-EXAMPLE=(:integrator, :dim1, :time, :free, :control_constraint)
+EXAMPLE=(:exponential, :dim1, :time)
 
 
 @eval function OCPDef{EXAMPLE}()
     # should return an OptimalControlProblem{example} with a message, a model and a solution
 
-    # 
-    msg = "simple integrator - time min - free - control constraint"
+    #
+    msg = "simple exponential - time min"
 
     # the model
     n=1
@@ -47,8 +47,9 @@ EXAMPLE=(:integrator, :dim1, :time, :free, :control_constraint)
     sol.objective = objective
     sol.iterations = 0
     sol.stopping = :dummy
-    sol.message = "analytical solution"
+    sol.message = "structure: B+"
     sol.success = true
+    sol.infos[:resolution] = :analytical
 
     #
     return OptimalControlProblem(msg, ocp, sol)

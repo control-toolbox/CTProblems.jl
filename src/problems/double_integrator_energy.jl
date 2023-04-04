@@ -56,8 +56,9 @@ EXAMPLE=(:integrator, :dim2, :energy)
     sol.objective = objective
     sol.iterations = 0
     sol.stopping = :dummy
-    sol.message = "analytical solution"
+    sol.message = "structure: smooth"
     sol.success = true
+    sol.infos[:resolution] = :analytical
 
     #
     return OptimalControlProblem(msg, ocp, sol)
