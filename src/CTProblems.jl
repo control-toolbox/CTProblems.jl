@@ -17,6 +17,7 @@ using CTBase
 using CTFlows
 using DocStringExtensions
 using MINPACK
+using OrdinaryDiffEq
 #
 
 include("problem.jl")
