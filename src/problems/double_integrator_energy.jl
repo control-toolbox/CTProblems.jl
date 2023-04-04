@@ -1,7 +1,7 @@
 EXAMPLE=(:integrator, :dim2, :energy)
 
-@eval function OptimalControlProblem{EXAMPLE}()
-    # should return an OptimalControlProblem{example} with a message, a model and a solution
+@eval function OCPDef{EXAMPLE}()
+    # should return an OptimalControlProblem with a message, a model and a solution
 
     # 
     msg = "Double integrator - energy min"
@@ -59,6 +59,6 @@ EXAMPLE=(:integrator, :dim2, :energy)
     sol.success = true
 
     #
-    return OptimalControlProblem{EXAMPLE}(msg, ocp, sol)
+    return OptimalControlProblem(msg, ocp, sol)
 
 end
