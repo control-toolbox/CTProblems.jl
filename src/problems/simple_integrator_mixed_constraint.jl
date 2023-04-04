@@ -1,10 +1,10 @@
-EXAMPLE=(:exponential, :dim1, :energy) 
+EXAMPLE=(:integrator, :dim1, :mixed_constraint)
 
 @eval function OCPDef{EXAMPLE}()
-    # should return an OptimalControlProblem with a message, a model and a solution
+    # should return an OptimalControlProblem{example} with a message, a model and a solution
 
     # 
-    msg = "simple exponential - energy min"
+    msg = "simple integrator - mixed constraint"
 
     # the model
     n=1
@@ -12,24 +12,21 @@ EXAMPLE=(:exponential, :dim1, :energy)
     t0=0
     tf=1
     x0=-1
-    xf=0
     ocp = Model()
     state!(ocp, n)   # dimension of the state
     control!(ocp, m) # dimension of the control
     time!(ocp, [t0, tf])
     constraint!(ocp, :initial, x0, :initial_constraint)
-    constraint!(ocp, :final, xf, :final_constraint)
-    constraint!(ocp, :dynamics, (x, u) -> -x + u)
-    objective!(ocp, :lagrange, (x, u) -> 0.5u^2) # default is to minimise
+    constraint!(ocp, :control, 0, Inf, :control_constraint)
+    constraint!(ocp, :mixed, (x,u) -> x + u, -Inf, 0, :mixed_constraint)
+    constraint!(ocp, :dynamics, (x, u) -> u)
+    objective!(ocp, :lagrange, (x, u) -> -u)
 
     # the solution
-    a = xf - x0*exp(-tf)
-    b = sinh(tf)
-    p0 = a/b
-    x(t) = p0*sinh(t) + x0*exp(-t)
-    p(t) = exp(t)*p0
-    u(t) = p(t)
-    objective = (exp(2)-1)*p0^2/4 
+    x(t) = -exp(-t)
+    p(t) = 1-exp(t-1)
+    u(t) = -x(t)
+    objective = exp(-1) - 1
     #
     N=201
     times = range(t0, tf, N)

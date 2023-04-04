@@ -7,7 +7,7 @@ end
 
 using CTProblems
 
-prob = Problem(:exponential, :dim1, :energy)
+prob = Problem((:integrator, :dim1, :time, :free, :control_constraint))
 
 display(prob.model)
 

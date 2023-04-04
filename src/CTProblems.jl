@@ -19,14 +19,8 @@ using DocStringExtensions
 using MINPACK
 #
 
-#
-include("list_of_problems.jl")
 include("problem.jl")
-
-# include problems
-include("problems/simple_exponential_energy.jl")
-include("problems/double_integrator_energy.jl")
-include("problems/goddard.jl")
+include("list_of_problems.jl")
 
 #
 export Problems, Problem
