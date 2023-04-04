@@ -97,7 +97,7 @@ plot(prob.solution, size=(700, 400))
 
 ### Presentation of the problem
 
-The consumption-min simple exponential problem consists in minimising
+The time-min simple exponential problem consists in minimising
 
 ```math
     tf

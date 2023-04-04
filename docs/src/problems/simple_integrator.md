@@ -99,7 +99,7 @@ plot(prob.solution, size=(700, 400))
 
 #### Presentation of the problem
 
-The consumption-min simple integrator problem consists in minimising
+The squared-position-min simple integrator problem consists in minimising
 
 ```math
     \int_{0}^{2} x(t)^2 \, \mathrm{d}t
