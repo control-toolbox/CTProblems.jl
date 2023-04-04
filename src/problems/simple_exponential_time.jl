@@ -1,35 +1,36 @@
-EXAMPLE=(:exponential, :dim1, :energy) 
+EXAMPLE=(:exponential, :dim1, :time)
+
 
 @eval function OCPDef{EXAMPLE}()
-    # should return an OptimalControlProblem with a message, a model and a solution
+    # should return an OptimalControlProblem{example} with a message, a model and a solution
 
     #
-    msg = "simple exponential - energy min"
+    msg = "simple exponential - time min"
 
     # the model
     n=1
     m=1
     t0=0
-    tf=1
     x0=-1
     xf=0
+    γ=1
     ocp = Model()
     state!(ocp, n)   # dimension of the state
     control!(ocp, m) # dimension of the control
-    time!(ocp, [t0, tf])
+    time!(ocp, :initial, t0)
     constraint!(ocp, :initial, x0, :initial_constraint)
     constraint!(ocp, :final, xf, :final_constraint)
+    constraint!(ocp, :control, -γ, γ, :control_constraint) # constraints can be labeled or not
     constraint!(ocp, :dynamics, (x, u) -> -x + u)
-    objective!(ocp, :lagrange, (x, u) -> 0.5u^2) # default is to minimise
+    objective!(ocp, :mayer, (t0, x0, tf, xf) -> tf, :min)
 
     # the solution
-    a = xf - x0*exp(-tf)
-    b = sinh(tf)
-    p0 = a/b
-    x(t) = p0*sinh(t) + x0*exp(-t)
-    p(t) = exp(t)*p0
-    u(t) = p(t)
-    objective = (exp(2)-1)*p0^2/4 
+    tf = log((-1-γ)/(xf-γ))
+    x(t) = (-1-γ)*exp(-t) + γ
+    p(t) = exp(t-tf)/(γ-xf)
+    u(t) = γ*sign(p(t))
+    objective = tf
+
     #
     N=201
     times = range(t0, tf, N)
@@ -46,8 +47,8 @@ EXAMPLE=(:exponential, :dim1, :energy)
     sol.objective = objective
     sol.iterations = 0
     sol.stopping = :dummy
+    sol.message = "structure: B+"
     sol.success = true
-    sol.message = "structure: smooth"
     sol.infos[:resolution] = :analytical
 
     #

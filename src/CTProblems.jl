@@ -27,14 +27,8 @@ function Base.show(io::IO, ::MIME"text/plain", descriptions::Tuple{Vararg{Descri
 end
 
 #
-include("list_of_problems.jl")
 include("problem.jl")
-
-# include problems
-include("problems/simple_exponential_energy.jl")
-include("problems/double_integrator_energy.jl")
-include("problems/goddard.jl")
-include("problems/goddard_all_constraints.jl")
+include("list_of_problems.jl")
 
 #
 export Problems, Problem

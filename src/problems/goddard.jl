@@ -88,9 +88,11 @@ EXAMPLE=(:goddard, :state_constraint)
     flow_sol = f1sb0((t0, tf), x0, p0)
     sol = CTFlows.OptimalControlSolution(flow_sol)
 
-    # objective
+    # add to the sol
     sol.objective = flow_sol.ode_sol(tf)[1]
-    
+    sol.message = "structure: B+SCB0"
+    sol.infos[:resolution] = :numerical
+
     #
     return OptimalControlProblem(msg, ocp, sol)
 

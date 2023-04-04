@@ -1,35 +1,33 @@
-EXAMPLE=(:exponential, :dim1, :energy) 
+EXAMPLE=(:integrator, :dim1, :squaresum, :free)
 
 @eval function OCPDef{EXAMPLE}()
-    # should return an OptimalControlProblem with a message, a model and a solution
+    # should return an OptimalControlProblem{example} with a message, a model and a solution
 
-    #
-    msg = "simple exponential - energy min"
+    # 
+    msg = "simple integrator - square-sum min - free"
 
     # the model
     n=1
     m=1
     t0=0
-    tf=1
-    x0=-1
-    xf=0
+    x0=0
+    xf=1
     ocp = Model()
     state!(ocp, n)   # dimension of the state
     control!(ocp, m) # dimension of the control
-    time!(ocp, [t0, tf])
+    time!(ocp, :initial, t0)
     constraint!(ocp, :initial, x0, :initial_constraint)
     constraint!(ocp, :final, xf, :final_constraint)
-    constraint!(ocp, :dynamics, (x, u) -> -x + u)
-    objective!(ocp, :lagrange, (x, u) -> 0.5u^2) # default is to minimise
+    constraint!(ocp, :dynamics, (x, u) -> u)
+    objective!(ocp, :lagrange, (x, u) -> 0.5*(u^2+x^2)) # default is to minimise
 
     # the solution
-    a = xf - x0*exp(-tf)
-    b = sinh(tf)
-    p0 = a/b
-    x(t) = p0*sinh(t) + x0*exp(-t)
-    p(t) = exp(t)*p0
+    tf = atanh(sqrt(xf^2/(2+xf^2)))
+    p0 = xf[1]/sinh(tf)
+    x(t) = p0*sinh(t)
+    p(t) = p0*cosh(t)
     u(t) = p(t)
-    objective = (exp(2)-1)*p0^2/4 
+    objective = tf + 0.5*xf^2*1/tanh(tf)
     #
     N=201
     times = range(t0, tf, N)
@@ -46,9 +44,8 @@ EXAMPLE=(:exponential, :dim1, :energy)
     sol.objective = objective
     sol.iterations = 0
     sol.stopping = :dummy
+    sol.message = "analytical solution"
     sol.success = true
-    sol.message = "structure: smooth"
-    sol.infos[:resolution] = :analytical
 
     #
     return OptimalControlProblem(msg, ocp, sol)
