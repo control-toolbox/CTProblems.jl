@@ -15,9 +15,9 @@ EXAMPLE=(:integrator, :dim1, :energy, :free)
     state!(ocp, n)   # dimension of the state
     control!(ocp, m) # dimension of the control
     time!(ocp, :initial, t0)
-    constraint!(ocp, :initial, x0)
+    constraint!(ocp, :initial, x0, :initial_constraint)
+    constraint!(ocp, :boundary, (t0, x0, tf, xf) -> xf-tf-10, 0, :boundary_constraint)
     constraint!(ocp, :dynamics, (x, u) -> u)
-    constraint!(ocp, :boundary, (t0, x0, tf, xf) -> xf-tf-10, 0)
     objective!(ocp, :lagrange, (x, u) -> 0.5u^2) # default is to minimise
 
     # the solution
