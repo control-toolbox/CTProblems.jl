@@ -19,6 +19,13 @@ using DocStringExtensions
 using MINPACK
 #
 
+# to remove when a new release of ctbase is available
+function Base.show(io::IO, ::MIME"text/plain", descriptions::Tuple{Vararg{Description}})
+    for description ∈ descriptions
+        println(io, description)
+    end
+end
+
 #
 include("list_of_problems.jl")
 include("problem.jl")

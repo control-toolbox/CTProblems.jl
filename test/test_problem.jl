@@ -1,6 +1,6 @@
 function test_problem()
    
-    @test typeof(Problems()) == Nothing
+    @test Problems() isa Tuple
 
     e = CTProblems.NonExistingProblem((:dummy, ))
     @test_throws ErrorException error(e)
