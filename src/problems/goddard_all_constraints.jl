@@ -1,6 +1,6 @@
 EXAMPLE=(:goddard, :all_constraints)
 
-@eval function OptimalControlProblem{EXAMPLE}()
+@eval function OCPDef{EXAMPLE}()
     # should return an OptimalControlProblem{example} with a message, a model and a solution
 
     # 
@@ -106,6 +106,6 @@ EXAMPLE=(:goddard, :all_constraints)
     sol.objective = flow_sol.ode_sol(tf)[1]
     
     #
-    return OptimalControlProblem{EXAMPLE}(msg, ocp, sol)
+    return OptimalControlProblem(msg, ocp, sol)
 
 end
