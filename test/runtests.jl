@@ -13,6 +13,7 @@ include("utils.jl")
         :simple_exponential,
         :double_integrator,
         :goddard,
+        :goddard_all_constraints,
         )
         @testset "$(name)" begin
             test_name = Symbol(:test_, name)

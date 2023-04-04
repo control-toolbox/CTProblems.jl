@@ -8,8 +8,8 @@ EXAMPLE=(:goddard, :all_constraints)
 
     # ------------------------------------------------------------------------------------------
     # the model
-    n = 3
-    m = 1
+    #n = 3
+    #m = 1
     #
     # parameters
     Cd = 310
@@ -37,14 +37,14 @@ EXAMPLE=(:goddard, :all_constraints)
     # final condition
     constraint!(ocp, :final, Index(3), mf, :final_constraint)
     # state constraint
-    constraint!(ocp, :state, x->x[2], -Inf, 0.1, :state_con_vmax)
+    constraint!(ocp, :state, x->x[2], -Inf, vmax, :state_con_vmax)
     # control constraint
     constraint!(ocp, :control, u->u, -Inf, 1, :control_con_umax)
     # mixed constraint
-    constraint!(ocp, :mixed, (x,u)->x[3], 0.6, Inf, :mixed_con_mmin)
+    constraint!(ocp, :mixed, (x,u)->x[3], mf, Inf, :mixed_con_mmin)
     # state box
-    constraint!(ocp, :state, Index(1), 1, Inf, :state_box_rmin)
-    constraint!(ocp, :state, Index(2), 0, Inf, :state_box_vmin)
+    constraint!(ocp, :state, Index(1), r0, Inf, :state_box_rmin)
+    constraint!(ocp, :state, Index(2), v0, Inf, :state_box_vmin)
     # control box
     constraint!(ocp, :control, Index(1), 0, Inf, :control_box_umin)
 
@@ -80,7 +80,7 @@ EXAMPLE=(:goddard, :all_constraints)
     H101 = Poisson(H1, H01)
     us(x, p) = -H001(x, p) / H101(x, p) # singular control of order 1
     #
-    g(x) = vmax-constraint(ocp, :state_constraint_v)(x) # g(x, u) ≥ 0 (cf. nonnegative multiplier)
+    g(x) = vmax-constraint(ocp, :state_con_vmax)(x) # g(x, u) ≥ 0 (cf. nonnegative multiplier)
     ub(x, _) = -Ad(F0, g)(x) / Ad(F1, g)(x) # boundary control
     μb(x, p) = H01(x, p) / Ad(F1, g)(x)
 

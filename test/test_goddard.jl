@@ -17,6 +17,11 @@ function test_goddard()
     m0 = 1
     mf = 0.6
 
+    #
+    remove_constraint!(ocp, :state_constraint_r)
+    g(x) = vmax-constraint(ocp, :state_constraint_v)(x) # g(x, u) ≥ 0 (cf. nonnegative multiplier)
+    final_mass_cons(xf) = mf-constraint(ocp, :final_constraint)(xf)
+
     function F0(x)
         r, v, m = x
         D = Cd * v^2 * exp(-β*(r - 1))
@@ -41,9 +46,6 @@ function test_goddard()
     us(x, p) = -H001(x, p) / H101(x, p)
 
     # boundary control
-    remove_constraint!(ocp, :state_constraint_r)
-    #
-    g(x) = vmax-constraint(ocp, :state_constraint_v)(x) # g(x, u) ≥ 0 (cf. nonnegative multiplier)
     ub(x, _) = -Ad(F0, g)(x) / Ad(F1, g)(x)
     μb(x, p) = H01(x, p) / Ad(F1, g)(x)
 
@@ -62,7 +64,7 @@ function test_goddard()
         x2, p2 = fs(t1, x1, p1, t2)
         x3, p3 = fb(t2, x2, p2, t3)
         xf, pf = f0(t3, x3, p3, tf)
-        s[1] = mf-constraint(ocp, :final_constraint)(xf)
+        s[1] = final_mass_cons(xf)
         s[2:3] = pf[1:2] - [ 1, 0 ]
         s[4] = H1(x1, p1)
         s[5] = H01(x1, p1)
