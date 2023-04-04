@@ -24,6 +24,7 @@ EXAMPLE=(:integrator, :dim2, :energy, :distance)
     constraint!(ocp, :dynamics, (x, u) -> A*x + B*u)
     objective!(ocp, :lagrange, (x, u) -> 0.5u^2)
     objective!(ocp, :mayer,  (t0, x0, tf, xf) -> -0.5xf[1]) 
+    #objective!(ocp, :bolza, (t0, x0, tf, xf) -> -0.5xf[1], (x, u) -> 0.5u^2)
 
     # the solution
     a = x0[1]
