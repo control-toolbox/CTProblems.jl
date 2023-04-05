@@ -17,11 +17,12 @@ EXAMPLE=(:lqr, :dim2, :ricatti)
     control!(ocp, m) # dimension of the control
     time!(ocp, [t0, tf])
     constraint!(ocp, :initial, x0, :initial_constraint)
+    A = [0 1 ; -1 0]
+    B = [0 ; 1]
     constraint!(ocp, :dynamics, (x, u) -> A*x + B*u)
     objective!(ocp, :lagrange, (x, u) -> 0.5*(x[1]^2 + x[2]^2 + u^2))
 
     # the solution
-    #Id = [1 0 ; 0 1]
     Q = I
     R = I
     Rm1 = I
@@ -68,15 +69,16 @@ EXAMPLE=(:lqr, :dim2, :ricatti)
     sol.control_dimension = m
     sol.times = times
     sol.state = t -> x(t)
-    sol.state_labels = [ "x" * ctindices(i) for i ∈ range(1, n)]
+    sol.state_names = [ "x" * ctindices(i) for i ∈ range(1, n)]
     sol.adjoint = t -> p(t)
     sol.control = u
-    sol.control_labels = [ "u" ]
+    sol.control_names = [ "u" ]
     sol.objective = objective
     sol.iterations = 0
     sol.stopping = :dummy
-    sol.message = "numerical solution"
+    sol.message = "structure: complex"
     sol.success = true
+    sol.infos[:resolution] = :numerical
 
     #
     return OptimalControlProblem(msg, ocp, sol)

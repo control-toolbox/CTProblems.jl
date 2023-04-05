@@ -7,7 +7,7 @@ end
 
 using CTProblems
 
-prob = Problem(:integrator, :dim2, :energy, :distance)
+prob = Problem(:integrator, :dim2, :time , :control_constraint)
 
 display(prob.model)
 

@@ -85,15 +85,16 @@ EXAMPLE=(:integrator, :dim2, :consumption , :control_constraint)
     sol.control_dimension = m
     sol.times = times
     sol.state = x
-    sol.state_labels = [ "x" * ctindices(i) for i ∈ range(1, n)]
+    sol.state_names = [ "x" * ctindices(i) for i ∈ range(1, n)]
     sol.adjoint = p
     sol.control = u
-    sol.control_labels = [ "u" ]
+    sol.control_names = [ "u" ]
     sol.objective = objective
     sol.iterations = 0
     sol.stopping = :dummy
-    sol.message = "numerical solution"
+    sol.message = "structure: B+B0B-"
     sol.success = true
+    sol.infos[:resolution] = :numerical
 
     #
     return OptimalControlProblem(msg, ocp, sol)
