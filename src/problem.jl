@@ -104,13 +104,15 @@ end
 """
 $(TYPEDSIGNATURES)
 
-Print the list of available problems, see [List of problems](@ref) for details.
+Returns the list of available problems, see [List of problems](@ref) for details.
 
 """
-function Problems()
+function Problems()::Tuple{Vararg{Description}}
+    problems_without_dummy = ()
     for description ∈ problems
-        :dummy ∉ description ? println(description) : nothing
+        :dummy ∉ description ? problems_without_dummy = add(problems_without_dummy, description) : nothing
     end
+    return problems_without_dummy
 end
 
 """

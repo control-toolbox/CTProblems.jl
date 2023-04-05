@@ -55,9 +55,26 @@ function test_by_shooting(shoot!, ξ, fparams, sol, atol, title, display=false)
     #
     T = sol.times # flow_sol.ode_sol.t
 
+    n = sol.state_dimension
+    m = sol.control_dimension
+
     #
     @testset "$title" begin
-        @test normL2(T, t -> (u⁺(t)[1] - sol.control(t)[1]) ) ≈ 0 atol=atol
+        @testset "state" begin
+            for i ∈ 1:n
+                @test normL2(T, t -> (x⁺(t)[i] - sol.state(t)[i]) ) ≈ 0 atol=atol
+            end
+        end
+        @testset "adjoint" begin
+            for i ∈ 1:n
+                @test normL2(T, t -> (p⁺(t)[i] - sol.adjoint(t)[i]) ) ≈ 0 atol=atol
+            end
+        end
+        @testset "control" begin
+            for i ∈ 1:m
+                @test normL2(T, t -> (u⁺(t)[i] - sol.control(t)[i]) ) ≈ 0 atol=atol
+            end
+        end
         #@test sol.adjoint(t0) ≈ p0_sol atol=1e-6
         # x, p, objective (need augmented system)
     end

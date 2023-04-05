@@ -15,26 +15,9 @@ Let us assume you want to add a `planar orbital` transfer problem from space mec
 (:orbital, :planar)
 ```
 
-First, you have to add the description from the list of available problems. You need to add the line
-
-```julia
-problems = add(problems, (:orbital, :planar))
-```
-
-to the file `src/list_of_problems.jl`:
-
-```julia
-# list of problems
-problems = ()
-problems = add(problems, (:exponential, :dim1, :energy))
-...
-problems = add(problems, (:orbital, :planar))
-problems = add(problems, (:dummy, )) # to test exception not implemented
-```
-
 ### Create a new file with an empty template
 
-Then, you have to create a new file in the directory `src/problems`. For instance:
+You have to create a new file in the directory `src/problems`. For instance:
 
 ```bash
 touch src/problems/orbital_planar.jl
@@ -55,27 +38,18 @@ EXAMPLE=(:orbital, :planar)
     # the solution: to be completed
     sol = OptimalControlSolution()
 
+    ...
+
+    sol.message = "structure: ..."  # give the structure as an additional info. B+S for 
+                                    # positive bang followed by singular arc.
+    sol.infos[:resolution] = :numerical # either :numerical or :analytical
+                                        # depending on how you get the solution
+
     #
     return OptimalControlProblem(msg, ocp, sol)
 
 end
 ```
-
-### Update `src/CTProblems.jl`
-
-You need then to include this file into the main module. Add the line
-
-```bash
-include("problems/orbital_planar.jl")
-```
-
-into `src/CTProblems.jl`, after the comment
-
-```julia
-# include problems
-```
-
-replacing of course the name of the file with the one you have created.
 
 ### Code the model and the solution
 

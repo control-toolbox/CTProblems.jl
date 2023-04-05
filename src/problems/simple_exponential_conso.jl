@@ -1,10 +1,8 @@
-EXAMPLE=(:exponential, :dim1, :energy) 
+EXAMPLE=(:exponential, :dim1, :consumption)
 
 @eval function OCPDef{EXAMPLE}()
-    # should return an OptimalControlProblem with a message, a model and a solution
-
-    #
-    msg = "simple exponential - energy min"
+    # 
+    msg = "simple exponential - conso min"
 
     # the model
     n=1
@@ -19,17 +17,16 @@ EXAMPLE=(:exponential, :dim1, :energy)
     time!(ocp, [t0, tf])
     constraint!(ocp, :initial, x0, :initial_constraint)
     constraint!(ocp, :final, xf, :final_constraint)
+    constraint!(ocp, :control, -1, 1, :control_constraint) 
     constraint!(ocp, :dynamics, (x, u) -> -x + u)
-    objective!(ocp, :lagrange, (x, u) -> 0.5u^2) # default is to minimise
+    objective!(ocp, :lagrange, (x, u) -> abs(u)) # default is to minimise
 
     # the solution
-    a = xf - x0*exp(-tf)
-    b = sinh(tf)
-    p0 = a/b
-    x(t) = p0*sinh(t) + x0*exp(-t)
+    p0 = 1/(x0-(xf-1)/exp(-tf))
     p(t) = exp(t)*p0
-    u(t) = p(t)
-    objective = (exp(2)-1)*p0^2/4 
+    u(t) = (abs(p(t)) > 1) ? sign(p(t)) : 0
+    x(t) = (abs(p(t)) < 1) ? (x0*exp(-t)) : ((xf-1)*exp(tf-t) + 1) 
+    objective = 1 + log(p0)
     #
     N=201
     times = range(t0, tf, N)
@@ -46,8 +43,8 @@ EXAMPLE=(:exponential, :dim1, :energy)
     sol.objective = objective
     sol.iterations = 0
     sol.stopping = :dummy
+    sol.message = "structure: B0B+"
     sol.success = true
-    sol.message = "structure: smooth"
     sol.infos[:resolution] = :analytical
 
     #

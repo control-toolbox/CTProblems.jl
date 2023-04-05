@@ -7,7 +7,7 @@ end
 
 using CTProblems
 
-prob = Problem(:goddard, :state_constraint)
+prob = Problem((:integrator, :dim1, :time, :free, :control_constraint))
 
 display(prob.model)
 

@@ -1,15 +1,15 @@
-EXAMPLE=(:goddard, :state_constraint)
+EXAMPLE=(:goddard, :all_constraints)
 
 @eval function OCPDef{EXAMPLE}()
-    # should return an OptimalControlProblem with a message, a model and a solution
+    # should return an OptimalControlProblem{example} with a message, a model and a solution
 
     # 
     msg = "Goddard problem with state constraint - maximise altitude"
 
     # ------------------------------------------------------------------------------------------
     # the model
-    n = 3
-    m = 1
+    #n = 3
+    #m = 1
     #
     # parameters
     Cd = 310
@@ -31,12 +31,22 @@ EXAMPLE=(:goddard, :state_constraint)
     state!(ocp, 3, ["r", "v", "m"]) # state dim
     control!(ocp, 1) # control dim
 
-    constraint!(ocp, :initial, x0, :initial_constraint) # initial condition
+    # use all possible types of constraints
+    # initial condition
+    constraint!(ocp, :initial, x0, :initial_constraint)
+    # final condition
     constraint!(ocp, :final, Index(3), mf, :final_constraint)
-    constraint!(ocp, :control, 0, 1, :control_constraint) # constraints can be labeled or not
-    constraint!(ocp, :state, Index(1), r0, Inf,  :state_constraint_r)
-    constraint!(ocp, :state, Index(2), 0, vmax,  :state_constraint_v)
-    #
+    # state constraint
+    constraint!(ocp, :state, x->x[2], -Inf, vmax, :state_con_vmax)
+    # control constraint
+    constraint!(ocp, :control, u->u, -Inf, 1, :control_con_umax)
+    # mixed constraint
+    constraint!(ocp, :mixed, (x,u)->x[3], mf, Inf, :mixed_con_mmin)
+    # state box
+    constraint!(ocp, :state, Index(1), r0, Inf, :state_box_rmin)
+    constraint!(ocp, :state, Index(2), v0, Inf, :state_box_vmin)
+    # control box
+    constraint!(ocp, :control, Index(1), 0, Inf, :control_box_umin)
 
     objective!(ocp, :mayer,  (t0, x0, tf, xf) -> xf[1], :max)
 
@@ -53,6 +63,10 @@ EXAMPLE=(:goddard, :state_constraint)
 
     constraint!(ocp, :dynamics, f)
 
+    # +++ NB. solution is supposed to be the same as the original goddard
+    # although the exact formulation of the constraints is slightly different
+    # we can keep the solution below or just set the objective maybe ?
+
     # ------------------------------------------------------------------------------------------
     # the solution
 
@@ -66,7 +80,7 @@ EXAMPLE=(:goddard, :state_constraint)
     H101 = Poisson(H1, H01)
     us(x, p) = -H001(x, p) / H101(x, p) # singular control of order 1
     #
-    g(x) = vmax-constraint(ocp, :state_constraint_v)(x) # g(x, u) ≥ 0 (cf. nonnegative multiplier)
+    g(x) = vmax-constraint(ocp, :state_con_vmax)(x) # g(x, u) ≥ 0 (cf. nonnegative multiplier)
     ub(x, _) = -Ad(F0, g)(x) / Ad(F1, g)(x) # boundary control
     μb(x, p) = H01(x, p) / Ad(F1, g)(x)
 

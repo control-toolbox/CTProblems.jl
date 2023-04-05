@@ -1,5 +1,4 @@
 EXAMPLE=(:integrator, :dim2, :energy)
-#add_to_list_of_problems = true
 
 @eval function OCPDef{EXAMPLE}()
     # should return an OptimalControlProblem with a message, a model and a solution
@@ -10,28 +9,29 @@ EXAMPLE=(:integrator, :dim2, :energy)
     # the model
     n=2
     m=1
-    t0=0.0
-    tf=1.0
-    x0=[-1.0, 0.0]
-    xf=[0.0, 0.0]
+    t0=0
+    tf=1
+    x0=[-1, 0]
+    xf=[0, 0]
     ocp = Model()
     state!(ocp, n)   # dimension of the state
     control!(ocp, m) # dimension of the control
     time!(ocp, [t0, tf])
-    constraint!(ocp, :initial, x0)
-    constraint!(ocp, :final,   xf)
-    A = [ 0.0 1.0
-        0.0 0.0 ]
-    B = [ 0.0
-        1.0 ]
-    constraint!(ocp, :dynamics, (x, u) -> A*x + B*u[1])
-    objective!(ocp, :lagrange, (x, u) -> 0.5u[1]^2) # default is to minimise
+
+    constraint!(ocp, :initial, x0, :initial_constraint)
+    constraint!(ocp, :final, xf, :final_constraint)
+    A = [ 0 1
+        0 0 ]
+    B = [ 0
+        1 ]
+    constraint!(ocp, :dynamics, (x, u) -> A*x + B*u)
+    objective!(ocp, :lagrange, (x, u) -> 0.5u^2) # default is to minimise
 
     # the solution
     a = x0[1]
     b = x0[2]
-    C = [-(tf-t0)^3/6.0 (tf-t0)^2/2.0
-         -(tf-t0)^2/2.0 (tf-t0)]
+    C = [-(tf-t0)^3/6 (tf-t0)^2/2
+         -(tf-t0)^2/2 (tf-t0)]
     D = [-a-b*(tf-t0), -b]+xf
     p0 = C\D
     α = p0[1]
@@ -49,15 +49,16 @@ EXAMPLE=(:integrator, :dim2, :energy)
     sol.control_dimension = m
     sol.times = times
     sol.state = x
-    sol.state_labels = [ "x" * ctindices(i) for i ∈ range(1, n)]
+    sol.state_names = [ "x" * ctindices(i) for i ∈ range(1, n)]
     sol.adjoint = p
     sol.control = u
-    sol.control_labels = [ "u" ]
+    sol.control_names = [ "u" ]
     sol.objective = objective
     sol.iterations = 0
     sol.stopping = :dummy
-    sol.message = "analytical solution"
+    sol.message = "structure: smooth"
     sol.success = true
+    sol.infos[:resolution] = :analytical
 
     #
     return OptimalControlProblem(msg, ocp, sol)

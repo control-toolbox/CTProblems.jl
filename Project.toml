@@ -1,7 +1,7 @@
 name = "CTProblems"
 uuid = "45d9ea3f-a92f-411f-833f-222dd4fb9cd8"
 authors = ["Olivier Cots <olivier.cots@enseeiht.fr>"]
-version = "0.2.2"
+version = "0.3.0"
 
 [deps]
 CTBase = "54762871-cc72-4466-b8e8-f6c8b58076cd"
@@ -10,7 +10,7 @@ DocStringExtensions = "ffbed154-4ef7-542d-bbb7-c09d3a79fcae"
 MINPACK = "4854310b-de5a-5eb6-a2a5-c1dee2bd17f9"
 
 [compat]
-CTBase = "0.5"
+CTBase = "0.6"
 CTFlows = "0.2"
 DocStringExtensions = "0.9"
 MINPACK = "1.1"
