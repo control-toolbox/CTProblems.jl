@@ -1,4 +1,4 @@
-function test_double_integrator()
+function test_double_integrator_energy()
 
     # problem = model + solution
     prob = Problem(:integrator, :dim2, :energy) 

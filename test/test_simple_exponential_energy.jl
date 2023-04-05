@@ -1,5 +1,6 @@
-function test_simple_exponential()
+function test_simple_exponential_energy()
 
+    # ---------------------------------------------------------------
     # problem = model + solution
     prob = Problem(:exponential, :dim1, :energy) 
     ocp = prob.model
