@@ -10,7 +10,7 @@ include("utils.jl")
 @testset verbose = true showtiming = true "CTProblems" begin
     for name ∈ (
         :problem,
-        :simple_exponential_conso,
+        :simple_exponential_consumption,
         :simple_exponential_energy,
         :simple_exponential_time,
         :double_integrator_energy,

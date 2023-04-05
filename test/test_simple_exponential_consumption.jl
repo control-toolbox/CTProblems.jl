@@ -1,4 +1,4 @@
-function test_simple_exponential_conso()
+function test_simple_exponential_consumption()
 
     # ---------------------------------------------------------------
     # problem = model + solution
