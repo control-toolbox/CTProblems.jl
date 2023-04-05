@@ -23,6 +23,15 @@ You have to create a new file in the directory `src/problems`. For instance:
 touch src/problems/orbital_planar.jl
 ```
 
+Add it to the list of problems, in `src/CTProblems.jl`:
+
+```julia
+list_of_problems_files = [
+    "double_integrator_energy.jl",
+    "orbital_planar.jl"
+]
+```
+
 Then, you can write into this file the following empty template:
 
 ```julia
