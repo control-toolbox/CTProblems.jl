@@ -13,7 +13,7 @@ EXAMPLE=(:orbital_transfert, :dim4, :time)
     x0     = [-42272.67, 0, 0, -5796.72] # état initial
     μ      = 5.1658620912*1e12
     rf     = 42165.0 ;
-    F_max  = 100#20.0
+    F_max  = 20.0#100.0
     γ_max  = F_max*3600.0^2/(2000.0*10^3)
     t0     = 0.0
     rf3    = rf^3  ;
@@ -26,6 +26,7 @@ EXAMPLE=(:orbital_transfert, :dim4, :time)
     time!(ocp, :initial, t0)
     constraint!(ocp, :initial, x0)
     constraint!(ocp, :boundary, (t0, x0, tf, xf) -> [sqrt(xf[1]^2 + xf[2]^2)-rf, xf[3] + α*xf[2], xf[4] - α*xf[1]],[0,0,0])
+    constraint!(ocp, :control, u -> sqrt(u[1]^2 + u[2]^2), -γ_max, γ_max, :control_constraint)
     A = [ 0 0 1 0; 0 0 0 1; 1 0 0 0; 0 1 0 0]
     B = [ 0 0; 0 0; 1 0; 0 1 ]
 
@@ -56,8 +57,8 @@ EXAMPLE=(:orbital_transfert, :dim4, :time)
         u = control(p)
         hv[1] = x[3]
         hv[2] = x[4]
-        hv[3] = -μ*x[1]/(sqrt(x[1]^2+x[2]^2)^3) + p[3]*γ_max/(sqrt(p[3]^2 + p[4]^2))
-        hv[4] = -μ*x[2]/(sqrt(x[1]^2+x[2]^2)^3) + p[4]*γ_max/(sqrt(p[3]^2 + p[4]^2))
+        hv[3] = -μ*x[1]/(sqrt(x[1]^2+x[2]^2)^3) + u[1]#p[3]*γ_max/(sqrt(p[3]^2 + p[4]^2))
+        hv[4] = -μ*x[2]/(sqrt(x[1]^2+x[2]^2)^3) + u[2]#p[4]*γ_max/(sqrt(p[3]^2 + p[4]^2))
         hv[5] = p[3]*μ*(x[1]^2+x[2]^2)^(-3/2) - p[3]*μ*(x[1]^2)*3*(x[1]^2+x[2]^2)^(-5/2) - p[4]*µ*x[1]*x[2]*3*(x[1]^2+x[2]^2)^(-5/2)
         hv[6] = p[4]*μ*(x[1]^2+x[2]^2)^(-3/2) - p[4]*μ*(x[2]^2)*3*(x[1]^2+x[2]^2)^(-5/2) - p[3]*µ*x[1]*x[2]*3*(x[1]^2+x[2]^2)^(-5/2)
         hv[7] = -p[1]
@@ -108,8 +109,8 @@ EXAMPLE=(:orbital_transfert, :dim4, :time)
     
 
     # using MINPACK
-    ξ_guess =  [1.0323e-4, 4.915e-5, 3.568e-4, -1.554e-4, 13.4]   # pour F_max = 100N
-    #ξ_guess = [-0.0013615, -7.34989e-6, -5.359923e-5, -0.00858271, 59.8551668] # for F_max = 20N
+    #ξ_guess =  [1.0323e-4, 4.915e-5, 3.568e-4, -1.554e-4, 13.4]   # pour F_max = 100N
+    ξ_guess = [-0.0013615, -7.34989e-6, -5.359923e-5, -0.00858271, 59.8551668] # for F_max = 20N
 
 
     foo(ξ) = shoot(ξ[1:4], ξ[5])
@@ -129,6 +130,8 @@ EXAMPLE=(:orbital_transfert, :dim4, :time)
     p(t) = ode_sol(t)[5:8]#[0,0,0,0]
     u(t) = control(ode_sol(t)[5:8])#[0,0]
     objective = tf
+    c(t) = [sqrt(x(t)[1]^2 + x(t)[2]^2) - rf, x(t)[3] + α*x(t)[2], x(t)[4]-α*x(t)[1]]
+    println(c(tf))
     
     #
     N=201
@@ -139,15 +142,15 @@ EXAMPLE=(:orbital_transfert, :dim4, :time)
     sol.control_dimension = m
     sol.times = times
     sol.state = x
-    sol.state_labels = [ "x" * ctindices(i) for i ∈ range(1, n)]
+    sol.state_names = [ "x" * ctindices(i) for i ∈ range(1, n)]
     sol.adjoint = p
     sol.control = u
-    sol.control_labels = [ "u" * ctindices(i) for i ∈ range(1, m)]
+    sol.control_names = [ "u" * ctindices(i) for i ∈ range(1, m)]
     sol.objective = objective
     sol.iterations = 0
-    sol.stopping = :dummy
-    sol.message = "numerical solution"
+    sol.message = "structure: complex"
     sol.success = true
+    sol.infos[:resolution] = :numerical
 
     #
     return OptimalControlProblem(msg, ocp, sol)
