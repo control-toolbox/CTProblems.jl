@@ -1,31 +1,33 @@
 # list of problems
 function get_info_problem(path)
-    code = read(path,String)
+    code = read(path, String)
     expr = Meta.parseall(code)
-    EXAMPLE=eval(expr.args[2].args[2])
-    add_to_list_of_problems=true#eval(expr.args[4].args[2])
-    return EXAMPLE, add_to_list_of_problems
+    example=eval(expr.args[2].args[2])
+    add_to_list_of_problems=true #eval(expr.args[4].args[2])
+    return example, add_to_list_of_problems
 end
 
+# empty list
 problems = ()
 
-list_problem_files = []
-list_problem_files = readdir("src/problems/")
+# adding problems to the list
+dir_problems = abspath(joinpath("src", "problems"))
+list_problem_files = readdir(dir_problems)
 for file in list_problem_files
-    EXAMPLE, add_to_list_of_problems = get_info_problem("src/problems/"*file)
+    example, add_to_list_of_problems = get_info_problem(joinpath(dir_problems, file))
     if add_to_list_of_problems 
-        if EXAMPLE ∈ problems
+        if example ∈ problems
             println()
-            println("The problem ", EXAMPLE, " is already defined.")
+            println("The problem ", example, " is already defined.")
             println()
             println("Please provide a different description from the followings:")
             println()
-            Problems()
+            display(Problems())
             println()
             error("Not unique problem description.")
         else
-            include("problems/"*file)
-            global problems = add(problems, EXAMPLE)
+            include(joinpath("problems", file))
+            global problems = add(problems, example)
         end
     end
 end
