@@ -1,4 +1,4 @@
-# Simple exponential: consumption minimisation
+# [Simple exponential: consumption minimisation](@id SEC)
 
 The consumption minimisation simple exponential problem consists in minimising
 

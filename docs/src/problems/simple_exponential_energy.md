@@ -1,4 +1,4 @@
-# Simple exponential: energy minimisation
+# [Simple exponential: energy minimisation](@id SEE)
 
 The energy minimisation simple exponential problem consists in minimising
 

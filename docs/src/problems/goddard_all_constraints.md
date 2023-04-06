@@ -1,4 +1,4 @@
-# Goddard
+# Goddard with state constraints: model 2
 
 ```@example main
 using CTProblems

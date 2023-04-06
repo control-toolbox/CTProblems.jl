@@ -1,4 +1,4 @@
-# Simple exponential: time minimisation
+# [Simple exponential: time minimisation](@id SET)
 
 The time minimisation simple exponential problem consists in minimising
 

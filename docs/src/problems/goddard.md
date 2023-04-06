@@ -1,4 +1,4 @@
-# Goddard
+# [Goddard with state constraints: model 1](@id Godda)
 
 ```@example main
 using CTProblems
