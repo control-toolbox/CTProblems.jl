@@ -2,7 +2,8 @@ function test_simple_exponential_consumption()
 
     # ---------------------------------------------------------------
     # problem = model + solution
-    prob = Problem(:exponential, :dim1, :consumption) 
+    prob = Problem(:exponential, :consumption, :state_dim_1, :control_dim_1, 
+        :lagrange, :control_non_differentiable) 
     ocp = prob.model
     sol = prob.solution
 

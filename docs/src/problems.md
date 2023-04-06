@@ -8,7 +8,7 @@ In the following table, we give some hints about the problems and their solution
 | [Simple exponential time](@ref SET)        | (1, 1)          | `Lagrange`    | ❌                 | ❌               | ✅                 |
 | [Simple exponential consumption](@ref SEC) | (1, 1)          | `Lagrange`    | ❌                 | ❌               | ❌ `u`             |
 | [Double integrator energy](@ref DIE)       | (2, 1)          | `Lagrange`    | ❌                 | ❌               | ✅                 |
-| [Goddard](@ref Godda)                      | (3, 1)          | `Mayer`       | ✅ `x`, `u`        | ✅               | ✅                 |
+| [Goddard](@ref Godda) [v2](@ref Godda2)    | (3, 1)          | `Mayer`       | ✅ `x`, `u`        | ✅               | ✅                 |
 
 Legend:
 

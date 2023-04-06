@@ -2,7 +2,7 @@
 function get_example(file)
     fun = gensym()
     function mapexpr(expr)
-        if expr.head isa Symbol && expr.head == :(=)
+        if expr.head isa Symbol && expr.head == :(=) && expr.args[1] == :EXAMPLE
             example = expr.args[2]
             code = quote
                 $(fun)() = $(example)

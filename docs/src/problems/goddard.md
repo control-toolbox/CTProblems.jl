@@ -7,7 +7,7 @@ using CTProblems
 You can access the problem in the CTProblems package:
 
 ```@example main
-prob = Problem(:goddard, :state_constraint)
+prob = Problem(:goddard, :classical)
 ```
 
 Then, the model is given by

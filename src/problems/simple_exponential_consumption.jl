@@ -1,4 +1,4 @@
-EXAMPLE=(:exponential, :dim1, :consumption)
+EXAMPLE=(:exponential, :consumption, :state_dim_1, :control_dim_1, :lagrange, :control_non_differentiable)
 
 @eval function OCPDef{EXAMPLE}()
     # 

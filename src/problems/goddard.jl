@@ -1,4 +1,4 @@
-EXAMPLE=(:goddard, :state_constraint)
+EXAMPLE=(:goddard, :classical, :altitude, :state_dim_3, :control_dim_1, :mayer, :state_constraint, :control_constraint, :singular_arc)
 
 @eval function OCPDef{EXAMPLE}()
     # should return an OptimalControlProblem with a message, a model and a solution

@@ -22,7 +22,7 @@ You can access the problem in the CTProblems package:
 
 ```@example main
 using CTProblems
-prob = Problem(:exponential, :dim1, :time)
+prob = Problem(:exponential, :time)
 ```
 
 Then, the model is given by

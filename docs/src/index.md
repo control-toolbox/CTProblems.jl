@@ -20,7 +20,7 @@ For instance, to get the energy-min one dimensional exponential problem, simply
 
 ```@example main
 using CTProblems
-prob = Problem(:exponential, :dim1, :energy)
+prob = Problem(:exponential, :energy) # you can give an incomplete description
 ```
 
 Then, the model is given by
@@ -40,5 +40,29 @@ plot(prob.solution)
 To print the complete list of [Problems](@ref):
 
 ```@example main
-Problems()
+ProblemsList()
+```
+
+You can use more sophisticated rules:
+
+```@example main
+@ProblemsList !:integrator | :time
+```
+
+!!! note
+
+    The authorised operators are: `!` (negation), `|` (or) and `&` (and).
+
+## Getting problems
+
+To get all the problems of with one dimensional state:
+
+```@example main
+Problems(:state_dim_1)
+```
+
+You can use more sophisticated rules:
+
+```@example main
+@Problems :integrator | :time
 ```

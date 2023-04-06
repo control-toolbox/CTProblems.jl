@@ -9,10 +9,12 @@ Depth = 3
 
 ### Find a description
 
-Let us assume you want to add a `planar orbital` transfer problem from space mechanics. This problem will be described by the following `description`, cf. [`CTBase.jl`](https://github.com/control-toolbox/CTBase.jl):
+Let us assume you want to add a `planar orbital time minimisation` transfer problem from space mechanics. 
+This problem will be described by a `description`, cf. [`CTBase.jl`](https://github.com/control-toolbox/CTBase.jl),
+following the `nomenclature` given in `src/CTProblems.jl`. For instance:
 
 ```julia
-(:orbital, :planar)
+(:orbital, :time, :state_dim_4, control_dim_2, :mayer)
 ```
 
 ### Create a new file with an empty template
@@ -35,7 +37,7 @@ list_of_problems_files = [
 Then, you can write into this file the following empty template:
 
 ```julia
-EXAMPLE=(:orbital, :planar)
+EXAMPLE=(:orbital, :time, :state_dim_4, control_dim_2, :mayer)
 @eval function OCPDef{EXAMPLE}()
 
     # the description

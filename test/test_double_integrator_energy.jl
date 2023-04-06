@@ -1,7 +1,7 @@
 function test_double_integrator_energy()
 
     # problem = model + solution
-    prob = Problem(:integrator, :dim2, :energy) 
+    prob = Problem(:integrator, :energy, :state_dim_2, :control_dim_1, :lagrange) 
     ocp = prob.model
     sol = prob.solution
 
