@@ -7,7 +7,7 @@ end
 
 using CTProblems
 
-prob = Problem(:orbital_transfert, :dim4, :consumption)
+prob = Problem(:orbital_transfert, :dim4, :energy)
 
 display(prob.model)
 

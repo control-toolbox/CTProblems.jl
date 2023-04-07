@@ -19,13 +19,13 @@ using DocStringExtensions
 using MINPACK
 using OrdinaryDiffEq
 using ForwardDiff
+using LinearAlgebra
 #
 
 #
 include("problem.jl")
 include("list_of_problems.jl")
-include("flows.jl");
-
+include("utils_problems.jl")
 #
 export Problems, Problem
 export plot
