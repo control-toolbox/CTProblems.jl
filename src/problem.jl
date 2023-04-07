@@ -200,26 +200,31 @@ function CTProblems.plot(sol; kwargs...)
 end
 
 # more sophisticated filters
-function _valid(e::QuoteNode; description::Description)
+function _keep(description::Description, e::QuoteNode)
     return e.value ∈ description
 end
 
-function _valid(s::Symbol, q::QuoteNode; description::Description)
+function _keep(description::Description, s::Symbol, q::QuoteNode)
     @assert s == Symbol("!")
     return q.value ∉ description
 end
 
-function _valid(e::Expr; description::Description)
+function _keep(description::Description, s::Symbol, e::Expr)
+    @assert s == Symbol("!")
+    return !_keep(description, e)
+end
+
+function _keep(description::Description, e::Expr)
     @assert hasproperty(e, :head) 
     @assert e.head == :call
     if length(e.args) == 2
-        return _valid(e.args[1], e.args[2]; description=description)
+        return _keep(description, e.args[1], e.args[2])
     elseif length(e.args) == 3
         @assert e.args[1] == Symbol("|") || e.args[1] == Symbol("&")
         if e.args[1] == Symbol("|") 
-            return _valid(e.args[2]; description=description) || _valid(e.args[3]; description=description)
+            return _keep(description, e.args[2]) || _keep(description, e.args[3])
         elseif e.args[1] == Symbol("&")
-            return _valid(e.args[2]; description=description) && _valid(e.args[3]; description=description)
+            return _keep(description, e.args[2]) && _keep(description, e.args[3])
         end
     else
         error("bad expression")
@@ -246,7 +251,7 @@ See also [`@ProblemsList`](@ref) for a simpler usage
 
 """
 function ProblemsList(expr::Union{QuoteNode, Expr})::Tuple{Vararg{Description}}
-    problems_list = filter(pb -> _valid(expr, description=pb), _problems_without_dummy()) # filter only the problems that contain desc
+    problems_list = filter(description -> _keep(description, expr), _problems_without_dummy()) # filter only the problems that contain desc
     return problems_list
 end
 

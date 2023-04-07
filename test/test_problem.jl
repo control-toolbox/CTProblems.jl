@@ -15,42 +15,50 @@ function test_problem()
 
     e = :(:integrator)
     d = (:integrator, :energy)
-    @test CTProblems._valid(e; description=d) == true
+    @test CTProblems._keep(d, e) == true
     
     e = :(:integrator)
     d = (:integrator, :energy)
-    @test CTProblems._valid(Symbol("!"), e; description=d) == false
+    @test CTProblems._keep(d, Symbol("!"), e) == false
     
     e = :(!(:integrator))
     d = (:integrator, :energy)
-    @test CTProblems._valid(e; description=d) == false
+    @test CTProblems._keep(d, e) == false
     
     e = :(!(:integrator))
-    d2 = (:exponential, :energy)
-    @test CTProblems._valid(e; description=d2) == true
+    d = (:exponential, :energy)
+    @test CTProblems._keep(d, e) == true
     
     e=:( (!:integrator & :energy) | :goddard )
     d = (:integrator, :energy)
-    @test CTProblems._valid(e; description=d) == false
+    @test CTProblems._keep(d, e) == false
     
     e=:( (!:integrator & :energy) | :goddard )
     d = (:exponential, :energy)
-    @test CTProblems._valid(e; description=d) == true
+    @test CTProblems._keep(d, e) == true
     
     e=:( (!:integrator & :energy) | :goddard )
     d = (:goddard, :altitude)
-    @test CTProblems._valid(e; description=d) == true
+    @test CTProblems._keep(d, e) == true
     
     e=:( (!:integrator & :energy) | :goddard | :dummy )
     d = (:exponential, :energy)
-    @test CTProblems._valid(e; description=d) == true
+    @test CTProblems._keep(d, e) == true
     
     e=:( (!:integrator & :energy) | :goddard | :dummy )
     d = (:goddard, :altitude)
-    @test CTProblems._valid(e; description=d) == true
+    @test CTProblems._keep(d, e) == true
     
     e=:( (!:integrator & :energy) | :goddard | :dummy )
     d = (:dummy, :altitude)
-    @test CTProblems._valid(e; description=d) == true
+    @test CTProblems._keep(d, e) == true
+
+    e=:( !(:exponential & :energy) | :goddard | :dummy )
+    d = (:exponential, :energy, :toto)
+    @test CTProblems._keep(d, e) == false
+
+    e=:( !(:exponential & :energy) | :toto | :dummy )
+    d = (:exponential, :energy, :toto)
+    @test CTProblems._keep(d, e) == true
 
 end
