@@ -4,7 +4,7 @@ EXAMPLE=(:exponential, :energy, :state_dim_1, :control_dim_1, :lagrange)
     # should return an OptimalControlProblem with a message, a model and a solution
 
     #
-    msg = "simple exponential - energy min"
+    title = "simple exponential - energy min"
 
     # the model
     n=1
@@ -51,6 +51,6 @@ EXAMPLE=(:exponential, :energy, :state_dim_1, :control_dim_1, :lagrange)
     sol.infos[:resolution] = :analytical
 
     #
-    return OptimalControlProblem(msg, ocp, sol)
+    return OptimalControlProblem(title, ocp, sol)
 
 end

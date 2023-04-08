@@ -22,20 +22,8 @@ using MINPACK
 #
 include("problem.jl")
 
-# Nomenclature
-# 
-# :name_of_the_problem, and other symbols for a clear description
-#
-# Classical objectives: time, energy, consumption
-#
-# then
-#
-# Dimensions: :state_dim_1, :state_dim_2... :control_dim_1, :control_dim_2...
-# Objective: :lagrange, :mayer, :bolza
-# Constraint arc (active on the solution): :state_constraint, :control_constraint, :mixed_constraint
-# Singular arc (on the solution): :singular_arc
-# Differentiability: :state_non_differentiable, :control_non_differentiable
-
+# When adding a problem, please follow the nomeclature given in the doc
+# on how to add a problem, see https://control-toolbox.github.io/CTProblems.jl.
 #
 list_of_problems_files = [
     "double_integrator_energy.jl",
@@ -44,6 +32,8 @@ list_of_problems_files = [
     "simple_exponential_consumption.jl",
     "simple_exponential_energy.jl",
     "simple_exponential_time.jl",
+    "simple_integrator_energy_free_tf.jl",
+    "simple_integrator_mixed_constraint.jl",
 ]
 include("list_of_problems.jl")
 

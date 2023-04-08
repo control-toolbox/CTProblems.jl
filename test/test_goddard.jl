@@ -5,6 +5,7 @@ function test_goddard()
         :mayer, :state_constraint, :control_constraint, :singular_arc)
     ocp = prob.model
     sol = prob.solution
+    title = prob.title
 
     # parameters
     Cd = 310
@@ -97,6 +98,6 @@ function test_goddard()
     end
 
     nle = (s, ξ) -> shoot!(s, ξ[1:3], ξ[4], ξ[5], ξ[6], ξ[7])
-    test_by_shooting(nle, ξ, fparams, sol, 1e-3, "state constraint")
+    test_by_shooting(nle, ξ, fparams, sol, 1e-3, title)
 
 end

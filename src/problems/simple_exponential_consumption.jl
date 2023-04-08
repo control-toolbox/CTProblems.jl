@@ -2,7 +2,7 @@ EXAMPLE=(:exponential, :consumption, :state_dim_1, :control_dim_1, :lagrange, :c
 
 @eval function OCPDef{EXAMPLE}()
     # 
-    msg = "simple exponential - conso min"
+    title = "simple exponential - conso min"
 
     # the model
     n=1
@@ -48,6 +48,6 @@ EXAMPLE=(:exponential, :consumption, :state_dim_1, :control_dim_1, :lagrange, :c
     sol.infos[:resolution] = :analytical
 
     #
-    return OptimalControlProblem(msg, ocp, sol)
+    return OptimalControlProblem(title, ocp, sol)
 
 end

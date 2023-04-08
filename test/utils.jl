@@ -37,26 +37,35 @@ function final_condition(ocp::OptimalControlModel) # pre-condition: there is a x
     return xf
 end
 
-function test_by_shooting(shoot!, ξ, fparams, sol, atol, title, display=false)
+function test_by_shooting(shoot!, ξ, fparams, sol, atol, title; display=false, flow=:ocp)
 
     # solve
-    shoot_sol = fsolve(shoot!, ξ, show_trace=display)
+    # MINPACK needs a vector of Float64
+    isreal = ξ isa Real
+    shoot_sol = fsolve((s, ξ) -> isreal ? shoot!(s, ξ[1]) : shoot!(s, ξ), 
+        Float64.(isreal ? [ξ] : ξ), 
+        show_trace=display)
     display ? println(shoot_sol) : nothing
-    ξ⁺ = shoot_sol.x
-
-    # compute optimal control solution    
-    t0, x0, p0⁺, tf, f = fparams(ξ⁺)
-    #
-    ocp⁺ = CTFlows.OptimalControlSolution(f((t0, tf), x0, p0⁺))
-    x⁺(t) = ocp⁺.state(t)
-    p⁺(t) = ocp⁺.adjoint(t)
-    u⁺(t) = ocp⁺.control(t)
-
+    ξ⁺ = isreal ? shoot_sol.x[1] : shoot_sol.x
+    
     #
     T = sol.times # flow_sol.ode_sol.t
-
     n = sol.state_dimension
     m = sol.control_dimension
+
+    if flow == :ocp
+        t0, x0, p0⁺, tf, f = fparams(ξ⁺) # compute optimal control solution    
+        ocp⁺ = CTFlows.OptimalControlSolution(f((t0, tf), x0, p0⁺))
+    elseif flow == :hamiltonian
+        t0, x0, p0⁺, tf, f, u = fparams(ξ⁺) # compute optimal control solution    
+        z = f((t0, tf), x0, p0⁺)
+    else
+        error("flow must be :ocp or :hamiltonian")
+    end
+
+    x⁺(t) = flow == :ocp ? ocp⁺.state(t)   : z(t)[1:n]
+    p⁺(t) = flow == :ocp ? ocp⁺.adjoint(t) : z(t)[n+1:2n]
+    u⁺(t) = flow == :ocp ? ocp⁺.control(t) : u(x⁺(t), p⁺(t))
 
     #
     @testset "$title" begin

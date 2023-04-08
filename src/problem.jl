@@ -16,22 +16,18 @@ $(TYPEDFIELDS)
 ```@example
 julia> using CTProblems
 julia> using CTBase
-julia> description = "My empty optimal control problem"
+julia> title = "My empty optimal control problem"
 julia> ocp = Model()
 julia> sol = OptimalControlSolution()
-julia> prob = CTProblems.OptimalControlProblem{(:ocp, :empty)}(description, ocp, sol)
+julia> prob = CTProblems.OptimalControlProblem(title, ocp, sol)
 julia> prob isa CTProblems.AbstractCTProblem
 true
 julia> prob isa CTProblems.OptimalControlProblem
 true
-julia> prob isa isa CTProblems.OptimalControlProblem{(:ocp, :empty)}
-true
-julia> prob isa CTProblems.OptimalControlProblem{(:ocp, :empty, :dummy)}
-false
 ```
 """
 struct OptimalControlProblem <: AbstractCTProblem
-    description::String
+    title::String
     model::OptimalControlModel
     solution::OptimalControlSolution
 end
@@ -39,19 +35,18 @@ end
 """
 $(TYPEDSIGNATURES)
 
-Show the description, the model and the solution of the optimal control problem.
+Show the title and the types of the model and the solution of the optimal control problem.
 
 ```@example
-julia> using CTProblems
-julia> Problem(:integrator)
-description     = Double integrator - energy min
+julia> Problem(:integrator, :energy, :state_dim_2, :control_dim_1)
+title           = Double integrator - energy min
 model    (Type) = CTBase.OptimalControlModel{:autonomous, :scalar}
 solution (Type) = CTBase.OptimalControlSolution
 ```
 
 """
 function Base.show(io::IO, ::MIME"text/plain", problem::OptimalControlProblem)
-    println(io, "description     = ", problem.description)
+    println(io, "title           = ", problem.title)
     println(io, "model    (Type) = ", typeof(problem.model))
     print(  io, "solution (Type) = ", typeof(problem.solution))
 end
@@ -59,12 +54,12 @@ end
 """
 $(TYPEDSIGNATURES)
 
-Print a tuple of descriptions.
+Print a tuple of optimal control problems.
 """
 function Base.show(io::IO, ::MIME"text/plain", problems::Tuple{Vararg{OptimalControlProblem}})
     println(io, "List of optimal control problems:\n")
     for problem ∈ problems
-        println(io, "description     = ", problem.description)
+        println(io, "title           = ", problem.title)
         println(io, "model    (Type) = ", typeof(problem.model))
         print(  io, "solution (Type) = ", typeof(problem.solution))
         println(io, "\n")
@@ -111,7 +106,8 @@ end
 """
 $(TYPEDEF)
 
-Throw a [`NonExistingProblem`](@ref) exception if there is no optimal control problem described by `example`.
+A type used to define new problems with a default constructor that throws a [`NonExistingProblem`](@ref)
+exception if there is no optimal control problem described by `example`.
 
 # Example
 
@@ -119,6 +115,10 @@ Throw a [`NonExistingProblem`](@ref) exception if there is no optimal control pr
 julia> CTProblems.OCPDef{(:ocp, :dummy)}()
 ERROR: there is no optimal control problem described by (:ocp, :dummy)
 ```
+
+!!! note
+
+    To define a new problem, please refer to the page [How to add a new problem](@ref add-new-pb).
 
 """
 struct OCPDef{description} 
@@ -130,15 +130,15 @@ end
 """
 $(TYPEDSIGNATURES)
 
-Return the list of optimal control problems without the dummy problem.
+Return the list of optimal control problems (without the dummy problem).
 """
 _problems_without_dummy() = Tuple(setdiff(problems, ((:dummy,),)))
 
 """
 $(TYPEDSIGNATURES)
 
-Returns the list of problems consistent with the description, as a Tuple of Description, 
-see [List of problems](@ref) for details.
+Returns the list of problems descriptions consistent with the description, as a Tuple of Description, 
+see the page [list of problems descriptions](@ref descriptions-list) for details.
 
 # Example
 
@@ -157,7 +157,7 @@ end
 $(TYPEDSIGNATURES)
 
 Returns the list of problems consistent with the description, as a Tuple of OptimalControlProblem, 
-see [List of problems](@ref) for details.
+see the page [list of problems](@ref problems-list) for details.
 
 # Example
 
@@ -175,7 +175,7 @@ end
 $(TYPEDSIGNATURES)
 
 Returns the optimal control problem described by `description`.
-See [Overview of CTProblems.jl](@ref) and [Problems](@ref) for details.
+See the [Introduction](@ref introduction) and page [list of problems](@ref problems-list) for details.
 
 # Example
 
@@ -234,8 +234,8 @@ end
 """
 $(TYPEDSIGNATURES)
 
-Returns the list of problems consistent with the expression, as a Tuple of Description, 
-see [List of problems](@ref) for details.
+Returns the list of problems descriptions consistent with the expression, as a Tuple of Description, 
+see the [list of problems descriptions](@ref descriptions-list) page for details.
 
 # Example
 
@@ -243,11 +243,14 @@ see [List of problems](@ref) for details.
 julia> ProblemsList(:(:integrator & :energy))
 ```
 
-See also [`@ProblemsList`](@ref) for a simpler usage
+# See also 
+
+[`@ProblemsList`](@ref) for a more natural usage.
 
 !!! note
 
-    The authorised operators are: `!` (negation), `|` (or) and `&` (and).
+    You have to define a logical condition with the combination of symbols and the three 
+    operators: `!`, `|` and `&`, respectively for the negation, the disjunction and the conjunction.
 
 """
 function ProblemsList(expr::Union{QuoteNode, Expr})::Tuple{Vararg{Description}}
@@ -258,8 +261,8 @@ end
 """
 $(TYPEDSIGNATURES)
 
-Returns the list of problems consistent with the expression, as a Tuple of Description, 
-see [List of problems](@ref) for details.
+Returns the list of problems descriptions consistent with the expression, as a Tuple of Description, 
+see the [list of problems descriptions](@ref descriptions-list) page for details.
 
 # Example
 
@@ -269,7 +272,8 @@ julia> @ProblemsList :integrator & :energy
 
 !!! note
 
-    The authorised operators are: `!` (negation), `|` (or) and `&` (and).
+    You have to define a logical condition with the combination of symbols and the three 
+    operators: `!`, `|` and `&`, respectively for the negation, the disjunction and the conjunction.
 
 """
 macro ProblemsList(expr::Union{QuoteNode, Expr})
@@ -282,8 +286,8 @@ end
 """
 $(TYPEDSIGNATURES)
 
-Returns the list of problems consistent with the expression, as a Tuple of OptimalControlProblem, 
-see [List of problems](@ref) for details.
+Returns the list of problems consistent with the description, as a Tuple of OptimalControlProblem, 
+see the page [list of problems](@ref problems-list) for details.
 
 # Example
 
@@ -291,11 +295,14 @@ see [List of problems](@ref) for details.
 julia> Problems(:(:integrator & :energy))
 ```
 
-See also [`@Problems`](@ref) for a simpler usage.
+# See also
+
+[`@Problems`](@ref) for a more natural usage.
 
 !!! note
 
-    The authorised operators are: `!` (negation), `|` (or) and `&` (and).
+    You have to define a logical condition with the combination of symbols and the three 
+    operators: `!`, `|` and `&`, respectively for the negation, the disjunction and the conjunction.
 
 """
 function Problems(expr::Union{QuoteNode, Expr})::Tuple{Vararg{OptimalControlProblem}}
@@ -306,8 +313,8 @@ end
 """
 $(TYPEDSIGNATURES)
 
-Returns the list of problems consistent with the expression, as a Tuple of OptimalControlProblem, 
-see [List of problems](@ref) for details.
+Returns the list of problems consistent with the description, as a Tuple of OptimalControlProblem, 
+see the page [list of problems](@ref problems-list) for details.
 
 # Example
 
@@ -317,7 +324,8 @@ julia> @Problems :integrator & :energy
 
 !!! note
 
-    The authorised operators are: `!` (negation), `|` (or) and `&` (and).
+    You have to define a logical condition with the combination of symbols and the three 
+    operators: `!`, `|` and `&`, respectively for the negation, the disjunction and the conjunction.
 
 """
 macro Problems(expr::Union{QuoteNode, Expr})

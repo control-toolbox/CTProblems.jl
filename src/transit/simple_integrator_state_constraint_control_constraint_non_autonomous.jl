@@ -4,7 +4,7 @@ EXAMPLE=(:integrator, :dim1, :state_constraint, :control_constraint, :non_autono
     # should return an OptimalControlProblem{example} with a message, a model and a solution
 
     # 
-    msg = "simple integrator - state and control constraint"
+    title = "simple integrator - state and control constraint"
 
     # the model
     n=1
@@ -49,6 +49,6 @@ EXAMPLE=(:integrator, :dim1, :state_constraint, :control_constraint, :non_autono
     sol.success = true
 
     #
-    return OptimalControlProblem(msg, ocp, sol)
+    return OptimalControlProblem(title, ocp, sol)
 
 end
