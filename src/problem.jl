@@ -286,7 +286,7 @@ end
 """
 $(TYPEDSIGNATURES)
 
-Returns the list of problems consistent with the description, as a Tuple of OptimalControlProblem, 
+Returns the list of problems consistent with the expression, as a Tuple of OptimalControlProblem, 
 see the page [list of problems](@ref problems-list) for details.
 
 # Example
