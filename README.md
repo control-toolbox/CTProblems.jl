@@ -35,7 +35,7 @@ prob = Problem(:exponential, :energy)
 and to print the complete list of problems:
 
 ```julia
-Problems()
+ProblemsList()
 ```
 
 For more details, see the documentation.
