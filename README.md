@@ -29,7 +29,7 @@ For instance, to get the energy-min one dimensional exponential problem, simply
 
 ```julia
 using CTProblems
-prob = Problem(:exponential, :dim1, :energy)
+prob = Problem(:exponential, :energy)
 ```
 
 and to print the complete list of problems:
