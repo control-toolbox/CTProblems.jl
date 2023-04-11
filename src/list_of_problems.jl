@@ -1,33 +1,47 @@
-# list of problems
-function get_info_problem(path)
-    code = read(path,String)
-    expr = Meta.parseall(code)
-    EXAMPLE=eval(expr.args[2].args[2])
-    add_to_list_of_problems=true#eval(expr.args[4].args[2])
-    return EXAMPLE, add_to_list_of_problems
-end
-
-problems = ()
-
-list_problem_files = []
-list_problem_files = readdir("src/problems/")
-for file in list_problem_files
-    EXAMPLE, add_to_list_of_problems = get_info_problem("src/problems/"*file)
-    if add_to_list_of_problems 
-        if EXAMPLE ∈ problems
-            println()
-            println("The problem ", EXAMPLE, " is already defined.")
-            println()
-            println("Please provide a different description from the followings:")
-            println()
-            Problems()
-            println()
-            error("Not unique problem description.")
+#
+function get_example(file)
+    fun = gensym()
+    function mapexpr(expr)
+        if expr.head isa Symbol && expr.head == :(=) && expr.args[1] == :EXAMPLE
+            example = expr.args[2]
+            code = quote
+                $(fun)() = $(example)
+            end
+            return code
         else
-            include("problems/"*file)
-            global problems = add(problems, EXAMPLE)
+            return :()
         end
     end
+    path = joinpath("problems", file)
+    include(mapexpr, path)
+    example = eval(:($fun()))
+    return example
+end
+
+# empty list
+problems = ()
+
+# adding problems to the list
+for file in list_of_problems_files
+
+    # get example
+    example = get_example(file)
+
+    # add example if not already in the list
+    if example ∈ problems
+        println()
+        println("The problem ", example, " is already defined.")
+        println()
+        println("Please provide a different description from the followings:")
+        println()
+        display(Problems())
+        println()
+        error("Not unique problem description.")
+    else
+        include(joinpath("problems", file))
+        global problems = add(problems, example)
+    end
+
 end
 
 # just for test

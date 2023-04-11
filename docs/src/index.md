@@ -1,44 +1,52 @@
-# Introduction to the `CTProblems.jl` package
+# [Introduction to the CTProblems.jl package](@id introduction)
 
-The `CTProblems.jl` package is part of the [control-toolbox ecosystem](https://github.com/control-toolbox). We give below an overview ot the `CTProblems.jl` package with the list of available optimal control problems.
+The `CTProblems.jl` package is part of the [control-toolbox ecosystem](https://github.com/control-toolbox).
 
-**Contents.**
+!!! note
 
-```@contents
-Pages = ["index.md", "problems.md", "api.md", "developers.md"]
-Depth = 2
-```
+    To install a package from the control-toolbox ecosystem, please visit the [installation page](https://github.com/control-toolbox#installation).
 
-## Installation
+The `CTProblems.jl` package provides a list of optimal control problems composed of a short title (a string), the model and the solution, respectively of types `OptimalControlModel` and `OptimalControlSolution`, defined in the package [`CTBase.jl`](https://github.com/control-toolbox/CTBase.jl). You can get any problem by a simple `description`, see [`CTBase.jl`](https://github.com/control-toolbox/CTBase.jl), that is a tuple of symbols.
 
-To install a package from the control-toolbox ecosystem, please visit the [installation page](https://github.com/control-toolbox#installation).
-
-## Overview of CTProblems.jl
-
-The `CTProblems.jl` package provides a list of optimal control problems, each of them is made of a description, the model and the solution. You can get access to any problem by a simple `description`, see [`CTBase.jl`](https://github.com/control-toolbox/CTBase.jl).
-For instance, to get the energy-min one dimensional exponential problem, simply
+For instance, to get the energy minimisation one dimensional exponential problem, simply
 
 ```@example main
 using CTProblems
-prob = Problem(:exponential, :dim1, :energy)
+prob = Problem(:exponential, :energy, :state_dim_1)
 ```
 
-Then, the model is given by
+!!! note
+
+    You can give a partial description. The complete description is
+
+    ```bash
+    (:exponential, :energy, :state_dim_1, :control_dim_1, :lagrange)
+    ```
+
+!!! warning
+
+    If you give a partial description, then, if several complete descriptions contains what is given, then, only the problem with the highest priority is returned. The higher in the list, the higher is the priority.
+    See the [list of descriptions](@ref descriptions-list).
+
+Then, the title is given by
+
+```@example main
+prob.title
+```
+
+The model is given by
 
 ```@example main
 prob.model
 ```
 
-You can plot the solution.
+And you can plot the solution.
 
 ```@example main
-plot(prob.solution)
+plot(prob.solution, size=(700, 500))
 ```
 
-## List of problems
+!!! note
 
-To print the complete list of [Problems](@ref):
-
-```@example main
-Problems()
-```
+    To get more than one problem, you can use the function [`Problems`](@ref), see also the [list of problems](@ref problems-list).
+    

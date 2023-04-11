@@ -2,9 +2,10 @@ function test_simple_exponential_time()
 
     # ---------------------------------------------------------------
     # problem = model + solution
-    prob = Problem(:exponential, :dim1, :time) 
+    prob = Problem(:exponential, :time, :state_dim_1, :control_dim_1, :lagrange) 
     ocp = prob.model
     sol = prob.solution
+    title = prob.title
 
     # Flow(ocp, u)
     f⁺ = Flow(ocp, (x, p) -> 1)
@@ -16,7 +17,7 @@ function test_simple_exponential_time()
     xf_ = final_condition(ocp)
     #
     function shoot!(s, p0, tf)
-        xf, pf = f⁺(t0, x0, p0[1], tf)
+        xf, pf = f⁺(t0, x0, p0, tf)
         s[1] = xf - xf_
         s[2] = H⁺(xf, pf) - 1
     end
@@ -32,7 +33,6 @@ function test_simple_exponential_time()
         return (t0, x0, p0, tf, f⁺)
     end
 
-    nle = (s, ξ) -> shoot!(s, ξ[1], ξ[2])
-    test_by_shooting(nle, ξ, fparams, sol, 1e-3, "time")
+    test_by_shooting((s, ξ) -> shoot!(s, ξ[1], ξ[2]), ξ, fparams, sol, 1e-3, title)
 
 end
