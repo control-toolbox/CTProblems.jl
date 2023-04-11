@@ -1,10 +1,10 @@
-EXAMPLE=(:lqr, :dim2, :ricatti)
+EXAMPLE=(:lqr, :state_dim_2, :control_dim_1, :lagrange)
 
 @eval function OCPDef{EXAMPLE}()
     # should return an OptimalControlProblem{example} with a message, a model and a solution
 
     # 
-    msg = "lqr - dimension 2 - ricatti"
+    title = "lqr - dimension 2 - ricatti"
 
     # the model
     n=2
@@ -81,6 +81,6 @@ EXAMPLE=(:lqr, :dim2, :ricatti)
     sol.infos[:resolution] = :numerical
 
     #
-    return OptimalControlProblem(msg, ocp, sol)
+    return OptimalControlProblem(title, ocp, sol)
 
 end

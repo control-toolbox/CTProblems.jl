@@ -1,10 +1,10 @@
-EXAMPLE=(:integrator, :dim2, :energy, :distance)
+EXAMPLE=(:integrator, :energy, :distance, :state_dim_2, :control_dim_1)
 
 @eval function OCPDef{EXAMPLE}()
     # should return an OptimalControlProblem{example} with a message, a model and a solution
 
     # 
-    msg = "Double integrator - energy min - distance max"
+    title = "Double integrator - energy min - distance max"
 
     # the model
     n=2
@@ -22,9 +22,7 @@ EXAMPLE=(:integrator, :dim2, :energy, :distance)
     B = [ 0
         1 ]
     constraint!(ocp, :dynamics, (x, u) -> A*x + B*u)
-    objective!(ocp, :lagrange, (x, u) -> 0.5u^2)
-    objective!(ocp, :mayer,  (t0, x0, tf, xf) -> -0.5xf[1]) 
-    #objective!(ocp, :bolza, (t0, x0, tf, xf) -> -0.5xf[1], (x, u) -> 0.5u^2)
+    objective!(ocp, :bolza, (t0, x0, tf, xf) -> -0.5xf[1], (x, u) -> 0.5u^2)
 
     # the solution
     a = x0[1]
@@ -56,6 +54,6 @@ EXAMPLE=(:integrator, :dim2, :energy, :distance)
     sol.infos[:resolution] = :analytical
 
     #
-    return OptimalControlProblem(msg, ocp, sol)
+    return OptimalControlProblem(title, ocp, sol)
 
 end

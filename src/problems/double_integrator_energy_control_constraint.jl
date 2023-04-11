@@ -1,10 +1,10 @@
-EXAMPLE=(:integrator, :dim2, :energy, :control_constraint)
+EXAMPLE=(:integrator, :energy, :state_dim_2, :control_dim_1, :lagrange, :control_constraint)
 
 @eval function OCPDef{EXAMPLE}()
     # should return an OptimalControlProblem{example} with a message, a model and a solution
 
     # 
-    msg = "Double integrator - energy min - control constraint"
+    title = "Double integrator - energy min - control constraint"
 
     # the model
     n=2
@@ -100,6 +100,6 @@ EXAMPLE=(:integrator, :dim2, :energy, :control_constraint)
     sol.infos[:resolution] = :numerical
 
     #
-    return OptimalControlProblem(msg, ocp, sol)
+    return OptimalControlProblem(title, ocp, sol)
 
 end
