@@ -4,7 +4,7 @@ EXAMPLE=(:orbital_transfert, :energy, :state_dim_4, :control_dim_2, :lagrange, :
     # should return an OptimalControlProblem{example} with a message, a model and a solution
 
     # 
-    msg = "Orbital transfert - energy min"
+    title = "Orbital transfert - energy min"
 
     # the model
     n=4
