@@ -4,7 +4,7 @@ EXAMPLE=(:integrator, :dim2, :consumption , :control_constraint)
     # should return an OptimalControlProblem{example} with a message, a model and a solution
 
     # 
-    msg = "Double integrator - consum min - control constraint"
+    msg = "Double integrator - consumption min - control constraint"
 
     # the model
     n=2

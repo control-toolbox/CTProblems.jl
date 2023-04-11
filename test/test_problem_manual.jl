@@ -7,7 +7,7 @@ end
 
 using CTProblems
 
-prob = Problem(:lqr, :dim2, :ricatti)
+prob = Problem(:integrator, :dim2, :consumption , :control_constraint)
 
 display(prob.model)
 
