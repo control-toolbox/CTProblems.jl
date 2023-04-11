@@ -1,10 +1,10 @@
-EXAMPLE=(:exponential, :dim1, :energy) 
+EXAMPLE=(:exponential, :energy, :state_dim_1, :control_dim_1, :lagrange)
 
 @eval function OCPDef{EXAMPLE}()
     # should return an OptimalControlProblem with a message, a model and a solution
 
     #
-    msg = "simple exponential - energy min"
+    title = "simple exponential - energy min"
 
     # the model
     n=1
@@ -51,6 +51,6 @@ EXAMPLE=(:exponential, :dim1, :energy)
     sol.infos[:resolution] = :analytical
 
     #
-    return OptimalControlProblem(msg, ocp, sol)
+    return OptimalControlProblem(title, ocp, sol)
 
 end

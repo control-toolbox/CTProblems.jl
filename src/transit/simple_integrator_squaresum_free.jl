@@ -4,7 +4,7 @@ EXAMPLE=(:integrator, :dim1, :squaresum, :free)
     # should return an OptimalControlProblem{example} with a message, a model and a solution
 
     # 
-    msg = "simple integrator - square-sum min - free"
+    title = "simple integrator - square-sum min - free"
 
     # the model
     n=1
@@ -48,6 +48,6 @@ EXAMPLE=(:integrator, :dim1, :squaresum, :free)
     sol.success = true
 
     #
-    return OptimalControlProblem(msg, ocp, sol)
+    return OptimalControlProblem(title, ocp, sol)
 
 end

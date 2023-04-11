@@ -4,7 +4,7 @@ EXAMPLE=(:turnpike, :dim1)
     # should return an OptimalControlProblem{example} with a message, a model and a solution
 
     # 
-    msg = "simple turnpike - state energy min"
+    title = "simple turnpike - state energy min"
 
     # the model
     n=1
@@ -50,6 +50,6 @@ EXAMPLE=(:turnpike, :dim1)
     sol.success = true
 
     #
-    return OptimalControlProblem(msg, ocp, sol)
+    return OptimalControlProblem(title, ocp, sol)
 
 end

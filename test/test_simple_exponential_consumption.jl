@@ -1,10 +1,12 @@
-function test_simple_exponential_conso()
+function test_simple_exponential_consumption()
 
     # ---------------------------------------------------------------
     # problem = model + solution
-    prob = Problem(:exponential, :dim1, :consumption) 
+    prob = Problem(:exponential, :consumption, :state_dim_1, :control_dim_1, 
+        :lagrange, :control_non_differentiable) 
     ocp = prob.model
     sol = prob.solution
+    title = prob.title
 
     # Flow(ocp, u)
     f0 = Flow(ocp, (x, p) -> 0)
@@ -17,7 +19,7 @@ function test_simple_exponential_conso()
     xf_ = final_condition(ocp)
     #
     function shoot!(s, p0, t1)
-        x1, p1 = f0(t0, x0, p0[1], t1)
+        x1, p1 = f0(t0, x0, p0, t1)
         xf, pf = f1(t1, x1, p1, tf)
         s[1] = xf - xf_
         s[2] = p1 - 1
@@ -33,7 +35,6 @@ function test_simple_exponential_conso()
         return (t0, x0, p0, tf, f)
     end
 
-    nle = (s, ξ) -> shoot!(s, ξ[1], ξ[2])
-    test_by_shooting(nle, ξ, fparams, sol, 1e-3, "conso")
+    test_by_shooting((s, ξ) -> shoot!(s, ξ[1], ξ[2]), ξ, fparams, sol, 1e-3, title)
 
 end

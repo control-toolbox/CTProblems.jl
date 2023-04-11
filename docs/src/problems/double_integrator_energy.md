@@ -1,15 +1,4 @@
-# Double integrator
-
-The double integrator dynamics is given by $\ddot{x} = u$. Setting $x \coloneqq (x_1, x_2)$, then we have $\dot{x}_1 = x_2$, $\dot{x}_2 = u$.
-
-```@contents
-Pages = ["double_integrator.md"]
-Depth = 2
-```
-
-## Energy minimisation problem
-
-### Presentation of the problem
+# [Double integrator: energy minimisation](@id DIE)
 
 The energy minimisation problem consists in minimising the cost functional in Lagrange form
 
@@ -109,13 +98,11 @@ The red sphere represents the solution.
 <img src="../assets/di_energy_sfun.png" style="display: block; margin: 0 auto;">
 ```
 
-### The problem from CTProblems.jl
-
 You can access the problem from the `CTProblems.jl` package:
 
 ```@example main
 using CTProblems
-prob = Problem(:integrator, :dim2, :energy)
+prob = Problem(:integrator, :energy, :state_dim_2)
 ```
 
 Then, the model is given by
@@ -128,18 +115,4 @@ You can plot the solution.
 
 ```@example main
 plot(prob.solution, size=(700, 700))
-```
-
-## Energy minimisation problem with control constraints
-
-```@raw html
-<img src="../assets/di_energy_contraint_u.svg" style="display: block; margin: 0 auto;">
-```
-
-```@raw html
-<img src="../assets/di_energy_contraint_structures.svg" style="display: block; margin: 0 auto;">
-```
-
-```@raw html
-<img src="../assets/di_energy_contraint_sfun.png" style="display: block; margin: 0 auto;">
 ```
