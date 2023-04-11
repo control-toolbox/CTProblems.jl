@@ -1,3 +1,5 @@
+import Base.∈
+
 struct Interval
     a::Real
     b::Real

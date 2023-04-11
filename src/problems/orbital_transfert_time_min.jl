@@ -13,7 +13,7 @@ EXAMPLE=(:orbital_transfert, :dim4, :time)
     x0     = [-42272.67, 0, 0, -5796.72] # état initial
     μ      = 5.1658620912*1e12
     rf     = 42165.0 ;
-    F_max  = 20.0#100.0
+    F_max  = 100.0
     γ_max  = F_max*3600.0^2/(2000.0*10^3)
     t0     = 0.0
     rf3    = rf^3  ;
@@ -109,9 +109,7 @@ EXAMPLE=(:orbital_transfert, :dim4, :time)
     
 
     # using MINPACK
-    #ξ_guess =  [1.0323e-4, 4.915e-5, 3.568e-4, -1.554e-4, 13.4]   # pour F_max = 100N
-    ξ_guess = [-0.0013615, -7.34989e-6, -5.359923e-5, -0.00858271, 59.8551668] # for F_max = 20N
-
+    ξ_guess =  [0.00010323118914991345, 4.892642780583378e-5, 0.00035679672938385165, -0.0001553613885740003, 13.403181957151876]   # pour F_max = 100N
 
     foo(ξ) = shoot(ξ[1:4], ξ[5])
     jfoo(ξ) = ForwardDiff.jacobian(foo, ξ)
@@ -126,9 +124,9 @@ EXAMPLE=(:orbital_transfert, :dim4, :time)
     # computing x, p, u
     ode_sol  = f((t0, tf), x0, p0)
 
-    x(t) = ode_sol(t)[1:4]#[0,0,0,0]
-    p(t) = ode_sol(t)[5:8]#[0,0,0,0]
-    u(t) = control(ode_sol(t)[5:8])#[0,0]
+    x(t) = ode_sol(t)[1:4]
+    p(t) = ode_sol(t)[5:8]
+    u(t) = control(ode_sol(t)[5:8])
     objective = tf
     c(t) = [sqrt(x(t)[1]^2 + x(t)[2]^2) - rf, x(t)[3] + α*x(t)[2], x(t)[4]-α*x(t)[1]]
     println(c(tf))

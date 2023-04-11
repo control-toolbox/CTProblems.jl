@@ -62,14 +62,13 @@ EXAMPLE=(:orbital_transfert, :dim4, :consumption)
     #H0(x,p) = Hc(x,p) # + augmentation todo
     #H1(x,p) = Hc(x,p) + (u_max/m0)*p[3]*p[3]/norm(p[3:4]) + (u_max/m0)*p[4]*p[4]/norm(p[3:4]) - norm(p[3:4]) # ajouter la masse
 
-    H(x,p,u) = Hc(x,p) + u[1]*p[3]*γ_max + u[2]*p[4]*γ_max + p[5]*norm(u)
+    H(x,p,u) = -norm(u) + Hc(x,p) + u[1]*p[3]*γ_max + u[2]*p[4]*γ_max + p[5]*norm(u)
     H0(x,p) = H(x,p,u0(x,p)) 
     H1(x,p) = H(x,p,u1(x,p))
 
     # Flow
     f0 = Flow(Hamiltonian(H0));
     f1 = Flow(Hamiltonian(H1));
-    #println(f0(t0,x0,[0,0,0,0],0.5))
 
     # shoot function
     function shoot(p0, t1, t2, t3, t4)
@@ -102,8 +101,8 @@ EXAMPLE=(:orbital_transfert, :dim4, :consumption)
     jS!(js, ξ) = ( js[:] = jS(ξ); nothing )
 
     # Initial guess
-    p0_guess = [0.026984121112311455, 0.006910835140704743, 0.05039737186202537, -0.003297204012076633, -1.7516351025444465e-28]#[0.0012977929824425805, 0.00032589568022940377, 0.0023765992752143887, -0.00010621859791207892]*γ_max
-    ti_guess = [0.4556797723303926, 3.628969271836267, 11.683607683662673, 12.505465499021495]#[0.5,3.0,11.0,11.5] # t1, t2, t3, t4
+    p0_guess = [0.02698412111231433, 0.006910835140705538, 0.050397371862031096, -0.0032972040120747836, -1.0076835239866583e-23]
+    ti_guess = [0.4556797711668658, 3.6289692721936913, 11.683607683450061, 12.505465498856514]
     ξ_guess  = [p0_guess;ti_guess]
 
     # Solve
@@ -124,11 +123,8 @@ EXAMPLE=(:orbital_transfert, :dim4, :consumption)
     
     x(t) = ode_sol(t)[1:4]
     p(t) = ode_sol(t)[6:9]
-    #u(t) = [0,0]*(γ_max*(p(t)[3]^2 + p(t)[4]^2) ≤ 1) + p(t)[3:4]/norm(p(t)[3:4])*(γ_max*(p(t)[3]^2 + p(t)[4]^2) ≥ 1)
     u(t) = [0,0]*(t ∈ Interval(t1,t2)∪Interval(t3,t4)) + p(t)[3:4]/norm(p(t)[3:4])*(t ∈ Interval(t0,t1)∪Interval(t2,t3)∪Interval(t4,tf))
-    objective = ode_sol(0)[5]
-    c(t) = [norm(x(t)[1:2]) - rf, x(t)[3] + α*x(t)[2], x(t)[4]-α*x(t)[1]]
-    println(c(tf))
+    objective = ode_sol(tf)[5]
     
     #
     N=201
