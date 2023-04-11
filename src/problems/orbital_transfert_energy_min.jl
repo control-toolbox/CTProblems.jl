@@ -1,4 +1,4 @@
-EXAMPLE=(:orbital_transfert, :dim4, :energy)
+EXAMPLE=(:orbital_transfert, :energy, :state_dim_4, :control_dim_2, :lagrange, :singular_arc)
 
 @eval function OCPDef{EXAMPLE}()
     # should return an OptimalControlProblem{example} with a message, a model and a solution
@@ -10,14 +10,15 @@ EXAMPLE=(:orbital_transfert, :dim4, :energy)
     n=4
     m=2
 
-    x0     = [-42272.67, 0, 0, -5796.72, 0] # état initial
+    x0     = [-42272.67, 0, 0, -5796.72]
     μ      = 5.1658620912*1.0e12
     rf     = 42165.0 ;
+    rf3    = rf^3  ;
+    m0     = 2000.0
     F_max  = 100.0
-    γ_max  = F_max*3600.0^2/(2000.0*10^3)
+    γ_max  = F_max*3600.0^2/(m0*10^3)
     t0     = 0.0
     tf     = 20.0 
-    rf3    = rf^3  ;
     α      = sqrt(μ/rf3);
 
     ocp = Model()
@@ -25,7 +26,7 @@ EXAMPLE=(:orbital_transfert, :dim4, :energy)
     control!(ocp, m) # dimension of the control
     time!(ocp, [t0, tf])
     constraint!(ocp, :initial, x0, :initial_constraint)
-    constraint!(ocp, :boundary, (t0, x0, tf, xf) -> [sqrt(xf[1]^2 + xf[2]^2)-rf, xf[3] + α*xf[2], xf[4] - α*xf[1]],[0,0,0], :boundary_constraint)
+    constraint!(ocp, :boundary, (t0, x0, tf, xf) -> [norm(xf[1:2])-rf, xf[3] + α*xf[2], xf[4] - α*xf[1]],[0,0,0], :boundary_constraint)
     A = [ 0 0 1 0; 0 0 0 1; 1 0 0 0; 0 1 0 0]
     B = [ 0 0; 0 0; 1 0; 0 1 ]
 
@@ -34,16 +35,14 @@ EXAMPLE=(:orbital_transfert, :dim4, :energy)
 
     # the solution
 
-    # Contrôle maximisant
+    x0 = [x0;0]
+
     function control(p)
         u = zeros(eltype(p),2)
         u = [p[3],p[4]]
         return u
     end;
 
-    #u(x,p) = [p[3],p[4]]
-
-    # Hamiltonien maximisé
     function H(x, p)
         u = control(p)
         h = - 0.5*(u[1]^2 + u[2]^2) + p[1]*x[3] + p[2]*x[4] + p[3]*(-μ*x[1]/norm(x[1:2])^3 + u[1]) + p[4]*(-μ*x[2]/(sqrt(x[1]^2+x[2]^2))^3 + u[2]) + p[5]*0.5*(u[1]^2 + u[2]^2)
@@ -73,7 +72,6 @@ EXAMPLE=(:orbital_transfert, :dim4, :energy)
     jS!(js, ξ) = ( js[:] = jS(ξ); nothing )
 
     # Initial guess
-    # using MINPACK  
     ξ_guess = [131.44483634894812, 34.16617425875177, 249.15735272382514, -23.9732920001312, 0.0]   # pour F_max = 100N
 
     # Solve

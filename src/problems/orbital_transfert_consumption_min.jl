@@ -1,4 +1,4 @@
-EXAMPLE=(:orbital_transfert, :dim4, :consumption)
+EXAMPLE=(:orbital_transfert, :consumption, :state_dim_4, :control_dim_2, :lagrange, :control_constraint)
 
 @eval function OCPDef{EXAMPLE}()
     # should return an OptimalControlProblem{example} with a message, a model and a solution
@@ -10,30 +10,26 @@ EXAMPLE=(:orbital_transfert, :dim4, :consumption)
     n=4
     m=2
 
+    x0 = [-42272.67, 0, 0, -5796.72]
+    μ      = 5.1658620912*1e12
     rf     = 42165.0 ;
+    rf3    = rf^3  ;
     m0     = 2000.0
     F_max = 100.0
     γ_max  = F_max*3600.0^2/(m0*10^3)
-    μ      = 5.1658620912*1e12
     t0     = 0.0
-    rf3    = rf^3  ;
     α      = sqrt(μ/rf3);
     β      = 0.0
 
     tol    = 1e-9;
 
-    x0 = [-42272.67, 0, 0, -5796.72]
 
     F_max_100  = 100.0
 
     tf_min = 13.40318195708344 # minimal time for Fmax = 100 N
     tf = 1.5*tf_min
-    ε_init_100 = 5e-3
-    p0_guess_100 = [0.0012977929824425805, 0.00032589568022940377, 0.0023765992752143887, -0.00010621859791207892, -0.025235832339334786, 1.3355190947675691e-14]
 
-    nx = size(p0_guess_100, 1)
-
-    Th(F) = F*3600.0^2/(10^3) # u_max
+    Th(F) = F*3600.0^2/(10^3)
     u_max = Th(F_max)
 
 
@@ -41,8 +37,8 @@ EXAMPLE=(:orbital_transfert, :dim4, :consumption)
     state!(ocp, n)   # dimension of the state
     control!(ocp, m) # dimension of the control
     time!(ocp, :initial, t0)
-    constraint!(ocp, :initial, x0)
-    constraint!(ocp, :boundary, (t0, x0, tf, xf) -> [sqrt(xf[1]^2 + xf[2]^2)-rf, xf[3] + α*xf[2], xf[4] - α*xf[1]],[0,0,0])
+    constraint!(ocp, :initial, x0, :initial_constraint)
+    constraint!(ocp, :boundary, (t0, x0, tf, xf) -> [norm(xf[1:2])-rf, xf[3] + α*xf[2], xf[4] - α*xf[1]],[0,0,0], :boundary_constraint)
     constraint!(ocp, :control, u -> u[1]^2 + u[2]^2, 0, 1, :control_constraint)
     A = [ 0 0 1 0; 0 0 0 1; 1 0 0 0; 0 1 0 0]
     B = [ 0 0; 0 0; 1 0; 0 1 ]
@@ -52,16 +48,12 @@ EXAMPLE=(:orbital_transfert, :dim4, :consumption)
 
     # the solution
 
-    x0 = [-42272.67, 0, 0, -5796.72, 0]
+    x0 = [x0;0]
 
     u0(x,p) = [0,0]
     u1(x,p) = p[3:4]/norm(p[3:4])
     
     Hc(x,p) = p[1]*x[3] + p[2]*x[4] + p[3]*(-μ*x[1]/norm(x[1:2])^3) + p[4]*(-μ*x[2]/norm(x[1:2])^3)
-    # β == 0
-    #H0(x,p) = Hc(x,p) # + augmentation todo
-    #H1(x,p) = Hc(x,p) + (u_max/m0)*p[3]*p[3]/norm(p[3:4]) + (u_max/m0)*p[4]*p[4]/norm(p[3:4]) - norm(p[3:4]) # ajouter la masse
-
     H(x,p,u) = -norm(u) + Hc(x,p) + u[1]*p[3]*γ_max + u[2]*p[4]*γ_max + p[5]*norm(u)
     H0(x,p) = H(x,p,u0(x,p)) 
     H1(x,p) = H(x,p,u1(x,p))
