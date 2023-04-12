@@ -3,7 +3,7 @@
 The energy and distance minimisation double integrator problem consists in minimising
 
 ```math
-    -0.5*x_1(t_f) + 0.5*\int_{0}^{1} {\lVert u(t) \rVert}^2 \, \mathrm{d}t 
+    -0.5*x_1(t_f) + 0.5*\int_{0}^{1} {u(t)}^2 \, \mathrm{d}t 
 ```
 
 subject to the constraints
