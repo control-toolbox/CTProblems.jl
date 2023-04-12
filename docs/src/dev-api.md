@@ -1,4 +1,4 @@
-# API
+# Private functions
 
 ```@meta
 CurrentModule = CTProblems 
@@ -7,5 +7,5 @@ CurrentModule = CTProblems
 ```@autodocs
 Modules = [CTProblems]
 Order = [:module, :type, :function, :macro]
-Private = false
+Public = false
 ```

@@ -1,49 +1,47 @@
-EXAMPLE=(:integrator, :energy, :state_dim_2, :control_dim_1, :lagrange)
+EXAMPLE=(:integrator, :time, :state_dim_2, :control_dim_1, :mayer, :control_constraint, :state_non_differentiable, :control_non_differentiable)
 
 @eval function OCPDef{EXAMPLE}()
-    # should return an OptimalControlProblem with a message, a model and a solution
+    # should return an OptimalControlProblem{example} with a message, a model and a solution
 
     # 
-    title = "Double integrator - energy min"
+    title = "Double integrator - time min - control constraint"
 
     # the model
     n=2
     m=1
     t0=0
-    tf=1
     x0=[-1, 0]
     xf=[0, 0]
-    t0=0
-    tf=1
-    x0=[-1, 0]
-    xf=[0, 0]
+    γ = 1
     ocp = Model()
     state!(ocp, n)   # dimension of the state
     control!(ocp, m) # dimension of the control
-    time!(ocp, [t0, tf])
-
+    time!(ocp, :initial, t0)
     constraint!(ocp, :initial, x0, :initial_constraint)
-    constraint!(ocp, :final, xf, :final_constraint)
+    constraint!(ocp, :final,   xf, :final_constraint)
+    constraint!(ocp, :control, -γ, γ, :control_constraint)
     A = [ 0 1
         0 0 ]
     B = [ 0
         1 ]
     constraint!(ocp, :dynamics, (x, u) -> A*x + B*u)
-    objective!(ocp, :lagrange, (x, u) -> 0.5u^2) # default is to minimise
+    objective!(ocp, :mayer,  (t0, x0, tf, xf) -> tf, :min) 
 
     # the solution
     a = x0[1]
     b = x0[2]
-    C = [-(tf-t0)^3/6 (tf-t0)^2/2
-         -(tf-t0)^2/2 (tf-t0)]
-    D = [-a-b*(tf-t0), -b]+xf
-    p0 = C\D
-    α = p0[1]
-    β = p0[2]
-    x(t) = [a+b*(t-t0)+β*(t-t0)^2/2.0-α*(t-t0)^3/6.0, b+β*(t-t0)-α*(t-t0)^2/2.0]
-    p(t) = [α, -α*(t-t0)+β]
-    u(t) = [p(t)[2]]
-    objective = 0.5*(α^2*(tf-t0)^3/3+β^2*(tf-t0)-α*β*(tf-t0)^2)
+
+    t1 = sqrt(-a)
+    tf = 2*t1
+    α = 1/t1
+    β = 1
+    p(t) = [α, -α*t + β]
+    u(t) = (t<t1)*γ + (t1≤t)*(-γ)
+    x2_arc1(t) = t*γ + b
+    x2_arc2(t) = (tf-t)*γ + xf[2] 
+    x(t) = (t<t1)*[ 0.5*x2_arc1(t)^2 + a, x2_arc1(t)] + (t1≤t)*[-0.5*x2_arc2(t)^2, x2_arc2(t)]
+    objective = tf
+
     #
     N=201
     times = range(t0, tf, N)
@@ -60,7 +58,7 @@ EXAMPLE=(:integrator, :energy, :state_dim_2, :control_dim_1, :lagrange)
     sol.objective = objective
     sol.iterations = 0
     sol.stopping = :dummy
-    sol.message = "structure: smooth"
+    sol.message = "structure: B+B-"
     sol.success = true
     sol.infos[:resolution] = :analytical
 

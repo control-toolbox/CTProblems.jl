@@ -1,9 +1,10 @@
 function test_double_integrator_energy()
 
     # problem = model + solution
-    prob = Problem(:integrator, :dim2, :energy) 
+    prob = Problem(:integrator, :energy, :state_dim_2, :control_dim_1, :lagrange) 
     ocp = prob.model
     sol = prob.solution
+    title = prob.title
 
     # Flow(ocp, u)
     f = Flow(ocp, (x, p) -> p[2])
@@ -20,8 +21,8 @@ function test_double_integrator_energy()
     end
 
     # tests
-    ξ = [12.0, 6.0] # MINPACK needs Float64
+    ξ = [12, 6]
     fparams(ξ) = (t0, x0, ξ, tf, f)
-    test_by_shooting(shoot!, ξ, fparams, sol, 1e-3, "energy")
+    test_by_shooting(shoot!, ξ, fparams, sol, 1e-3, title)
 
 end

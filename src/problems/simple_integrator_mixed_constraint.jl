@@ -1,10 +1,8 @@
-EXAMPLE=(:integrator, :dim1, :mixed_constraint)
+EXAMPLE=(:integrator, :state_dim_1, :control_dim_1, :lagrange, :mixed_constraint)
 
 @eval function OCPDef{EXAMPLE}()
-    # should return an OptimalControlProblem{example} with a message, a model and a solution
-
     # 
-    msg = "simple integrator - mixed constraint"
+    title = "simple integrator - mixed constraint"
 
     # the model
     n=1
@@ -17,7 +15,7 @@ EXAMPLE=(:integrator, :dim1, :mixed_constraint)
     control!(ocp, m) # dimension of the control
     time!(ocp, [t0, tf])
     constraint!(ocp, :initial, x0, :initial_constraint)
-    constraint!(ocp, :control, 0, Inf, :control_constraint)
+    #constraint!(ocp, :control, 0, Inf, :control_constraint)
     constraint!(ocp, :mixed, (x,u) -> x + u, -Inf, 0, :mixed_constraint)
     constraint!(ocp, :dynamics, (x, u) -> u)
     objective!(ocp, :lagrange, (x, u) -> -u)
@@ -36,10 +34,10 @@ EXAMPLE=(:integrator, :dim1, :mixed_constraint)
     sol.control_dimension = m
     sol.times = times
     sol.state = x
-    sol.state_labels = [ "x" ]
+    sol.state_names = [ "x" ]
     sol.adjoint = p
     sol.control = u
-    sol.control_labels = [ "u" ]
+    sol.control_names = [ "u" ]
     sol.objective = objective
     sol.iterations = 0
     sol.stopping = :dummy
@@ -47,6 +45,6 @@ EXAMPLE=(:integrator, :dim1, :mixed_constraint)
     sol.success = true
 
     #
-    return OptimalControlProblem(msg, ocp, sol)
+    return OptimalControlProblem(title, ocp, sol)
 
 end

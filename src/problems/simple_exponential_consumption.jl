@@ -1,8 +1,8 @@
-EXAMPLE=(:exponential, :dim1, :consumption)
+EXAMPLE=(:exponential, :consumption, :state_dim_1, :control_dim_1, :lagrange, :control_non_differentiable)
 
 @eval function OCPDef{EXAMPLE}()
     # 
-    msg = "simple exponential - conso min"
+    title = "simple exponential - conso min"
 
     # the model
     n=1
@@ -36,10 +36,10 @@ EXAMPLE=(:exponential, :dim1, :consumption)
     sol.control_dimension = m
     sol.times = times
     sol.state = x
-    sol.state_labels = [ "x" ]
+    sol.state_names = [ "x" ]
     sol.adjoint = p
     sol.control = u
-    sol.control_labels = [ "u" ]
+    sol.control_names = [ "u" ]
     sol.objective = objective
     sol.iterations = 0
     sol.stopping = :dummy
@@ -48,6 +48,6 @@ EXAMPLE=(:exponential, :dim1, :consumption)
     sol.infos[:resolution] = :analytical
 
     #
-    return OptimalControlProblem(msg, ocp, sol)
+    return OptimalControlProblem(title, ocp, sol)
 
 end

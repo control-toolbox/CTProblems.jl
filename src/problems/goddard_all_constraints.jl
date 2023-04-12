@@ -1,10 +1,10 @@
-EXAMPLE=(:goddard, :all_constraints)
+EXAMPLE=(:goddard, :all_constraints, :altitude, :state_dim_3, :control_dim_1, :mayer, :state_constraint, :control_constraint, :singular_arc)
 
 @eval function OCPDef{EXAMPLE}()
     # should return an OptimalControlProblem{example} with a message, a model and a solution
 
     # 
-    msg = "Goddard problem with state constraint - maximise altitude"
+    title = "Goddard problem with state constraint - maximise altitude"
 
     # ------------------------------------------------------------------------------------------
     # the model
@@ -108,6 +108,6 @@ EXAMPLE=(:goddard, :all_constraints)
     sol.infos[:resolution] = :numerical
 
     #
-    return OptimalControlProblem(msg, ocp, sol)
+    return OptimalControlProblem(title, ocp, sol)
 
 end
