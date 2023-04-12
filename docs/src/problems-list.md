@@ -16,7 +16,7 @@ In the following table, we give some characteristics about the problems and thei
 | [Simple exponential consumption](@ref SEC)    | (1, 1)          | `Lagrange`    | ❌                 | ❌               | ❌ `u`             |
 | [Double integrator energy](@ref DIE)          | (2, 1)          | `Lagrange`    | ❌                 | ❌               | ✅                 |
 | [Goddard](@ref Godda) ([version 2](@ref Go2)) | (3, 1)          | `Mayer`       | ✅ `x`, `u`        | ✅               | ✅                 |
-| [Orbital transfert time](@ref OTT)            | (4, 2)          | `Mayer`       | ✅ `u`             | ❌               | ✅                 |
+| [Orbital transfert time](@ref OTT)            | (4, 2)          | `Mayer`       | ❌                 | ❌               | ✅                 |
 | [Orbital transfert energy](@ref OTE)          | (4, 2)          | `Mayer`       | ❌                 | ❌               | ✅                 |
 | [Orbital transfert consumtion](@ref OTC)      | (4, 2)          | `Mayer`       | ✅ `u`             | ❌               | ❌ `u`             |
 

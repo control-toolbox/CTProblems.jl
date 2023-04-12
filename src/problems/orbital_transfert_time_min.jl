@@ -107,6 +107,6 @@ EXAMPLE=(:orbital_transfert, :time, :state_dim_4, :control_dim_2, :mayer, :contr
     sol.infos[:resolution] = :numerical
 
     #
-    return OptimalControlProblem(msg, ocp, sol)
+    return OptimalControlProblem(title, ocp, sol)
 
 end
