@@ -1,4 +1,4 @@
-EXAMPLE=(:integrator, :energy, :distance, :state_dim_2, :control_dim_1)
+EXAMPLE=(:integrator, :energy, :distance, :state_dim_2, :control_dim_1, :bolza)
 
 @eval function OCPDef{EXAMPLE}()
     # should return an OptimalControlProblem{example} with a message, a model and a solution

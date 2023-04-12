@@ -18,9 +18,9 @@ In the following table, we give some characteristics about the problems and thei
 | [Double integrator energy](@ref DIE)          | (2, 1)          | `Lagrange`    | ❌                 | ❌               | ✅                 |
 | [Double integrator consumption](@ref DIC)     | (2, 1)          | `Lagrange`    | ✅ `u`             | ❌               | ❌ `u`             |
 | [Double integrator energy cc](@ref DIECC)     | (2, 1)          | `Lagrange`    | ❌                 | ❌               | ✅                 |
-| [Double integrator energy distance](@ref DIED)| (2, 1)          | `Lagrange`    | ❌                 | ❌               | ✅                 |
+| [Double integrator energy distance](@ref DIED)| (2, 1)          | `Bolza`       | ❌                 | ❌               | ✅                 |
 | [Double integrator energy sc](@ref DIESC)     | (2, 1)          | `Lagrange`    | ✅ `x`, `u`        | ❌               | ✅                 |
-| [Double integrator time](@ref DIT)            | (2, 1)          |    `Mayer`       | ❌                 | ❌               | ✅                 |
+| [Double integrator time](@ref DIT)            | (2, 1)          | `Mayer`       | ❌                 | ❌               | ✅                 |
 | [LQR](@ref LQR)                               | (2, 1)          | `Lagrange`    | ❌                 | ❌               | ✅                 |
 
 Legend:
