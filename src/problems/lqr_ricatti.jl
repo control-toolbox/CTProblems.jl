@@ -1,8 +1,6 @@
 EXAMPLE=(:lqr, :state_dim_2, :control_dim_1, :lagrange)
 
 @eval function OCPDef{EXAMPLE}()
-    # should return an OptimalControlProblem{example} with a message, a model and a solution
-
     # 
     title = "lqr - dimension 2 - ricatti"
 
@@ -30,7 +28,7 @@ EXAMPLE=(:lqr, :state_dim_2, :control_dim_1, :lagrange)
     b = x0[2]
 
     # computing S
-    ricatti(S, params, t) = -S*B*Rm1*B'*S - (-Q + A'*S+S*A)
+    ricatti(S, params, t) = -S*B*Rm1*B'*S - (-Q + A'*S + S*A)
     Sf = zeros(size(A))
     tspan = (tf, 0)
     prob = ODEProblem(ricatti,Sf,tspan)
@@ -43,7 +41,7 @@ EXAMPLE=(:lqr, :state_dim_2, :control_dim_1, :lagrange)
     x = solve(prob, Tsit5(), reltol=1e-8, abstol=1e-8)
 
     # computing u
-    u(t) = -Rm1*B'*S(t)*x(t) 
+    u(t) = Rm1*B'*S(t)*x(t) 
     
     # computing p
     ϕ(p, params, t) =  [p[2]+x(t)[1] ; x(t)[2]-p[1]]
@@ -76,7 +74,7 @@ EXAMPLE=(:lqr, :state_dim_2, :control_dim_1, :lagrange)
     sol.objective = objective
     sol.iterations = 0
     sol.stopping = :dummy
-    sol.message = "structure: complex"
+    sol.message = "structure: smooth"
     sol.success = true
     sol.infos[:resolution] = :numerical
 

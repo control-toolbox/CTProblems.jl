@@ -1,8 +1,6 @@
 EXAMPLE=(:integrator, :energy, :state_dim_2, :control_dim_1, :lagrange, :control_constraint)
 
 @eval function OCPDef{EXAMPLE}()
-    # should return an OptimalControlProblem{example} with a message, a model and a solution
-
     # 
     title = "Double integrator - energy min - control constraint"
 
@@ -68,12 +66,12 @@ EXAMPLE=(:integrator, :energy, :state_dim_2, :control_dim_1, :lagrange, :control
     p0_ini = [1.5*2*γ/tf, 1.5*γ]
     ξ = [p0_ini[1],p0_ini[2]]
     nle = (s, ξ) -> shoot!(s, ξ[1], ξ[2])
-    indirect_sol = fsolve(nle, ξ, show_trace = true)
-    println(indirect_sol)
+    indirect_sol = fsolve(nle, ξ, show_trace=false)
+    #println(indirect_sol)
      
     # the result of the newton method is [12.90994448735837, 6.454972243678883]
     p0 = indirect_sol.x
-    println(t1(p0[1],p0[2]),"  ",t2(p0[1],p0[2]))
+    #println(t1(p0[1],p0[2]),"  ",t2(p0[1],p0[2]))
     x(t) = (t ≤ t1(p0[1],p0[2]))*x_arc_1(t,p0[1],p0[2]) + (t1(p0[1],p0[2])<t<t2(p0[1],p0[2]))*x_arc_2(t,p0[1],p0[2]) + (t ≥ t2(p0[1],p0[2]))*x_arc_3(t,p0[1],p0[2])
     p(t) = [p0[1],-p0[1]*t + p0[2]]
     u(t) = (t ≤ t1(p0[1],p0[2]))*γ + (t1(p0[1],p0[2])<t<t2(p0[1],p0[2]))*p(t)[2] + (t ≥ t2(p0[1],p0[2]))*(-γ)
