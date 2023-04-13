@@ -1,30 +1,31 @@
-EXAMPLE=(:integrator, :state_dim_1, :control_dim_1, :lagrange, :mixed_constraint)
+EXAMPLE=(:integrator, :lqr, :free_final_time, :state_dim_1, :control_dim_1, :bolza)
 
 @eval function OCPDef{EXAMPLE}()
     # 
-    title = "simple integrator - mixed constraint"
+    title = "simple integrator - bolza cost: tf + ½ ∫ x²+u²"
 
     # the model
     n=1
     m=1
     t0=0
-    tf=1
-    x0=-1
+    x0=0
+    xf=1
     ocp = Model()
     state!(ocp, n)   # dimension of the state
     control!(ocp, m) # dimension of the control
-    time!(ocp, [t0, tf])
+    time!(ocp, :initial, t0)
     constraint!(ocp, :initial, x0, :initial_constraint)
-    #constraint!(ocp, :control, 0, Inf, :control_constraint)
-    constraint!(ocp, :mixed, (x,u) -> x + u, -Inf, 0, :mixed_constraint)
+    constraint!(ocp, :final, xf, :final_constraint)
     constraint!(ocp, :dynamics, (x, u) -> u)
-    objective!(ocp, :lagrange, (x, u) -> -u)
+    objective!(ocp, :bolza, (t0, x0, tf, xf) -> tf, (x, u) -> 0.5*(u^2+x^2)) # default is to minimise
 
     # the solution
-    x(t) = -exp(-t)
-    p(t) = 1-exp(t-1)
-    u(t) = -x(t)
-    objective = exp(-1) - 1
+    tf = atanh(sqrt(xf^2/(2+xf^2)))
+    p0 = xf[1]/sinh(tf)
+    x(t) = p0*sinh(t)
+    p(t) = p0*cosh(t)
+    u(t) = p(t)
+    objective = tf + 0.5*xf^2*1/tanh(tf)
     #
     N=201
     times = range(t0, tf, N)
@@ -41,7 +42,7 @@ EXAMPLE=(:integrator, :state_dim_1, :control_dim_1, :lagrange, :mixed_constraint
     sol.objective = objective
     sol.iterations = 0
     sol.stopping = :dummy
-    sol.message = "structure: smooth but the mixed constraint is active all over the solution"
+    sol.message = "structure: smooth"
     sol.success = true
     sol.infos[:resolution] = :analytical
 

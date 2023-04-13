@@ -1,30 +1,32 @@
-EXAMPLE=(:integrator, :state_dim_1, :control_dim_1, :lagrange, :mixed_constraint)
+EXAMPLE=(:integrator, :state_dime_1, :state_constraint, :control_constraint, :nonautonomous)
 
 @eval function OCPDef{EXAMPLE}()
     # 
-    title = "simple integrator - mixed constraint"
+    title = "simple integrator - state and control constraints"
 
     # the model
     n=1
     m=1
     t0=0
-    tf=1
-    x0=-1
-    ocp = Model()
+    tf=3
+    x0=0
+    α=1 
+    ocp = Model(time_dependence=:nonautonomous)
     state!(ocp, n)   # dimension of the state
     control!(ocp, m) # dimension of the control
     time!(ocp, [t0, tf])
     constraint!(ocp, :initial, x0, :initial_constraint)
-    #constraint!(ocp, :control, 0, Inf, :control_constraint)
-    constraint!(ocp, :mixed, (x,u) -> x + u, -Inf, 0, :mixed_constraint)
+    constraint!(ocp, :control, 0, 3, :control_constraint)
+    constraint!(ocp, :state, (x,u) -> 1 - x(t) - (t-2)^2, -Inf, 0, :state_constraint)
     constraint!(ocp, :dynamics, (x, u) -> u)
-    objective!(ocp, :lagrange, (x, u) -> -u)
+    objective!(ocp, :lagrange, (x, u) -> exp(-α*t)*u)
 
     # the solution
-    x(t) = -exp(-t)
-    p(t) = 1-exp(t-1)
-    u(t) = -x(t)
-    objective = exp(-1) - 1
+    arc(t) = [0 ≤ t < 1, 1 ≤ t < 2 , 2 ≤ t ≤ 3]
+    x(t) = arc(t)[1]*0 + arc(t)[2]*(1-(t-2)^2) + arc(t)[3]*1
+    p(t) = arc(t)[1]*(-exp(-α)) + arc(t)[2]*0 + arc(t)[3]*0
+    u(t) = arc(t)[1]*0 + arc(t)[2]*(-2*(t-2)) + arc(t)[3]*0
+    objective = 2/α*(2*exp(-α)-exp(-2*α))
     #
     N=201
     times = range(t0, tf, N)
@@ -41,9 +43,8 @@ EXAMPLE=(:integrator, :state_dim_1, :control_dim_1, :lagrange, :mixed_constraint
     sol.objective = objective
     sol.iterations = 0
     sol.stopping = :dummy
-    sol.message = "structure: smooth but the mixed constraint is active all over the solution"
+    sol.message = "analytical solution"
     sol.success = true
-    sol.infos[:resolution] = :analytical
 
     #
     return OptimalControlProblem(title, ocp, sol)
