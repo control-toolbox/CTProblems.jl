@@ -1,10 +1,8 @@
-EXAMPLE=(:integrator, :dim1, :state_constraint, :control_constraint, :non_autonomous)
+EXAMPLE=(:integrator, :state_dime_1, :state_constraint, :control_constraint, :nonautonomous)
 
 @eval function OCPDef{EXAMPLE}()
-    # should return an OptimalControlProblem{example} with a message, a model and a solution
-
     # 
-    title = "simple integrator - state and control constraint"
+    title = "simple integrator - state and control constraints"
 
     # the model
     n=1

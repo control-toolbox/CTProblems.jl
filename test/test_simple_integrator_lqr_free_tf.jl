@@ -1,8 +1,8 @@
-function test_simple_integrator_energy_free_tf()
+function test_simple_integrator_lqr_free_tf()
 
     # ---------------------------------------------------------------
     # problem = model + solution
-    prob = Problem(:integrator, :energy, :free_final_time, :state_dim_1, :control_dim_1, :lagrange) 
+    prob = Problem(:integrator, :lqr, :free_final_time, :state_dim_1, :control_dim_1, :bolza) 
     ocp = prob.model
     sol = prob.solution
     title = prob.title
@@ -13,17 +13,17 @@ function test_simple_integrator_energy_free_tf()
     # shooting function
     t0 = ocp.initial_time
     x0 = initial_condition(ocp)
-    c(tf, xf) = constraint(ocp, :boundary_constraint)(t0, x0, tf, xf)
+    xf = final_condition(ocp)
     #
     function shoot!(s, p0, tf)
-        xf, pf = f(t0, x0, p0, tf)
-        s[1] = c(tf, xf)
-        s[2] = pf - 2
+        xf_, pf = f(t0, x0, p0, tf)
+        s[1] = xf - xf_
+        s[2] = 0.5*(pf^2-xf_^2) - 1 # H = 1
     end
  
     # tests
-    p0 = 2
-    tf = 10
+    p0 = 1.5
+    tf = 0.5
     ξ = [p0, tf]
     fparams(ξ) = (t0, x0, ξ[1], ξ[2], f)
     test_by_shooting((s, ξ) -> shoot!(s, ξ[1], ξ[2]), ξ, fparams, sol, 1e-3, title)
