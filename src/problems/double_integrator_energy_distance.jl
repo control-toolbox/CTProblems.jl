@@ -2,7 +2,7 @@ EXAMPLE=(:integrator, :energy, :distance, :state_dim_2, :control_dim_1, :bolza)
 
 @eval function OCPDef{EXAMPLE}()
     # 
-    title = "Double integrator - energy min / distance max"
+    title = "Double integrator energy/distance - minimise -x₁ + ∫ u²"
 
     # the model
     n=2

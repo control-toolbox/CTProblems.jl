@@ -1,10 +1,8 @@
-EXAMPLE=(:integrator, :time, :state_dim_2, :control_dim_1, :mayer, :control_constraint, :state_non_differentiable, :control_non_differentiable)
+EXAMPLE=(:integrator, :time, :state_dim_2, :control_dim_1, :mayer, :control_constraint)
 
 @eval function OCPDef{EXAMPLE}()
-    # should return an OptimalControlProblem{example} with a message, a model and a solution
-
     # 
-    title = "Double integrator - time min - control constraint"
+    title = "Double integrator time - minimise tf under the constraint |u| ≤ γ"
 
     # the model
     n=2

@@ -2,7 +2,7 @@ EXAMPLE=(:integrator, :energy, :state_dim_2, :control_dim_1, :lagrange, :control
 
 @eval function OCPDef{EXAMPLE}()
     # 
-    title = "Double integrator - energy min - control constraint"
+    title = "Double integrator energy - mininimise ∫ u² under the constraint |u| ≤ γ"
 
     # the model
     n=2

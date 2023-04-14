@@ -28,12 +28,12 @@ include("problem.jl")
 # on how to add a problem, see https://control-toolbox.github.io/CTProblems.jl.
 #
 list_of_problems_files = [
-    #"double_integrator_consumption_control_constraint.jl",
+    "double_integrator_consumption_control_constraint.jl",
     "double_integrator_energy_control_constraint.jl",
     "double_integrator_energy_distance.jl",
     "double_integrator_energy_state_constraint.jl",
     "double_integrator_energy.jl",
-    #"double_integrator_time_control_constraint.jl",
+    "double_integrator_time_control_constraint.jl",
     "goddard_all_constraints.jl",
     "goddard.jl",
     "lqr_ricatti.jl",

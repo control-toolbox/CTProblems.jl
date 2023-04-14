@@ -1,10 +1,8 @@
-EXAMPLE=(:integrator, :consumption, :state_dim_2, :control_dim_1, :lagrange, :control_constraint, :state_non_differentiable, :control_non_differentiable)
+EXAMPLE=(:integrator, :consumption, :state_dim_2, :control_dim_1, :lagrange, :control_constraint, :control_non_differentiable)
 
 @eval function OCPDef{EXAMPLE}()
-    # should return an OptimalControlProblem{example} with a message, a model and a solution
-
     # 
-    title = "Double integrator - consumption min - control constraint"
+    title = "Double integrator consumption - mininimise ∫ |u| under the constraint |u| ≤ γ"
 
     # the model
     n=2
@@ -35,14 +33,19 @@ EXAMPLE=(:integrator, :consumption, :state_dim_2, :control_dim_1, :lagrange, :co
     t1(α,β) = (β-1)/α
     t2(α,β) = (β+1)/α
 
+    t1(p0) = t1(p0[1],p0[2])
+    t2(p0) = t2(p0[1],p0[2])
+
     # arc 1
     x_arc_1(t,α,β) = [ a + b*t + 0.5*γ*t^2, b + γ*t]
+    x_arc_1(t, p0) = x_arc_1(t, p0[1], p0[2])
 
     c(α,β) = x_arc_1(t1(α,β),α,β)[1]
     d(α,β) = x_arc_1(t1(α,β),α,β)[2] 
 
     # arc 2
     x_arc_2(t,α,β) = [c(α,β)+ d(α,β)*(t-t1(α,β)), d(α,β)]
+    x_arc_2(t, p0) = x_arc_2(t, p0[1], p0[2])
 
     e(α,β) = x_arc_2(t2(α,β),α,β)[1]
     f(α,β) = x_arc_2(t2(α,β),α,β)[2]
@@ -51,6 +54,7 @@ EXAMPLE=(:integrator, :consumption, :state_dim_2, :control_dim_1, :lagrange, :co
     fp(α,β) = f(α,β) + γ*t2(α,β)
     ep(α,β) = e(α,β) - fp(α,β)*t2(α,β) + γ/2*t2(α,β)^2
     x_arc_3(t,α,β) = [ep(α,β) + fp(α,β)*t - γ/2*t^2, fp(α,β) - γ*t]
+    x_arc_3(t, p0) = x_arc_3(t, p0[1], p0[2])
 
     g(α,β) = x_arc_3(tf,α,β)[1]
     h(α,β) = x_arc_3(tf,α,β)[2]
@@ -66,15 +70,15 @@ EXAMPLE=(:integrator, :consumption, :state_dim_2, :control_dim_1, :lagrange, :co
     p0_ini = [4.472135954998979, 2.2360679774998067]#[1.5*2/tf, 1.5]
     ξ = [p0_ini[1],p0_ini[2]]
     nle = (s, ξ) -> shoot!(s, ξ[1], ξ[2])
-    indirect_sol = fsolve(nle, ξ, show_trace = true)
-    println(indirect_sol)
+    indirect_sol = fsolve(nle, ξ, show_trace = false)
+    #println(indirect_sol)
      
     # using the result of the newton method ([4.472135954998979, 2.2360679774998067])
     p0 = indirect_sol.x
-    x(t) = (t ≤ t1(p0[1],p0[2]))*x_arc_1(t,p0[1],p0[2]) + (t1(p0[1],p0[2]) < t < t2(p0[1],p0[2]))*x_arc_2(t,p0[1],p0[2]) + (t ≥ t2(p0[1],p0[2]))*x_arc_3(t,p0[1],p0[2])
+    x(t) = (t ≤ t1(p0))*x_arc_1(t,p0) + (t1(p0) < t < t2(p0))*x_arc_2(t,p0) + (t ≥ t2(p0))*x_arc_3(t,p0)
     p(t) = [p0[1],-p0[1]*t + p0[2]]
-    u(t) = (t ≤ t1(p0[1],p0[2]))*γ + (t1(p0[1],p0[2]) < t < t2(p0[1],p0[2]))*0 + (t ≥ t2(p0[1],p0[2]))*(-γ)
-    objective = γ*(t1(p0[1],p0[2]) + tf - t2(p0[1],p0[2]))
+    u(t) = (t ≤ t1(p0))*γ + (t1(p0) < t < t2(p0))*0 + (t ≥ t2(p0))*(-γ)
+    objective = γ*(t1(p0) + tf - t2(p0))
 
     #
     N=201
