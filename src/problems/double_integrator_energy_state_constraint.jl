@@ -1,8 +1,6 @@
-EXAMPLE=(:integrator, :energy, :state_dim_2, :control_dim_1, :lagrange, :state_constraint, :state_non_differentiable, :control_non_differentiable)
+EXAMPLE=(:integrator, :energy, :state_dim_2, :control_dim_1, :lagrange, :state_constraint)
 
 @eval function OCPDef{EXAMPLE}()
-    # should return an OptimalControlProblem{example} with a message, a model and a solution
-
     # 
     title = "Double integrator - energy min - state constraint"
 
@@ -32,7 +30,7 @@ EXAMPLE=(:integrator, :energy, :state_dim_2, :control_dim_1, :lagrange, :state_c
     arc(t) = [0 ≤ t ≤ 3*l, 3*l < t ≤ 1 - 3*l, 1 - 3*l < t ≤ 1]
     x(t) = arc(t)[1]*[l*(1-(1-t/(3*l)))^3, (1-t/(3*l))^2] + arc(t)[2]*[l,0] + arc(t)[3]*[l*(1-(1-(1-t)/(3*l)))^3, -(1-(1-t)/(3*l))^2]
     u(t) = arc(t)[1]*(-2/(3l)*(1-t/(3*l))) + arc(t)[2]*0 + arc(t)[3]*(-2/(3l)*(1-(1-t)/(3*l)))
-    p(t) = (0 ≤ t ≤ 3*l)*[2/9*l^2, 2/(3*l)*(1-t/(3*l))] +(3*l < t ≤ 1)*[-2/9*l^2, 2/(3*l)*(1-(1-t)/(3*l))]    
+    p(t) = (0 ≤ t ≤ 3*l)*[2/9*l^2, 2/(3*l)*(1-t/(3*l))] + (3*l < t ≤ 1)*[-2/9*l^2, 2/(3*l)*(1-(1-t)/(3*l))]    
     objective = 4/(9*l)
     #
     N=201
@@ -41,16 +39,16 @@ EXAMPLE=(:integrator, :energy, :state_dim_2, :control_dim_1, :lagrange, :state_c
     sol = OptimalControlSolution() #n, m, times, x, p, u)
     sol.state_dimension = n
     sol.control_dimension = m
-    sol.times = times
-    sol.state = x
+    sol.times = Base.deepcopy(times)
+    sol.state = Base.deepcopy(x)
     sol.state_names = [ "x" * ctindices(i) for i ∈ range(1, n)]
-    sol.adjoint = p
-    sol.control = u
+    sol.adjoint = Base.deepcopy(p)
+    sol.control = Base.deepcopy(u)
     sol.control_names = [ "u" ]
     sol.objective = objective
     sol.iterations = 0
     sol.stopping = :dummy
-    sol.message = "structure: complex"
+    sol.message = "structure: "
     sol.success = true
     sol.infos[:resolution] = :analytical
 

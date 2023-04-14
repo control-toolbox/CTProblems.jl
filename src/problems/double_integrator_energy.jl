@@ -1,4 +1,4 @@
-EXAMPLE=(:integrator, :energy, :state_dim_2, :control_dim_1, :lagrange)
+EXAMPLE=(:integrator, :energy, :state_dim_2, :control_dim_1, :lagrange, :noconstraints)
 
 @eval function OCPDef{EXAMPLE}()
     # should return an OptimalControlProblem with a message, a model and a solution
@@ -51,11 +51,11 @@ EXAMPLE=(:integrator, :energy, :state_dim_2, :control_dim_1, :lagrange)
     sol = OptimalControlSolution() #n, m, times, x, p, u)
     sol.state_dimension = n
     sol.control_dimension = m
-    sol.times = times
-    sol.state = x
+    sol.times = Base.deepcopy(times)
+    sol.state = Base.deepcopy(x)
     sol.state_names = [ "x" * ctindices(i) for i ∈ range(1, n)]
-    sol.adjoint = p
-    sol.control = u
+    sol.adjoint = Base.deepcopy(p)
+    sol.control = Base.deepcopy(u)
     sol.control_names = [ "u" ]
     sol.objective = objective
     sol.iterations = 0

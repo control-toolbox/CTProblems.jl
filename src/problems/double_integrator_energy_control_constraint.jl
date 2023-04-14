@@ -30,11 +30,17 @@ EXAMPLE=(:integrator, :energy, :state_dim_2, :control_dim_1, :lagrange, :control
     a = x0[1]
     b = x0[2]
 
+    #
     t1(α,β) = (β-γ)/α
+    t1(p0) = t1(p0[1], p0[2])
+
+    #
     t2(α,β) = (β+γ)/α
+    t2(p0) = t2(p0[1], p0[2])
 
     # arc 1
     x_arc_1(t,α,β) = [ a + b*t + 0.5*γ*t^2, b + γ*t]
+    x_arc_1(t,p0) = x_arc_1(t, p0[1], p0[2])
 
     c(α,β) = x_arc_1(t1(α,β),α,β)[1]
     d(α,β) = x_arc_1(t1(α,β),α,β)[2] 
@@ -43,6 +49,7 @@ EXAMPLE=(:integrator, :energy, :state_dim_2, :control_dim_1, :lagrange, :control
     dp(α,β) = d(α,β) - (-0.5*α*t1(α,β)^2 + β*t1(α,β))
     cp(α,β) = c(α,β) - (dp(α,β)*t1(α,β) - α/6*t1(α,β)^3 + β/2*t1(α,β)^2)
     x_arc_2(t,α,β) = [cp(α,β) + (dp(α,β)*t  - α/6*t^3 + β/2*t^2), dp(α,β) - α/2*t^2 + β*t]
+    x_arc_2(t,p0) = x_arc_2(t, p0[1], p0[2])
 
     e(α,β) = x_arc_2(t2(α,β),α,β)[1]
     f(α,β) = x_arc_2(t2(α,β),α,β)[2]
@@ -51,6 +58,7 @@ EXAMPLE=(:integrator, :energy, :state_dim_2, :control_dim_1, :lagrange, :control
     fp(α,β) = f(α,β) + γ*t2(α,β)
     ep(α,β) = e(α,β) - fp(α,β)*t2(α,β) + γ/2*t2(α,β)^2
     x_arc_3(t,α,β) = [ep(α,β) + fp(α,β)*t - γ/2*t^2, fp(α,β) - γ*t]
+    x_arc_3(t,p0) = x_arc_3(t, p0[1], p0[2])
 
     g(α,β) = x_arc_3(tf,α,β)[1]
     h(α,β) = x_arc_3(tf,α,β)[2]
@@ -71,11 +79,11 @@ EXAMPLE=(:integrator, :energy, :state_dim_2, :control_dim_1, :lagrange, :control
      
     # the result of the newton method is [12.90994448735837, 6.454972243678883]
     p0 = indirect_sol.x
-    #println(t1(p0[1],p0[2]),"  ",t2(p0[1],p0[2]))
-    x(t) = (t ≤ t1(p0[1],p0[2]))*x_arc_1(t,p0[1],p0[2]) + (t1(p0[1],p0[2])<t<t2(p0[1],p0[2]))*x_arc_2(t,p0[1],p0[2]) + (t ≥ t2(p0[1],p0[2]))*x_arc_3(t,p0[1],p0[2])
-    p(t) = [p0[1],-p0[1]*t + p0[2]]
-    u(t) = (t ≤ t1(p0[1],p0[2]))*γ + (t1(p0[1],p0[2])<t<t2(p0[1],p0[2]))*p(t)[2] + (t ≥ t2(p0[1],p0[2]))*(-γ)
-    objective = 0.5*γ^2*(t1(p0[1],p0[2]) + tf - t2(p0[1],p0[2])) + 0.5*p0[1]*(t1(p0[1],p0[2])^2 - t2(p0[1],p0[2])^2) + p0[2]*(t2(p0[1],p0[2]) - t1(p0[1],p0[2]))
+    #println(t1(p0),"  ",t2(p0))
+    x(t) = (t ≤ t1(p0)) * x_arc_1(t,p0) + (t1(p0) < t < t2(p0)) * x_arc_2(t,p0) + (t ≥ t2(p0)) * x_arc_3(t,p0)
+    p(t) = [p0[1], -p0[1]*t+p0[2]]
+    u(t) = (t ≤ t1(p0)) * γ + (t1(p0) < t < t2(p0)) * p(t)[2] + (t ≥ t2(p0)) * (-γ)
+    objective = 0.5*γ^2*(t1(p0) + tf - t2(p0)) + 0.5*p0[1]*(t1(p0)^2 - t2(p0)^2) + p0[2]*(t2(p0) - t1(p0))
 
     #
     N=201
@@ -84,11 +92,11 @@ EXAMPLE=(:integrator, :energy, :state_dim_2, :control_dim_1, :lagrange, :control
     sol = OptimalControlSolution() #n, m, times, x, p, u)
     sol.state_dimension = n
     sol.control_dimension = m
-    sol.times = times
-    sol.state = x
+    sol.times = Base.deepcopy(times)
+    sol.state = Base.deepcopy(x)
     sol.state_names = [ "x" * ctindices(i) for i ∈ range(1, n)]
-    sol.adjoint = p
-    sol.control = u
+    sol.adjoint = Base.deepcopy(p)
+    sol.control = Base.deepcopy(u)
     sol.control_names = [ "u" ]
     sol.objective = objective
     sol.iterations = 0

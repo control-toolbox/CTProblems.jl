@@ -30,13 +30,21 @@ for file in list_of_problems_files
     # add example if not already in the list
     if example ∈ problems
         println()
-        println("The problem ", example, " is already defined.")
+        println("The problem \n\n", example, "\n\n is already defined.")
         println()
         println("Please provide a different description from the followings:")
         println()
-        display(Problems())
+        display(ProblemsList())
         println()
         error("Not unique problem description.")
+    elseif any([example ⊆ problem for problem ∈ problems])
+        println()
+        println("warning: the problem description \n\n", example, "\n\n is already contained in another description.")
+        println()
+        println("Please provide a description not contained in any of the followings:")
+        println()
+        display(ProblemsList())
+        println()
     else
         include(joinpath("problems", file))
         global problems = add(problems, example)
