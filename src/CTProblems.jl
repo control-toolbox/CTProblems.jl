@@ -33,7 +33,9 @@ list_of_problems_files = [
     "simple_exponential_energy.jl",
     "simple_exponential_time.jl",
     "simple_integrator_energy_free_tf.jl",
+    "simple_integrator_lqr_free_tf.jl",
     "simple_integrator_mixed_constraint.jl",
+    "simple_integrator_nonsmooth_turnpike.jl",
 ]
 include("list_of_problems.jl")
 

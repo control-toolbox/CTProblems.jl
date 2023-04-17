@@ -1,10 +1,8 @@
-EXAMPLE=(:turnpike, :dim1)
+EXAMPLE=(:turnpike, :integrator, :state_energy, :state_dim_1, :control_dim_1, :lagrange, :control_constraint, :singular_arc)
 
 @eval function OCPDef{EXAMPLE}()
-    # should return an OptimalControlProblem{example} with a message, a model and a solution
-
     # 
-    title = "simple turnpike - state energy min"
+    title = "simple nonsmooth turnpike - state energy min - affine system in u"
 
     # the model
     n=1
@@ -46,8 +44,9 @@ EXAMPLE=(:turnpike, :dim1)
     sol.objective = objective
     sol.iterations = 0
     sol.stopping = :dummy
-    sol.message = "analytical solution"
+    sol.message = "structure: -1 0 +1"
     sol.success = true
+    sol.infos[:resolution] = :analytical
 
     #
     return OptimalControlProblem(title, ocp, sol)

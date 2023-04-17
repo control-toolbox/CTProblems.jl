@@ -1,10 +1,8 @@
-EXAMPLE=(:integrator, :dim1, :squaresum, :free)
+EXAMPLE=(:integrator, :lqr, :free_final_time, :state_dim_1, :control_dim_1, :bolza)
 
 @eval function OCPDef{EXAMPLE}()
-    # should return an OptimalControlProblem{example} with a message, a model and a solution
-
     # 
-    title = "simple integrator - square-sum min - free"
+    title = "simple integrator - bolza cost: tf + ½ ∫ x²+u²"
 
     # the model
     n=1
@@ -19,7 +17,7 @@ EXAMPLE=(:integrator, :dim1, :squaresum, :free)
     constraint!(ocp, :initial, x0, :initial_constraint)
     constraint!(ocp, :final, xf, :final_constraint)
     constraint!(ocp, :dynamics, (x, u) -> u)
-    objective!(ocp, :lagrange, (x, u) -> 0.5*(u^2+x^2)) # default is to minimise
+    objective!(ocp, :bolza, (t0, x0, tf, xf) -> tf, (x, u) -> 0.5*(u^2+x^2)) # default is to minimise
 
     # the solution
     tf = atanh(sqrt(xf^2/(2+xf^2)))
@@ -44,8 +42,9 @@ EXAMPLE=(:integrator, :dim1, :squaresum, :free)
     sol.objective = objective
     sol.iterations = 0
     sol.stopping = :dummy
-    sol.message = "analytical solution"
+    sol.message = "structure: smooth"
     sol.success = true
+    sol.infos[:resolution] = :analytical
 
     #
     return OptimalControlProblem(title, ocp, sol)

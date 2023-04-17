@@ -41,8 +41,9 @@ EXAMPLE=(:integrator, :state_dim_1, :control_dim_1, :lagrange, :mixed_constraint
     sol.objective = objective
     sol.iterations = 0
     sol.stopping = :dummy
-    sol.message = "analytical solution"
+    sol.message = "structure: smooth but the mixed constraint is active all over the solution"
     sol.success = true
+    sol.infos[:resolution] = :analytical
 
     #
     return OptimalControlProblem(title, ocp, sol)
