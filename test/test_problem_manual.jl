@@ -12,5 +12,3 @@ prob = Problem(:orbital_transfert, :energy, :state_dim_4, :control_dim_2, :lagra
 display(prob.model)
 
 plot(prob.solution)
-
-#println(prob.message) #if not commented the plot window does not show

@@ -1,7 +1,7 @@
-function test_double_integrator_energy()
+function test_double_integrator_energy_distance()
 
     # problem = model + solution
-    prob = Problem(:integrator, :energy, :state_dim_2, :control_dim_1, :lagrange, :noconstraints) 
+    prob = Problem(:integrator, :energy, :distance, :state_dim_2, :control_dim_1, :bolza) 
     ocp = prob.model
     sol = prob.solution
     title = prob.title
@@ -13,15 +13,14 @@ function test_double_integrator_energy()
     t0 = ocp.initial_time
     tf = ocp.final_time
     x0 = initial_condition(ocp)
-    xf_ = final_condition(ocp)
     #
     function shoot!(s, p0)
         xf, pf = f(t0, x0, p0, tf)
-        s[1:2] = xf - xf_
+        s[1:2] = pf - [1/2, 0]
     end
 
     # tests
-    ξ = [12, 6]
+    ξ = [1/2, tf/2]
     fparams(ξ) = (t0, x0, ξ, tf, f)
     test_by_shooting(shoot!, ξ, fparams, sol, 1e-3, title)
 
