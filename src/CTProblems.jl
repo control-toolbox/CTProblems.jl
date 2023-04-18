@@ -36,10 +36,12 @@ list_of_problems_files = [
     "simple_exponential_energy.jl",
     "simple_exponential_time.jl",
     "simple_integrator_energy_free_tf.jl",
+    "simple_integrator_lqr_free_tf.jl",
     "simple_integrator_mixed_constraint.jl",
     "orbital_transfert_consumption_min.jl",
     "orbital_transfert_energy_min.jl",
     "orbital_transfert_time_min.jl",
+    "simple_integrator_nonsmooth_turnpike.jl",
 ]
 include("list_of_problems.jl")
 include("utils_problems.jl")
