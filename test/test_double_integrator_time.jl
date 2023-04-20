@@ -1,45 +1,42 @@
-function test_double_integrator_consumption_control_constraint()
+function test_double_integrator_time()
 
     # ---------------------------------------------------------------
     # problem = model + solution
-    prob = Problem(:integrator, :consumption, :state_dim_2, :control_dim_1, :lagrange, :control_constraint, :control_non_differentiable) 
+    prob = Problem(:integrator, :time, :state_dim_2, :control_dim_1, :mayer, :control_constraint) 
     ocp = prob.model
     sol = prob.solution
     title = prob.title
 
     # Flow(ocp, u)
-    γ  = 5
+    γ  = 1
     fm = Flow(ocp, (x, p) -> -γ)
     fp = Flow(ocp, (x, p) -> +γ)
-    f0 = Flow(ocp, (x, p) -> 0)
 
     # shooting function
     t0 = ocp.initial_time
-    tf = ocp.final_time
     x0 = initial_condition(ocp)
     xf = final_condition(ocp)
     #
-    function shoot!(s, p0, t1, t2)
+    function shoot!(s, p0, t1, tf)
         x1, p1 = fp(t0, x0, p0, t1)
-        x2, p2 = f0(t1, x1, p1, t2)
-        xf_, pf = fm(t2, x2, p2, tf)
+        xf_, pf = fm(t1, x1, p1, tf)
         s[1:2] = xf_ - xf
-        s[3] = p1[2] - 1
-        s[4] = p2[2] + 1
+        s[3] = p1[2]
+        s[4] = pf[1]*xf_[2]+pf[2]*(-γ) - 1
     end
 
     # tests
-    t1 = 0.25*tf
-    t2 = 0.75*tf
-    p0 = [11/tf, 6]
-    ξ = [p0..., t1, t2]
+    t1 = 1
+    tf = 2
+    p0 = [1, 1]
+    ξ = [p0..., t1, tf]
 
     function fparams(ξ) 
         # concatenation of the flows
         p0 = ξ[1:2]
         t1 = ξ[3]
-        t2 = ξ[4]
-        return t0, x0, p0, tf, fp * (t1, f0) * (t2, fm)
+        tf = ξ[4]
+        return t0, x0, p0, tf, fp * (t1, fm)
     end
 
     nle = (s, ξ) -> shoot!(s, ξ[1:2], ξ[3], ξ[4])

@@ -1,10 +1,8 @@
-EXAMPLE=(:orbital_transfert, :energy, :state_dim_4, :control_dim_2, :lagrange, :singular_arc)
+EXAMPLE=(:orbital_transfert, :energy, :state_dim_4, :control_dim_2, :lagrange)
 
 @eval function OCPDef{EXAMPLE}()
-    # should return an OptimalControlProblem{example} with a message, a model and a solution
-
     # 
-    title = "Orbital transfert - energy min"
+    title = "Orbital transfert - energy minimisation - min ∫ ||u||² dt"
 
     # the model
     n=4
@@ -26,7 +24,7 @@ EXAMPLE=(:orbital_transfert, :energy, :state_dim_4, :control_dim_2, :lagrange, :
     control!(ocp, m) # dimension of the control
     time!(ocp, [t0, tf])
     constraint!(ocp, :initial, x0, :initial_constraint)
-    constraint!(ocp, :boundary, (t0, x0, tf, xf) -> [norm(xf[1:2])-rf, xf[3] + α*xf[2], xf[4] - α*xf[1]],[0,0,0], :boundary_constraint)
+    constraint!(ocp, :boundary, (t0, x0, tf, xf) -> [norm(xf[1:2])-rf, xf[3] + α*xf[2], xf[4] - α*xf[1]], [0,0,0], :boundary_constraint)
     A = [ 0 0 1 0; 0 0 0 1; 1 0 0 0; 0 1 0 0]
     B = [ 0 0; 0 0; 1 0; 0 1 ]
 
@@ -39,7 +37,7 @@ EXAMPLE=(:orbital_transfert, :energy, :state_dim_4, :control_dim_2, :lagrange, :
 
     function control(p)
         u = zeros(eltype(p),2)
-        u = [p[3],p[4]]
+        u = [p[3], p[4]]
         return u
     end;
 
@@ -49,7 +47,9 @@ EXAMPLE=(:orbital_transfert, :energy, :state_dim_4, :control_dim_2, :lagrange, :
         return h
     end
 
-    f = Flow(Hamiltonian(H));
+    abstol=1e-12
+    reltol=1e-12
+    f = Flow(Hamiltonian(H), abstol=abstol, reltol=reltol)
 
     # shoot function
     function shoot(p0)
@@ -72,8 +72,9 @@ EXAMPLE=(:orbital_transfert, :energy, :state_dim_4, :control_dim_2, :lagrange, :
     jS!(js, ξ) = ( js[:] = jS(ξ); nothing )
 
     # Initial guess
-    ξ_guess = [131.44483634894812, 34.16617425875177, 249.15735272382514, -23.9732920001312, 0.0]   # pour F_max = 100N
+    ξ_guess = [131.44483633582556, 34.16617425832973, 249.1573527073169, -23.9732920325726, 0]   # pour F_max = 100N
 
+    #=
     # Solve
     indirect_sol = fsolve(S!, jS!, ξ_guess, show_trace=true, tol=1e-8); println(indirect_sol)
     
@@ -83,8 +84,12 @@ EXAMPLE=(:orbital_transfert, :energy, :state_dim_4, :control_dim_2, :lagrange, :
     else
         error("Not converged")
     end
-
+    #
     p0 = ξ_sol[1:5]
+    =#
+
+    p0 = ξ_guess
+
     # computing x, p, u
     ode_sol  = f((t0, tf), x0, p0)
     
@@ -102,14 +107,14 @@ EXAMPLE=(:orbital_transfert, :energy, :state_dim_4, :control_dim_2, :lagrange, :
     sol.control_dimension = m
     sol.times = times
     sol.state = x
-    sol.state_names = [ "x" * ctindices(i) for i ∈ range(1, n)]
+    sol.state_names = [ "x" * ctindices(1), "x" * ctindices(2), "v" * ctindices(1), "v" * ctindices(2)]
     sol.adjoint = p
     sol.control = u
     sol.control_names = [ "u" * ctindices(i) for i ∈ range(1, m)]
     sol.objective = objective
     sol.iterations = 0
     sol.stopping = :dummy
-    sol.message = "structure: complex"
+    sol.message = "structure: smooth"
     sol.success = true
     sol.infos[:resolution] = :numerical
 

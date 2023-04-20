@@ -1,10 +1,8 @@
-EXAMPLE=(:orbital_transfert, :time, :state_dim_4, :control_dim_2, :mayer, :control_constraint, :singular_arc)
+EXAMPLE=(:orbital_transfert, :time, :state_dim_4, :control_dim_2, :mayer, :control_constraint)
 
 @eval function OCPDef{EXAMPLE}()
-    # should return an OptimalControlProblem{example} with a message, a model and a solution
-
     # 
-    title = "Orbital transfert - time min"
+    title = "Orbital transfert - time minimisation"
 
     # the model
     n=4
@@ -49,7 +47,9 @@ EXAMPLE=(:orbital_transfert, :time, :state_dim_4, :control_dim_2, :mayer, :contr
         return h
     end
 
-    f = Flow(Hamiltonian(H));
+    abstol=1e-12
+    reltol=1e-12
+    f = Flow(Hamiltonian(H), abstol=abstol, reltol=reltol)
 
     # shoot function
     function shoot(p0, tf)
@@ -62,13 +62,12 @@ EXAMPLE=(:orbital_transfert, :time, :state_dim_4, :control_dim_2, :mayer, :contr
         s[4] = xf[2]*(pf[1]+α*pf[4]) - xf[1]*(pf[2]-α*pf[3])
         s[5] = H(xf,pf) - 1
         return s
-    end;
-
-    
+    end
 
     # using MINPACK
-    ξ_guess =  [0.00010323118914991345, 4.892642780583378e-5, 0.00035679672938385165, -0.0001553613885740003, 13.403181957151876]   # pour F_max = 100N
+    ξ_guess =  [0.00010323118913618907, 4.89264278123618e-5, 0.0003567967293906554, -0.0001553613886286001, 13.403181957149329]   # pour F_max = 100N
 
+    #=
     foo(ξ) = shoot(ξ[1:4], ξ[5])
     jfoo(ξ) = ForwardDiff.jacobian(foo, ξ)
     foo!(s, ξ) = ( s[:] = foo(ξ); nothing )
@@ -78,6 +77,10 @@ EXAMPLE=(:orbital_transfert, :time, :state_dim_4, :control_dim_2, :mayer, :contr
 
     tf = (indirect_sol.x)[5]
     p0 = (indirect_sol.x)[1:4]
+    =#
+
+    tf = ξ_guess[5]
+    p0 = ξ_guess[1:4]
 
     # computing x, p, u
     ode_sol  = f((t0, tf), x0, p0)
@@ -96,13 +99,13 @@ EXAMPLE=(:orbital_transfert, :time, :state_dim_4, :control_dim_2, :mayer, :contr
     sol.control_dimension = m
     sol.times = times
     sol.state = x
-    sol.state_names = [ "x" * ctindices(i) for i ∈ range(1, n)]
+    sol.state_names = [ "x" * ctindices(1), "x" * ctindices(2), "v" * ctindices(1), "v" * ctindices(2)]
     sol.adjoint = p
     sol.control = u
     sol.control_names = [ "u" * ctindices(i) for i ∈ range(1, m)]
     sol.objective = objective
     sol.iterations = 0
-    sol.message = "structure: complex"
+    sol.message = "structure: bang"
     sol.success = true
     sol.infos[:resolution] = :numerical
 
