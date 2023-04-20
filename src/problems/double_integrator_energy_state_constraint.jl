@@ -1,27 +1,24 @@
-EXAMPLE=(:integrator, :energy, :state_dim_2, :control_dim_1, :lagrange, :noconstraints)
+EXAMPLE=(:integrator, :energy, :state_dim_2, :control_dim_1, :lagrange, :state_constraint, :order_2)
 
 @eval function OCPDef{EXAMPLE}()
     # 
-    title = "Double integrator energy - minimise ∫ u²"
+    title = "Double integrator energy - mininimise ∫ u² under the constraint x₁ ≤ l"
 
     # the model
     n=2
     m=1
     t0=0
     tf=1
-    x0=[-1, 0]
-    xf=[0, 0]
-    t0=0
-    tf=1
-    x0=[-1, 0]
-    xf=[0, 0]
+    x0=[0, 1]
+    xf=[0, -1]
+    l = 1/9
     ocp = Model()
-    state!(ocp, n)   # dimension of the state
+    state!(ocp, n, ["x","v"])   # dimension of the state
     control!(ocp, m) # dimension of the control
     time!(ocp, [t0, tf])
-
     constraint!(ocp, :initial, x0, :initial_constraint)
-    constraint!(ocp, :final, xf, :final_constraint)
+    constraint!(ocp, :final,   xf, :final_constraint)
+    constraint!(ocp, :state, Index(1), -Inf, l, :state_constraint)
     A = [ 0 1
         0 0 ]
     B = [ 0
@@ -29,19 +26,12 @@ EXAMPLE=(:integrator, :energy, :state_dim_2, :control_dim_1, :lagrange, :noconst
     constraint!(ocp, :dynamics, (x, u) -> A*x + B*u)
     objective!(ocp, :lagrange, (x, u) -> 0.5u^2) # default is to minimise
 
-    # the solution
-    a = x0[1]
-    b = x0[2]
-    C = [-(tf-t0)^3/6 (tf-t0)^2/2
-         -(tf-t0)^2/2 (tf-t0)]
-    D = [-a-b*(tf-t0), -b]+xf
-    p0 = C\D
-    α = p0[1]
-    β = p0[2]
-    x(t) = [a+b*(t-t0)+β*(t-t0)^2/2.0-α*(t-t0)^3/6.0, b+β*(t-t0)-α*(t-t0)^2/2.0]
-    p(t) = [α, -α*(t-t0)+β]
-    u(t) = [p(t)[2]]
-    objective = 0.5*(α^2*(tf-t0)^3/3+β^2*(tf-t0)-α*β*(tf-t0)^2)
+    # the solution (case l ≤ 1/6 because it has 3 arc)
+    arc(t) = [0 ≤ t ≤ 3*l, 3*l < t ≤ 1 - 3*l, 1 - 3*l < t ≤ 1]
+    x(t) = arc(t)[1]*[l*(1-(1-t/(3*l)))^3, (1-t/(3*l))^2] + arc(t)[2]*[l,0] + arc(t)[3]*[l*(1-(1-(1-t)/(3*l)))^3, -(1-(1-t)/(3*l))^2]
+    u(t) = arc(t)[1]*(-2/(3l)*(1-t/(3*l))) + arc(t)[2]*0 + arc(t)[3]*(-2/(3l)*(1-(1-t)/(3*l)))
+    p(t) = (0 ≤ t ≤ 3*l)*[2/9*l^2, 2/(3*l)*(1-t/(3*l))] + (3*l < t ≤ 1)*[-2/9*l^2, 2/(3*l)*(1-(1-t)/(3*l))]    
+    objective = 4/(9*l)
     #
     N=201
     times = range(t0, tf, N)
@@ -58,7 +48,7 @@ EXAMPLE=(:integrator, :energy, :state_dim_2, :control_dim_1, :lagrange, :noconst
     sol.objective = objective
     sol.iterations = 0
     sol.stopping = :dummy
-    sol.message = "structure: smooth"
+    sol.message = "structure: "
     sol.success = true
     sol.infos[:resolution] = :analytical
 
