@@ -17,8 +17,9 @@ using CTBase
 using CTFlows
 using DocStringExtensions
 using MINPACK
-using LinearAlgebra
 using OrdinaryDiffEq
+using ForwardDiff
+using LinearAlgebra
 #
 
 #
@@ -45,9 +46,12 @@ list_of_problems_files = [
     "simple_integrator_mixed_constraint.jl",
     "simple_integrator_nonsmooth_turnpike.jl",
     #"simple_integrator_state_and_control_constraints_nonautonomous.jl",
+    "orbital_transfert_consumption_min.jl",
+    "orbital_transfert_energy_min.jl",
+    "orbital_transfert_time_min.jl",
 ]
 include("list_of_problems.jl")
-
+include("utils_problems.jl")
 #
 export ProblemsList, Problem, Problems, @ProblemsList, @Problems
 export plot

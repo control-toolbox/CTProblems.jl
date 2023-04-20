@@ -22,7 +22,7 @@ You can access the problem in the CTProblems package:
 
 ```@example main
 using CTProblems
-prob = Problem(:integrator, :consumption, :state_dim_2, :control_dim_1, :lagrange, :control_constraint, :state_non_differentiable, :control_non_differentiable)
+prob = Problem(:integrator, :consumption, :state_dim_2, :control_dim_1, :lagrange, :control_constraint, :control_non_differentiable) 
 ```
 
 Then, the model is given by

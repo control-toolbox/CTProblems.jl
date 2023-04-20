@@ -22,6 +22,10 @@ In the following table, we give some characteristics about the problems and thei
 | [Double integrator energy sc](@ref DIESC)     | (2, 1)          | `Lagrange`    | ✅ `x`, `u`        | ❌               | ✅                 |
 | [Double integrator time](@ref DIT)            | (2, 1)          | `Mayer`       | ❌                 | ❌               | ✅                 |
 | [LQR](@ref LQR)                               | (2, 1)          | `Lagrange`    | ❌                 | ❌               | ✅                 |
+| [Orbital transfert time](@ref OTT)            | (4, 2)          | `Mayer`       | ❌                 | ❌               | ✅                 |
+| [Orbital transfert energy](@ref OTE)          | (4, 2)          | `Mayer`       | ❌                 | ❌               | ✅                 |
+| [Orbital transfert consumtion](@ref OTC)      | (4, 2)          | `Mayer`       | ✅ `u`             | ❌               | ❌ `u`             |
+
 
 Legend:
 
