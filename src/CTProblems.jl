@@ -32,7 +32,7 @@ list_of_problems_files = [
     "double_integrator_consumption.jl",
     "double_integrator_energy_control_constraint.jl",
     "double_integrator_energy_distance.jl",
-    "double_integrator_energy_state_constraint.jl", #
+    "double_integrator_energy_state_constraint.jl",
     "double_integrator_energy.jl",
     "double_integrator_time.jl",
     "goddard_all_constraints.jl",

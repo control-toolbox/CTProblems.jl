@@ -27,7 +27,7 @@ In the following table, we give some characteristics about the problems and thei
 | [Simple exponential time](@ref SET)              | (1, 1)          | `Mayer`       | ✅ `u`             | ❌               | ✅                 | `autonomous`
 | [Simple integrator energy](@ref SIEM)            | (1, 1)          | `Lagrange`    | ❌                 | ❌               | ✅                 | `autonomous`
 | [Simple integrator lqr](@ref SILM)               | (1, 1)          | `Bolza`       | ❌                 | ❌               | ✅                 | `autonomous`
-| [Simple integrator mixed constraint](@ref SICMMC)| (1, 1)          | `Lagrange`    | ❌                 | ❌               | ✅                 | `autonomous`
+| [Simple integrator mixed constraint](@ref SICMMC)| (1, 1)          | `Lagrange`    | ✅ `(x,u)`         | ❌               | ✅                 | `autonomous`
 | [Simple integrator turnpike](@ref SISE)          | (1, 1)          | `Lagrange`    | ✅ `u`             | ✅               | ✅                 | `autonomous`
 | [Simple integrator non autonomous](@ref SINA)    | (1, 1)          | `Lagrange`    | ✅ `x`             | ❌               | ✅                 | `non autonomous`
 

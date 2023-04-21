@@ -28,13 +28,17 @@ EXAMPLE=(:integrator, :energy, :state_dim_2, :control_dim_1, :lagrange, :state_c
 
     # the solution (case l ≤ 1/6 because it has 3 arc)
     arc(t) = [0 ≤ t ≤ 3*l, 3*l < t ≤ 1 - 3*l, 1 - 3*l < t ≤ 1]
-    x(t) = arc(t)[1]*[l*(1-(1-t/(3*l)))^3, (1-t/(3*l))^2] + arc(t)[2]*[l,0] + arc(t)[3]*[l*(1-(1-(1-t)/(3*l)))^3, -(1-(1-t)/(3*l))^2]
-    u(t) = arc(t)[1]*(-2/(3l)*(1-t/(3*l))) + arc(t)[2]*0 + arc(t)[3]*(-2/(3l)*(1-(1-t)/(3*l)))
+    x(t) =  arc(t)[1]*[l*(1-(1-t/(3l))^3), (1-t/(3l))^2] + 
+            arc(t)[2]*[l, 0] + 
+            arc(t)[3]*[l*(1-(1-(1-t)/(3l))^3), -(1-(1-t)/(3l))^2]
+    u(t) =  arc(t)[1]*(-2/(3l)*(1-t/(3l))) + 
+            arc(t)[2]*0 + 
+            arc(t)[3]*(-2/(3l)*(1-(1-t)/(3l)))
 #    p(t) = arc(t)[1]*[2/9*l^2, 2/(3*l)*(1-t/(3*l))] + arc(t)[2]*[0, 0] + arc(t)[3]*[-2/9*l^2, 2/(3*l)*(1-(1-t)/(3*l))]    
     α = -18
     β = -6
     p(t) = arc(t)[1]*[α, -α*t+β] + arc(t)[2]*[0, 0] + arc(t)[3]*[-α, α*(t-2/3)]
-    objective = 4/(9*l)
+    objective = 4/(9l)
     #
     N=201
     times = range(t0, tf, N)

@@ -9,12 +9,12 @@ include("utils.jl")
 
 @testset verbose = true showtiming = true "CTProblems" begin
     for name ∈ (
-        :double_integrator_energy_state_constraint,
         #=
         :problem,
         :double_integrator_consumption,
         :double_integrator_energy_control_constraint,
         :double_integrator_energy_distance,
+        :double_integrator_energy_state_constraint,
         :double_integrator_energy,
         :double_integrator_time,
         :goddard_all_constraints,

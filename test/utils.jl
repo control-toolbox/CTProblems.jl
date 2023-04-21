@@ -76,18 +76,21 @@ function test_by_shooting(shoot!, ξ, fparams, sol, atol, title; display=false, 
 
     #
     @testset "$title" begin
-        @testset "state" begin
-            for i ∈ 1:n
+        for i ∈ 1:n
+            subtitle = "state " * string(i)
+            @testset "$subtitle" begin
                 @test normL2(T, t -> (x⁺(t)[i] - sol.state(t)[i]) ) ≈ 0 atol=atol
             end
         end
-        @testset "adjoint" begin
-            for i ∈ 1:n
+        for i ∈ 1:n
+            subtitle = "adjoint " * string(i)
+            @testset "$subtitle" begin
                 @test normL2(T, t -> (p⁺(t)[i] - sol.adjoint(t)[i]) ) ≈ 0 atol=atol
             end
         end
-        @testset "control" begin
-            for i ∈ 1:m
+        for i ∈ 1:m
+            subtitle = "control " * string(i)
+            @testset "$subtitle" begin
                 @test normL2(T, t -> (u⁺(t)[i] - sol.control(t)[i]) ) ≈ 0 atol=atol
             end
         end

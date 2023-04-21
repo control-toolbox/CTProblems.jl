@@ -40,7 +40,7 @@ function test_double_integrator_energy_state_constraint()
     p0 = [-18, -6]
     ν1 = 18
     ν2 = 18
-    ξ = [p0..., t1, t2, ν1, ν2]
+    ξ  = [p0..., t1, t2, ν1, ν2]
 
     function fparams(ξ) 
         p0 = ξ[1:2]
