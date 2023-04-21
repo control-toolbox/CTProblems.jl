@@ -1,10 +1,6 @@
-# Simple integrator - square sum min - free
+# [Simple integrator: lqr minimisation](@id SILM)
 
-```@example main
-using CTProblems
-```
-
-The energy min double integrator problem consists in minimising
+The lqr minimisation simple integrator problem consists in minimising
 ```math
     t_f + \frac{1}{2}\int_{0}^{t_f} (x^2(t) + u^2(t)) \, \mathrm{d}t
 ```
@@ -19,7 +15,8 @@ and the limit conditions
 
 You can access the problem in the CTProblems package:
 ```@example main
-prob = Problem(:integrator, :dim1, :squaresum, :free)
+using CTProblems
+prob = Problem(:integrator, :lqr, :free_final_time, :state_dim_1, :control_dim_1, :bolza)
 nothing # hide
 ```
 

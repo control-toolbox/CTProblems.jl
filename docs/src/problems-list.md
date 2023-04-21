@@ -9,29 +9,28 @@ Depth = 2
 
 In the following table, we give some characteristics about the problems and their solutions.
 
-| **Problem**                                   | **(x, u) dims** | **Objective** | **Constraint arc** | **Singular arc** | **Differentiable** |
-| :-------------------------------------------- | :-------------- | :------------ | :----------------- | :--------------- | :----------------- |
-| [Double integrator consumption](@ref DIC)     | (2, 1)          | `Lagrange`    | ✅ `u`             | ❌               | ❌ `u`             |
-| [Double integrator energy](@ref DIE)          | (2, 1)          | `Lagrange`    | ❌                 | ❌               | ✅                 |
-| [Double integrator energy cc](@ref DIECC)     | (2, 1)          | `Lagrange`    | ✅ `u`             | ❌               | ✅                 |
-| [Double integrator energy distance](@ref DIED)| (2, 1)          | `Bolza`       | ❌                 | ❌               | ✅                 |
-| [Double integrator energy sc](@ref DIESC)     | (2, 1)          | `Lagrange`    | ✅ `x`             | ❌               | ✅                 |
-| [Double integrator time](@ref DIT)            | (2, 1)          | `Mayer`       | ✅ `u`             | ❌               | ✅                 |
-| [Goddard](@ref Godda) ([version 2](@ref Go2)) | (3, 1)          | `Mayer`       | ✅ `x`, `u`        | ✅               | ✅                 |
-| [LQR](@ref LQR)                               | (2, 1)          | `Lagrange`    | ❌                 | ❌               | ✅                 |
-| [Orbital transfert consumption](@ref OTC)     | (4, 2)          | `Lagrange`    | ✅ `u`             | ❌               | ❌ `u`             |
-| [Orbital transfert energy](@ref OTE)          | (4, 2)          | `Lagrange`    | ❌                 | ❌               | ✅                 |
-| [Orbital transfert time](@ref OTT)            | (4, 2)          | `Mayer`       | ✅ `u`             | ❌               | ✅                 |
-| [Simple exponential consumption](@ref SEC)    | (1, 1)          | `Lagrange`    | ✅ `u`             | ❌               | ❌ `u`             |
-| [Simple exponential energy](@ref SEE)         | (1, 1)          | `Lagrange`    | ❌                 | ❌               | ✅                 |
-| [Simple exponential time](@ref SET)           | (1, 1)          | `Mayer`       | ✅ `u`             | ❌               | ✅                 |
+| **Problem**                                      | **(x, u) dims** | **Objective** | **Constraint arc** | **Singular arc** | **Differentiable** | **Time dependence**
+| :----------------------------------------------- | :-------------- | :------------ | :----------------- | :--------------- | :----------------- | :----------------- 
+| [Double integrator consumption](@ref DIC)        | (2, 1)          | `Lagrange`    | ✅ `u`             | ❌               | ❌ `u`             | `autonomous`
+| [Double integrator energy](@ref DIE)             | (2, 1)          | `Lagrange`    | ❌                 | ❌               | ✅                 | `autonomous`
+| [Double integrator energy cc](@ref DIECC)        | (2, 1)          | `Lagrange`    | ✅ `u`             | ❌               | ✅                 | `autonomous`
+| [Double integrator energy distance](@ref DIED)   | (2, 1)          | `Bolza`       | ❌                 | ❌               | ✅                 | `autonomous`
+| [Double integrator energy sc](@ref DIESC)        | (2, 1)          | `Lagrange`    | ✅ `x`             | ❌               | ✅                 | `autonomous`
+| [Double integrator time](@ref DIT)               | (2, 1)          | `Mayer`       | ✅ `u`             | ❌               | ✅                 | `autonomous`
+| [Goddard](@ref Godda) ([version 2](@ref Go2))    | (3, 1)          | `Mayer`       | ✅ `x`, `u`        | ✅               | ✅                 | `autonomous`
+| [LQR](@ref LQR)                                  | (2, 1)          | `Lagrange`    | ❌                 | ❌               | ✅                 | `autonomous`
+| [Orbital transfert consumption](@ref OTC)        | (4, 2)          | `Lagrange`    | ✅ `u`             | ❌               | ❌ `u`             | `autonomous`
+| [Orbital transfert energy](@ref OTE)             | (4, 2)          | `Lagrange`    | ❌                 | ❌               | ✅                 | `autonomous`
+| [Orbital transfert time](@ref OTT)               | (4, 2)          | `Mayer`       | ✅ `u`             | ❌               | ✅                 | `autonomous`
+| [Simple exponential consumption](@ref SEC)       | (1, 1)          | `Lagrange`    | ✅ `u`             | ❌               | ❌ `u`             | `autonomous`
+| [Simple exponential energy](@ref SEE)            | (1, 1)          | `Lagrange`    | ❌                 | ❌               | ✅                 | `autonomous`
+| [Simple exponential time](@ref SET)              | (1, 1)          | `Mayer`       | ✅ `u`             | ❌               | ✅                 | `autonomous`
+| [Simple integrator energy](@ref SIEM)            | (1, 1)          | `Lagrange`    | ❌                 | ❌               | ✅                 | `autonomous`
+| [Simple integrator lqr](@ref SILM)               | (1, 1)          | `Bolza`       | ❌                 | ❌               | ✅                 | `autonomous`
+| [Simple integrator mixed constraint](@ref SICMMC)| (1, 1)          | `Lagrange`    | ❌                 | ❌               | ✅                 | `autonomous`
+| [Simple integrator turnpike](@ref SISE)          | (1, 1)          | `Lagrange`    | ✅ `u`             | ✅               | ✅                 | `autonomous`
+| [Simple integrator non autonomous](@ref SINA)    | (1, 1)          | `Lagrange`    | ✅ `x`             | ✅               | ✅                 | `non autonomous`
 
-**Remark.** Is missing:
-
-- simple_integrator_energy_free_tf.jl
-- simple_integrator_lqr_free_tf.jl
-- simple_integrator_mixed_constraint.jl
-- simple_integrator_nonsmooth_turnpike.jl
 
 Legend:
 

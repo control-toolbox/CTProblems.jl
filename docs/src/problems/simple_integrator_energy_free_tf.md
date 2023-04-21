@@ -1,10 +1,6 @@
-# Simple integrator - energy min - free
+# [Simple integrator: energy minimisation](@id SIEM)
 
-```@example main
-using CTProblems
-```
-
-The energy min double integrator problem consists in minimising
+The energy minimisation simple integrator problem consists in minimising
 ```math
     \frac{1}{2}\int_{0}^{t_f} u^2(t) \, \mathrm{d}t
 ```
@@ -20,7 +16,8 @@ and the limit conditions
 
 You can access the problem in the CTProblems package:
 ```@example main
-prob = Problem(:integrator, :dim1, :energy, :free)
+using CTProblems
+prob = Problem(:integrator, :energy, :free_final_time, :state_dim_1, :control_dim_1, :lagrange)
 nothing # hide
 ```
 

@@ -1,6 +1,6 @@
 # [Double integrator: energy minimisation state constraint](@id DIESC)
 
-The consumption minimisation with control constraint double integrator problem consists in minimising
+The energy minimisation with control constraint double integrator problem consists in minimising
 
 ```math
     0.5\int_{0}^{1} {u(t)}^2 \, \mathrm{d}t
