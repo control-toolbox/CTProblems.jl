@@ -30,7 +30,7 @@ EXAMPLE=(:integrator, :energy, :distance, :state_dim_2, :control_dim_1, :bolza)
     x(t) = [a+ b*t + t^2/12*(3*tf-t), b + t/4*(2*tf-t)]
     p(t) = [α, -α*t+β]
     u(t) = p(t)[2]
-    objective = -0.5*x(tf)[1] + 1/8*tf^2
+    objective = -0.5*x(tf)[1] + (1/3)*(tf^3/8)
     #
     N=201
     times = range(t0, tf, N)

@@ -39,6 +39,6 @@ function test_double_integrator_time()
     end
 
     nle = (s, ξ) -> shoot!(s, ξ[1:2], ξ[3], ξ[4])
-    test_by_shooting(nle, ξ, fparams, sol, 1e-3, title)
+    test_by_shooting(ocp, nle, ξ, fparams, sol, 1e-3, title)
 
 end

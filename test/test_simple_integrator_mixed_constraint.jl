@@ -27,6 +27,6 @@ function test_simple_integrator_mixed_constraint()
     # tests
     p0 = 1
     fparams(p0) = (t0, x0, p0, tf, f, u)
-    test_by_shooting(shoot!, p0, fparams, sol, 1e-3, title, flow=:hamiltonian)
+    test_by_shooting(ocp, shoot!, p0, fparams, sol, 1e-3, title, flow=:hamiltonian)
 
 end

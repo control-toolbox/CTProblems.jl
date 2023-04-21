@@ -58,6 +58,6 @@ function test_orbital_transfer_consumption()
         return (t0, x0, p0, tf, f)
     end
     nle = (s, ξ) -> shoot!(s, ξ[1:4], ξ[5:8]...)
-    test_by_shooting(nle, ξ, fparams, sol, 1e-3, title)
+    test_by_shooting(ocp, nle, ξ, fparams, sol, 1e-3, title, test_objective=false)
 
 end

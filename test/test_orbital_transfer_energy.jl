@@ -30,6 +30,6 @@ function test_orbital_transfer_energy()
     # tests
     ξ = [131.44483634894812, 34.16617425875177, 249.15735272382514, -23.9732920001312]   # pour F_max = 100N
     fparams(ξ) = (t0, x0, ξ, tf, f)
-    test_by_shooting(shoot!, ξ, fparams, sol, 1e-3, title)
+    test_by_shooting(ocp, shoot!, ξ, fparams, sol, 1e-3, title)
 
 end

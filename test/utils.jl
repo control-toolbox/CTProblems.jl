@@ -37,7 +37,7 @@ function final_condition(ocp::OptimalControlModel) # pre-condition: there is a x
     return xf
 end
 
-function test_by_shooting(shoot!, ξ, fparams, sol, atol, title; display=false, flow=:ocp)
+function test_by_shooting(ocp, shoot!, ξ, fparams, sol, atol, title; display=false, flow=:ocp, test_objective=true)
 
     # solve
     # MINPACK needs a vector of Float64
@@ -69,7 +69,7 @@ function test_by_shooting(shoot!, ξ, fparams, sol, atol, title; display=false, 
         p⁺ = t -> z(t)[n+1:2n]
         u⁺ = t -> u(x⁺(t), p⁺(t))
     elseif flow == :noflow
-        x⁺, p⁺, u⁺ = fparams(ξ⁺)
+        t0, x0, tf, x⁺, p⁺, u⁺ = fparams(ξ⁺)
     else
         error("flow must be :ocp, :hamiltonian or :noflow")
     end
@@ -94,7 +94,34 @@ function test_by_shooting(shoot!, ξ, fparams, sol, atol, title; display=false, 
                 @test normL2(T, t -> (u⁺(t)[i] - sol.control(t)[i]) ) ≈ 0 atol=atol
             end
         end
-        # objective (by quadrature)
+        if test_objective
+            if !isnothing(ocp.mayer) && isnothing(ocp.lagrange)
+                # Mayer case
+                @testset "objective - mayer case" begin
+                    @test ocp.mayer(t0, x0, tf, x⁺(tf)) ≈ sol.objective atol=atol
+                end
+            elseif isnothing(ocp.mayer) && !isnothing(ocp.lagrange)
+                # Lagrange case
+                @testset "objective - lagrange case" begin
+                    ϕ(_, _, t) = [ocp.lagrange(t, x⁺(t), u⁺(t))]
+                    tspan = (t0, tf)
+                    x0 = [0.0]
+                    prob = ODEProblem(ϕ, x0, tspan)
+                    ode_sol = solve(prob, Tsit5(), reltol=1e-6, abstol=1e-6)
+                    @test ode_sol(tf)[1] ≈ sol.objective atol=atol rtol=1e-5
+                end
+            elseif !isnothing(ocp.mayer) && !isnothing(ocp.lagrange)
+                # Bolza case
+                @testset "objective - bolza case" begin
+                    ϕ(_, _, t) = [ocp.lagrange(t, x⁺(t), u⁺(t))]
+                    tspan = (t0, tf)
+                    x0 = [0.0]
+                    prob = ODEProblem(ϕ, x0, tspan)
+                    ode_sol = solve(prob, Tsit5(), reltol=1e-6, abstol=1e-6)
+                    @test ocp.mayer(t0, x0, tf, x⁺(tf)) + ode_sol(tf)[1] ≈ sol.objective atol=atol rtol=1e-5
+                end
+            end
+        end
     end
 
 end

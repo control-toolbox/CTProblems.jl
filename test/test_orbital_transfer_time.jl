@@ -39,6 +39,6 @@ function test_orbital_transfer_time()
     ξ = [0.00010323118914991345, 4.892642780583378e-5, 0.00035679672938385165, -0.0001553613885740003, 13.403181957151876]   # pour F_max = 100N
     fparams(ξ) = (t0, x0, ξ[1:4], ξ[5], f)
     nle = (s, ξ) -> shoot!(s, ξ[1:4], ξ[5])
-    test_by_shooting(nle, ξ, fparams, sol, 1e-3, title)
+    test_by_shooting(ocp, nle, ξ, fparams, sol, 1e-3, title)
 
 end

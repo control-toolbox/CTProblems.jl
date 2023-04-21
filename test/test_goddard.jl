@@ -95,6 +95,6 @@ function test_goddard()
     end
 
     nle = (s, ξ) -> shoot!(s, ξ[1:3], ξ[4], ξ[5], ξ[6], ξ[7])
-    test_by_shooting(nle, ξ, fparams, sol, 1e-3, title)
+    test_by_shooting(ocp, nle, ξ, fparams, sol, 1e-3, title)
 
 end

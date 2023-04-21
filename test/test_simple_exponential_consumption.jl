@@ -35,6 +35,7 @@ function test_simple_exponential_consumption()
         return (t0, x0, p0, tf, f)
     end
 
-    test_by_shooting((s, ξ) -> shoot!(s, ξ[1], ξ[2]), ξ, fparams, sol, 1e-3, title)
+    nle = (s, ξ) -> shoot!(s, ξ[1], ξ[2])
+    test_by_shooting(ocp, nle, ξ, fparams, sol, 1e-3, title, test_objective=false)
 
 end

@@ -22,6 +22,6 @@ function test_double_integrator_energy_distance()
     # tests
     ξ = [1/2, tf/2]
     fparams(ξ) = (t0, x0, ξ, tf, f)
-    test_by_shooting(shoot!, ξ, fparams, sol, 1e-3, title)
+    test_by_shooting(ocp, shoot!, ξ, fparams, sol, 1e-3, title)
 
 end

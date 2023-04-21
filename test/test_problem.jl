@@ -1,6 +1,6 @@
 function test_problem()
    
-    @test ProblemsList() isa Tuple
+    @test ProblemsDescriptions() isa Tuple
     @test Problems(:integrator) isa Tuple
 
     e = CTProblems.NonExistingProblem((:dummy, ))

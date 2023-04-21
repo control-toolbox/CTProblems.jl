@@ -26,6 +26,7 @@ function test_simple_integrator_lqr_free_tf()
     tf = 0.5
     ξ = [p0, tf]
     fparams(ξ) = (t0, x0, ξ[1], ξ[2], f)
-    test_by_shooting((s, ξ) -> shoot!(s, ξ[1], ξ[2]), ξ, fparams, sol, 1e-3, title)
+    nle = (s, ξ) -> shoot!(s, ξ[1], ξ[2])
+    test_by_shooting(ocp, nle, ξ, fparams, sol, 1e-3, title)
 
 end

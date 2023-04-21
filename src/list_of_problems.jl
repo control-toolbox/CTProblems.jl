@@ -34,7 +34,7 @@ for file in list_of_problems_files
         println()
         println("Please provide a different description from the followings:")
         println()
-        display(ProblemsList())
+        display(ProblemsDescriptions())
         println()
         error("Not unique problem description.")
     elseif any([example ⊆ problem for problem ∈ problems])
@@ -43,7 +43,7 @@ for file in list_of_problems_files
         println()
         println("Please provide a description not contained in any of the followings:")
         println()
-        display(ProblemsList())
+        display(ProblemsDescriptions())
         println()
     else
         include(joinpath("problems", file))

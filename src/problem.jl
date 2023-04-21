@@ -143,11 +143,11 @@ see the page [list of problems descriptions](@ref descriptions-list) for details
 # Example
 
 ```@example
-julia> ProblemsList(:integrator, :energy)
+julia> ProblemsDescriptions(:integrator, :energy)
 ```
 
 """
-function ProblemsList(description...)::Tuple{Vararg{Description}}
+function ProblemsDescriptions(description...)::Tuple{Vararg{Description}}
     desc = makeDescription(description...)
     problems_list = filter(pb -> desc ⊆ pb, _problems_without_dummy()) # filter only the problems that contain desc
     return problems_list
@@ -167,7 +167,7 @@ julia> Problems(:integrator, :energy)
 
 """
 function Problems(description...)::Tuple{Vararg{OptimalControlProblem}}
-    problems_list = ProblemsList(description...)
+    problems_list = ProblemsDescriptions(description...)
     return map(e -> OCPDef{e}(), problems_list)   # return the list of problems that match desc
 end
 
@@ -240,12 +240,12 @@ see the [list of problems descriptions](@ref descriptions-list) page for details
 # Example
 
 ```@example
-julia> ProblemsList(:(:integrator & :energy))
+julia> ProblemsDescriptions(:(:integrator & :energy))
 ```
 
 # See also 
 
-[`@ProblemsList`](@ref) for a more natural usage.
+[`@ProblemsDescriptions`](@ref) for a more natural usage.
 
 !!! note
 
@@ -253,7 +253,7 @@ julia> ProblemsList(:(:integrator & :energy))
     operators: `!`, `|` and `&`, respectively for the negation, the disjunction and the conjunction.
 
 """
-function ProblemsList(expr::Union{QuoteNode, Expr})::Tuple{Vararg{Description}}
+function ProblemsDescriptions(expr::Union{QuoteNode, Expr})::Tuple{Vararg{Description}}
     problems_list = filter(description -> _keep(description, expr), _problems_without_dummy()) # filter only the problems that contain desc
     return problems_list
 end
@@ -267,7 +267,7 @@ see the [list of problems descriptions](@ref descriptions-list) page for details
 # Example
 
 ```@example
-julia> @ProblemsList :integrator & :energy
+julia> @ProblemsDescriptions :integrator & :energy
 ```
 
 !!! note
@@ -276,11 +276,11 @@ julia> @ProblemsList :integrator & :energy
     operators: `!`, `|` and `&`, respectively for the negation, the disjunction and the conjunction.
 
 """
-macro ProblemsList(expr::Union{QuoteNode, Expr})
-    return ProblemsList(expr)
+macro ProblemsDescriptions(expr::Union{QuoteNode, Expr})
+    return ProblemsDescriptions(expr)
 end
-macro ProblemsList()
-    return ProblemsList()
+macro ProblemsDescriptions()
+    return ProblemsDescriptions()
 end
 
 """
@@ -306,7 +306,7 @@ julia> Problems(:(:integrator & :energy))
 
 """
 function Problems(expr::Union{QuoteNode, Expr})::Tuple{Vararg{OptimalControlProblem}}
-    problems_list = ProblemsList(expr)
+    problems_list = ProblemsDescriptions(expr)
     return map(e -> OCPDef{e}(), problems_list)   # return the list of problems that match desc
 end
 

@@ -51,10 +51,10 @@ function test_double_integrator_energy_state_constraint()
         x(t) = (t ≤ t1)*sol1(t)[1:2] + (t1 < t ≤ t2)*sol2(t)[1:2] + (t2 < t)*sol3(t)[1:2]
         p(t) = (t ≤ t1)*sol1(t)[3:4] + (t1 < t ≤ t2)*sol2(t)[3:4] + (t2 < t)*sol3(t)[3:4]
         u(t) = (t ≤ t1)*sol1(t)[4:4] + (t1 < t ≤ t2)*[0] + (t2 < t)*sol3(t)[4:4]
-        return deepcopy(x), deepcopy(p), deepcopy(u)
+        return t0, x0, tf, deepcopy(x), deepcopy(p), deepcopy(u)
     end
 
     nle = (s, ξ) -> shoot!(s, ξ[1:2], ξ[3:6]...)
-    test_by_shooting(nle, ξ, fparams, sol, 1e-3, title, flow=:noflow)
+    test_by_shooting(ocp, nle, ξ, fparams, sol, 1e-3, title, flow=:noflow)
 
 end

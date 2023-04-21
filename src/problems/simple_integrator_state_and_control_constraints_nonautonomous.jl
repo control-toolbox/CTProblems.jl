@@ -2,7 +2,7 @@ EXAMPLE=(:integrator, :state_dime_1, :lagrange, :state_constraint, :control_cons
 
 @eval function OCPDef{EXAMPLE}()
     # 
-    title = "simple integrator - state and control constraints"
+    title = "simple integrator - state and control constraints - nonautonomous"
 
     # the model
     n=1
@@ -17,14 +17,14 @@ EXAMPLE=(:integrator, :state_dime_1, :lagrange, :state_constraint, :control_cons
     time!(ocp, [t0, tf])
     constraint!(ocp, :initial, x0, :initial_constraint)
     constraint!(ocp, :control, 0, 3, :control_constraint)
-    constraint!(ocp, :state, (x,u) -> 1 - x(t) - (t-2)^2, -Inf, 0, :state_constraint)
-    constraint!(ocp, :dynamics, (x, u) -> u)
-    objective!(ocp, :lagrange, (x, u) -> exp(-α*t)*u)
+    constraint!(ocp, :state, (t, x) -> 1-x-(t-2)^2, -Inf, 0, :state_constraint)
+    constraint!(ocp, :dynamics, (t, x, u) -> u)
+    objective!(ocp, :lagrange, (t, x, u) -> exp(-α*t)*u)
 
     # the solution
     arc(t) = [0 ≤ t < 1, 1 ≤ t < 2 , 2 ≤ t ≤ 3]
     x(t) = arc(t)[1]*0 + arc(t)[2]*(1-(t-2)^2) + arc(t)[3]*1
-    p(t) = arc(t)[1]*(-exp(-α)) + arc(t)[2]*0 + arc(t)[3]*0
+    p(t) = arc(t)[1]*(exp(-α)) + arc(t)[2]*exp(-α*t) + arc(t)[3]*0
     u(t) = arc(t)[1]*0 + arc(t)[2]*(-2*(t-2)) + arc(t)[3]*0
     objective = 2/α*(2*exp(-α)-exp(-2*α))
     #
@@ -43,8 +43,9 @@ EXAMPLE=(:integrator, :state_dime_1, :lagrange, :state_constraint, :control_cons
     sol.objective = objective
     sol.iterations = 0
     sol.stopping = :dummy
-    sol.message = "analytical solution"
+    sol.message = "structure: 0C0"
     sol.success = true
+    sol.infos[:resolution] = :analytical
 
     #
     return OptimalControlProblem(title, ocp, sol)

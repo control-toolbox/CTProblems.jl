@@ -42,6 +42,6 @@ function test_simple_integrator_nonsmooth_turnpike()
     end
 
     nle = (s, ξ) -> shoot!(s, ξ[1], ξ[2], ξ[3])
-    test_by_shooting(nle, ξ, fparams, sol, 1e-3, title)
+    test_by_shooting(ocp, nle, ξ, fparams, sol, 1e-3, title)
 
 end

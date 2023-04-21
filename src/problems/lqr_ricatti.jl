@@ -51,7 +51,7 @@ EXAMPLE=(:lqr, :state_dim_2, :control_dim_1, :lagrange)
     p = solve(prob, Tsit5(), reltol=1e-8, abstol=1e-8)
 
     # computing objective
-    ψ(c,params,t) = 0.5*(x(t)[1]^2 + x(t)[2] + u(t)^2)
+    ψ(c,params,t) = 0.5*(x(t)[1]^2 + x(t)[2]^2 + u(t)^2)
     tspan = (0,tf)
     c0 = 0
     prob = ODEProblem(ψ,0,tspan)
