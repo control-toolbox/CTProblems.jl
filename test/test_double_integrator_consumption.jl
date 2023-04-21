@@ -37,8 +37,7 @@ function test_double_integrator_consumption()
     function fparams(ξ) 
         # concatenation of the flows
         p0 = ξ[1:2]
-        t1 = ξ[3]
-        t2 = ξ[4]
+        t1, t2 = ξ[3:4]
         return t0, x0, p0, tf, fp * (t1, f0) * (t2, fm)
     end
 

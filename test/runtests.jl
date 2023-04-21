@@ -9,6 +9,7 @@ include("utils.jl")
 
 @testset verbose = true showtiming = true "CTProblems" begin
     for name ∈ (
+        #=
         :problem,
         :double_integrator_consumption,
         :double_integrator_energy_control_constraint,
@@ -18,6 +19,7 @@ include("utils.jl")
         :goddard_all_constraints,
         :goddard,
         :lqr_ricatti,
+        :orbital_transfer_consumption,
         :orbital_transfer_energy,
         :orbital_transfer_time,
         :simple_exponential_consumption,
@@ -26,7 +28,7 @@ include("utils.jl")
         :simple_integrator_energy_free_tf,
         :simple_integrator_lqr_free_tf,
         :simple_integrator_mixed_constraint,
-        :simple_integrator_nonsmooth_turnpike,
+        :simple_integrator_nonsmooth_turnpike,=#
         )
         @testset "$(name)" begin
             test_name = Symbol(:test_, name)

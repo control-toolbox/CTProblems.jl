@@ -20,7 +20,7 @@ EXAMPLE=(:orbital_transfert, :time, :state_dim_4, :control_dim_2, :mayer, :contr
 
     t0=0.0
     ocp = Model()
-    state!(ocp, n)   # dimension of the state
+    state!(ocp, n, [ "x" * ctindices(1), "x" * ctindices(2), "v" * ctindices(1), "v" * ctindices(2)])   # dimension of the state
     control!(ocp, m) # dimension of the control
     time!(ocp, :initial, t0)
     constraint!(ocp, :initial, x0, :initial_constraint)

@@ -34,8 +34,7 @@ function test_double_integrator_time()
     function fparams(ξ) 
         # concatenation of the flows
         p0 = ξ[1:2]
-        t1 = ξ[3]
-        tf = ξ[4]
+        t1, tf = ξ[3:4]
         return t0, x0, p0, tf, fp * (t1, fm)
     end
 
