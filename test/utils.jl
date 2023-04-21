@@ -53,19 +53,26 @@ function test_by_shooting(shoot!, ξ, fparams, sol, atol, title; display=false, 
     n = sol.state_dimension
     m = sol.control_dimension
 
+    x⁺ = nothing
+    p⁺ = nothing
+    u⁺ = nothing
     if flow == :ocp
         t0, x0, p0⁺, tf, f = fparams(ξ⁺) # compute optimal control solution    
         ocp⁺ = CTFlows.OptimalControlSolution(f((t0, tf), x0, p0⁺))
+        x⁺ = t -> ocp⁺.state(t)
+        p⁺ = t -> ocp⁺.adjoint(t)
+        u⁺ = t -> ocp⁺.control(t)
     elseif flow == :hamiltonian
         t0, x0, p0⁺, tf, f, u = fparams(ξ⁺) # compute optimal control solution    
         z = f((t0, tf), x0, p0⁺)
+        x⁺ = t -> z(t)[1:n]
+        p⁺ = t -> z(t)[n+1:2n]
+        u⁺ = t -> u(x⁺(t), p⁺(t))
+    elseif flow == :noflow
+        x⁺, p⁺, u⁺ = fparams(ξ⁺)
     else
-        error("flow must be :ocp or :hamiltonian")
+        error("flow must be :ocp, :hamiltonian or :noflow")
     end
-
-    x⁺(t) = flow == :ocp ? ocp⁺.state(t)   : z(t)[1:n]
-    p⁺(t) = flow == :ocp ? ocp⁺.adjoint(t) : z(t)[n+1:2n]
-    u⁺(t) = flow == :ocp ? ocp⁺.control(t) : u(x⁺(t), p⁺(t))
 
     #
     @testset "$title" begin
@@ -84,8 +91,7 @@ function test_by_shooting(shoot!, ξ, fparams, sol, atol, title; display=false, 
                 @test normL2(T, t -> (u⁺(t)[i] - sol.control(t)[i]) ) ≈ 0 atol=atol
             end
         end
-        #@test sol.adjoint(t0) ≈ p0_sol atol=1e-6
-        # x, p, objective (need augmented system)
+        # objective (by quadrature)
     end
 
 end

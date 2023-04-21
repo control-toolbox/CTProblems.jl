@@ -11,49 +11,50 @@ function test_double_integrator_energy_state_constraint()
     #
     fs = Flow(ocp, (x, p) -> p[2])
     # constraint
-    A = [ 0 1
-        0 0 ]
-    F0(x) = A*x
-    B = [ 0
-        1 ]
-    F1(x) = B
-    H0(x, p) = p' * F0(x)
-    H1(x, p) = p' * F1(x)
-    H01 = Poisson(H0, H1)
-    H001 = Poisson(H0, H01)
-    H101 = Poisson(H1, H01)
-    uc(x, _) = 0
-    F01(x) = ...
-    μc(x, p) = H001(x, p) / 
-    fc = Flow(ocp, (x, p) -> 0)
+    l = 1/9
+    uc(x, p) = 0
+    g(x) = constraint(ocp, :state_constraint)(x) - l
+    μc(x, p) = 0
+    fc = Flow(ocp, uc, (x, _) -> g(x), μc)
 
     # shooting function
     t0 = ocp.initial_time
+    tf = ocp.final_time
     x0 = initial_condition(ocp)
-    xf = final_condition(ocp)
+    xf_ = final_condition(ocp)
     #
-    function shoot!(s, p0, t1, tf)
-        x1, p1 = fp(t0, x0, p0, t1)
-        xf_, pf = fm(t1, x1, p1, tf)
+    function shoot!(s, p0, t1, t2, ν1, ν2)
+        x1, p1 = fs(t0, x0, p0, t1)
+        x2, p2 = fc(t1, x1, p1+ν1*[1, 0], t2)
+        xf, pf = fs(t2, x2, p2+ν2*[1, 0], tf)
         s[1:2] = xf_ - xf
-        s[3] = p1[2]
-        s[4] = pf[1]*xf_[2]+pf[2]*(-γ) - 1
+        s[3] = g(x1)
+        s[4] = x1[2]
+        s[5] = p1[2]
+        s[6] = p2[2]
     end
 
     # tests
-    t1 = 1
-    tf = 2
-    p0 = [1, 1]
-    ξ = [p0..., t1, tf]
+    t1 = 1/3
+    t2 = 2/3
+    p0 = [-18, -6]
+    ν1 = 18
+    ν2 = 18
+    ξ = [p0..., t1, t2, ν1, ν2]
 
     function fparams(ξ) 
-        # concatenation of the flows
         p0 = ξ[1:2]
-        t1, tf = ξ[3:4]
-        return t0, x0, p0, tf, fp * (t1, fm)
+        t1, t2, ν1, ν2 = ξ[3:6]
+        fsol1 = fs((t0, t1), x0, p0); sol1 = fsol1.ode_sol
+        fsol2 = fc((t1, t2), sol1(t1)[1:2], sol1(t1)[3:4]+ν1*[1, 0]); sol2 = fsol2.ode_sol
+        fsol3 = fs((t2, tf), sol2(t2)[1:2], sol2(t2)[3:4]+ν2*[1, 0]); sol3 = fsol3.ode_sol
+        x(t) = (t ≤ t1)*sol1(t)[1:2] + (t1 < t ≤ t2)*sol2(t)[1:2] + (t2 < t)*sol3(t)[1:2]
+        p(t) = (t ≤ t1)*sol1(t)[3:4] + (t1 < t ≤ t2)*sol2(t)[3:4] + (t2 < t)*sol3(t)[3:4]
+        u(t) = (t ≤ t1)*sol1(t)[4:4] + (t1 < t ≤ t2)*[0] + (t2 < t)*sol3(t)[4:4]
+        return deepcopy(x), deepcopy(p), deepcopy(u)
     end
 
-    nle = (s, ξ) -> shoot!(s, ξ[1:2], ξ[3], ξ[4])
-    test_by_shooting(nle, ξ, fparams, sol, 1e-3, title)
+    nle = (s, ξ) -> shoot!(s, ξ[1:2], ξ[3:6]...)
+    test_by_shooting(nle, ξ, fparams, sol, 1e-3, title, flow=:noflow)
 
 end
