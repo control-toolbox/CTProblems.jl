@@ -29,7 +29,7 @@ In the following table, we give some characteristics about the problems and thei
 | [Simple integrator lqr](@ref SILM)               | (1, 1)          | `Bolza`       | ❌                 | ❌               | ✅                 | `autonomous`
 | [Simple integrator mixed constraint](@ref SICMMC)| (1, 1)          | `Lagrange`    | ❌                 | ❌               | ✅                 | `autonomous`
 | [Simple integrator turnpike](@ref SISE)          | (1, 1)          | `Lagrange`    | ✅ `u`             | ✅               | ✅                 | `autonomous`
-| [Simple integrator non autonomous](@ref SINA)    | (1, 1)          | `Lagrange`    | ✅ `x`             | ✅               | ✅                 | `non autonomous`
+| [Simple integrator non autonomous](@ref SINA)    | (1, 1)          | `Lagrange`    | ✅ `x`             | ❌               | ✅                 | `non autonomous`
 
 
 Legend:
@@ -49,6 +49,7 @@ Legend:
   - ✅ (yes)
   - ❌ `x` (the dynamics and/or other data from the model is non differentiable wrt to the state)
   - ❌ `u` (the dynamics and/or other data from the model is non differentiable wrt to the control)
+- **Time dependence**: `autonomous` or `non autonomous`
 
 ## Get some problems for tests
 
