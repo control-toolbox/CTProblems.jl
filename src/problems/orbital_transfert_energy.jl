@@ -2,7 +2,7 @@ EXAMPLE=(:orbital_transfert, :energy, :state_dim_4, :control_dim_2, :lagrange)
 
 @eval function OCPDef{EXAMPLE}()
     # 
-    title = "Orbital transfert - energy minimisation - min ∫ ||u||² dt"
+    title = "Orbital transfert - energy minimisation - min ∫ ‖u‖² dt"
 
     # the model
     n=4
@@ -20,7 +20,7 @@ EXAMPLE=(:orbital_transfert, :energy, :state_dim_4, :control_dim_2, :lagrange)
     α      = sqrt(μ/rf3);
 
     ocp = Model()
-    state!(ocp, n)   # dimension of the state
+    state!(ocp, n, [ "x" * ctindices(1), "x" * ctindices(2), "v" * ctindices(1), "v" * ctindices(2)])   # dimension of the state
     control!(ocp, m) # dimension of the control
     time!(ocp, [t0, tf])
     constraint!(ocp, :initial, x0, :initial_constraint)

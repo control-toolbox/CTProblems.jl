@@ -38,7 +38,7 @@ list_of_problems_files = [
     "goddard_all_constraints.jl",
     "goddard.jl",
     "lqr_ricatti.jl",
-    #"orbital_transfert_consumption.jl",
+    "orbital_transfert_consumption.jl",
     "orbital_transfert_energy.jl",
     "orbital_transfert_time.jl",
     "simple_exponential_consumption.jl",

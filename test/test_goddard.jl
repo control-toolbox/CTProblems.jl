@@ -89,10 +89,7 @@ function test_goddard()
     function fparams(ξ) 
         # concatenation of the flows
         p0 = ξ[1:3]
-        t1 = ξ[4]
-        t2 = ξ[5]
-        t3 = ξ[6]
-        tf = ξ[7]
+        t1, t2, t3, tf = ξ[4:7]
         f1sb0 = f1 * (t1, fs) * (t2, fb) * (t3, f0)
         return t0, x0, p0, tf, f1sb0 # t0, x0, p0, tf, flow
     end

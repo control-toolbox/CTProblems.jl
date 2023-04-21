@@ -1,10 +1,8 @@
 EXAMPLE=(:orbital_transfert, :consumption, :state_dim_4, :control_dim_2, :lagrange, :control_constraint)
 
 @eval function OCPDef{EXAMPLE}()
-    # should return an OptimalControlProblem{example} with a message, a model and a solution
-
     # 
-    title = "Orbital transfert - consumption min"
+    title = "Orbital transfert - consumption minimisation - ∫ ‖u‖ dt "
 
     # the model
     n=4
@@ -23,7 +21,6 @@ EXAMPLE=(:orbital_transfert, :consumption, :state_dim_4, :control_dim_2, :lagran
 
     tol    = 1e-9;
 
-
     F_max_100  = 100.0
 
     tf_min = 13.40318195708344 # minimal time for Fmax = 100 N
@@ -32,25 +29,22 @@ EXAMPLE=(:orbital_transfert, :consumption, :state_dim_4, :control_dim_2, :lagran
     Th(F) = F*3600.0^2/(10^3)
     u_max = Th(F_max)
 
-
     ocp = Model()
-    state!(ocp, n)   # dimension of the state
+    state!(ocp, n, [ "x" * ctindices(1), "x" * ctindices(2), "v" * ctindices(1), "v" * ctindices(2)])   # dimension of the state
     control!(ocp, m) # dimension of the control
-    time!(ocp, :initial, t0)
+    time!(ocp, [t0, tf])
     constraint!(ocp, :initial, x0, :initial_constraint)
     constraint!(ocp, :boundary, (t0, x0, tf, xf) -> [norm(xf[1:2])-rf, xf[3] + α*xf[2], xf[4] - α*xf[1]],[0,0,0], :boundary_constraint)
     constraint!(ocp, :control, u -> u[1]^2 + u[2]^2, 0, 1, :control_constraint)
     A = [ 0 0 1 0; 0 0 0 1; 1 0 0 0; 0 1 0 0]
-    B = [ 0 0; 0 0; 1 0; 0 1 ]
-
+    B = [ 0 0; 0 0; γ_max 0; 0 γ_max ]
     constraint!(ocp, :dynamics, (x, u) -> A*([-μ*x[1]/(sqrt(x[1]^2 + x[2]^2)^3);-μ*x[2]/(sqrt(x[1]^2 + x[2]^2)^3);x[3];x[4]]) + B*u)
     objective!(ocp, :lagrange, (x, u) -> sqrt(u[1]^2 + u[2]^2)) # default is to minimise
 
     # the solution
+    x0 = [x0; 0]
 
-    x0 = [x0;0]
-
-    u0(x,p) = [0,0]
+    u0(x,p) = [0, 0]
     u1(x,p) = p[3:4]/norm(p[3:4])
     
     Hc(x,p) = p[1]*x[3] + p[2]*x[4] + p[3]*(-μ*x[1]/norm(x[1:2])^3) + p[4]*(-μ*x[2]/norm(x[1:2])^3)
@@ -97,6 +91,7 @@ EXAMPLE=(:orbital_transfert, :consumption, :state_dim_4, :control_dim_2, :lagran
     ti_guess = [0.4556797711668658, 3.6289692721936913, 11.683607683450061, 12.505465498856514]
     ξ_guess  = [p0_guess;ti_guess]
 
+    #=
     # Solve
     indirect_sol = fsolve(S!, jS!, ξ_guess, show_trace=true, tol=1e-8); println(indirect_sol)
     
@@ -109,13 +104,19 @@ EXAMPLE=(:orbital_transfert, :consumption, :state_dim_4, :control_dim_2, :lagran
 
     p0 = ξ_sol[1:5]
     t1,t2,t3,t4 = ξ_sol[6:9]
+    =#
+
+    p0 = p0_guess
+    t1, t2, t3, t4 = ti_guess
+
     # computing x, p, u
     f = f1 * (t1, f0) * (t2, f1) * (t3, f0) * (t4, f1)
     ode_sol  = f((t0, tf), x0, p0)
     
     x(t) = ode_sol(t)[1:4]
     p(t) = ode_sol(t)[6:9]
-    u(t) = [0,0]*(t ∈ Interval(t1,t2)∪Interval(t3,t4)) + p(t)[3:4]/norm(p(t)[3:4])*(t ∈ Interval(t0,t1)∪Interval(t2,t3)∪Interval(t4,tf))
+    u(t) = [0,0]*(t ∈ Interval(t1,t2)∪Interval(t3,t4)) +
+             p(t)[3:4]/norm(p(t)[3:4])*(t ∈ Interval(t0,t1)∪Interval(t2,t3)∪Interval(t4,tf))
     objective = ode_sol(tf)[5]
     
     #
