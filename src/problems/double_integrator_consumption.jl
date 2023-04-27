@@ -60,7 +60,6 @@ EXAMPLE=(:integrator, :consumption, :state_dim_2, :control_dim_1, :lagrange, :co
     h(α,β) = x_arc_3(tf,α,β)[2]
 
     # solve
-    #S(α,β) = [g(α,β),h(α,β)] - xf
     function shoot!(s,α,β)
         s[1] = g(α,β) - xf[1]
         s[2] = h(α,β) - xf[2]

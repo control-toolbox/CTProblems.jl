@@ -26,7 +26,7 @@ EXAMPLE=(:integrator, :state_dime_1, :lagrange, :state_constraint, :control_cons
     x(t) = arc(t)[1]*0 + arc(t)[2]*(1-(t-2)^2) + arc(t)[3]*1
     p(t) = arc(t)[1]*(exp(-α)) + arc(t)[2]*exp(-α*t) + arc(t)[3]*0
     u(t) = arc(t)[1]*0 + arc(t)[2]*(-2*(t-2)) + arc(t)[3]*0
-    objective = 2/α*(2*exp(-α)-exp(-2*α))
+    objective = exp(-2*α)/α^2 * (2*exp(α)*(α-1) + 2)
     #
     N=201
     times = range(t0, tf, N)

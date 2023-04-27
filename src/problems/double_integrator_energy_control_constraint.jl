@@ -64,7 +64,6 @@ EXAMPLE=(:integrator, :energy, :state_dim_2, :control_dim_1, :lagrange, :control
     h(α,β) = x_arc_3(tf,α,β)[2]
 
     # solve
-    #S(α,β) = [g(α,β),h(α,β)] - xf
     function shoot!(s,α,β)
         s[1] = g(α,β) - xf[1]
         s[2] = h(α,β) - xf[2]
@@ -79,11 +78,10 @@ EXAMPLE=(:integrator, :energy, :state_dim_2, :control_dim_1, :lagrange, :control
      
     # the result of the newton method is [12.90994448735837, 6.454972243678883]
     p0 = indirect_sol.x
-    #println(t1(p0),"  ",t2(p0))
     x(t) = (t ≤ t1(p0)) * x_arc_1(t,p0) + (t1(p0) < t < t2(p0)) * x_arc_2(t,p0) + (t ≥ t2(p0)) * x_arc_3(t,p0)
     p(t) = [p0[1], -p0[1]*t+p0[2]]
     u(t) = (t ≤ t1(p0)) * γ + (t1(p0) < t < t2(p0)) * p(t)[2] + (t ≥ t2(p0)) * (-γ)
-    objective = 0.5*γ^2*(t1(p0) + tf - t2(p0)) + 0.5*p0[1]*(t1(p0)^2 - t2(p0)^2) + p0[2]*(t2(p0) - t1(p0))
+    objective = 0.5*γ^2*(t1(p0) + tf - t2(p0)) + 0.5*(1/3*(p0[1])^2*(t2(p0)^3 - t1(p0)^3) + p0[1]*p0[2]*(t1(p0)^2 - t2(p0)^2) + (p0[2])^2*(t2(p0) - t1(p0)))
 
     #
     N=201
