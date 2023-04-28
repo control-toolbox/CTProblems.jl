@@ -29,7 +29,7 @@ include("problem.jl")
 # on how to add a problem, see https://control-toolbox.github.io/CTProblems.jl.
 #
 list_of_problems_files = [
-    #"double_integrator_consumption.jl",
+    "double_integrator_consumption.jl",
     "double_integrator_energy_control_constraint.jl",
     "double_integrator_energy_distance.jl",
     "double_integrator_energy_state_constraint.jl",
@@ -38,10 +38,10 @@ list_of_problems_files = [
     "goddard_all_constraints.jl",
     "goddard.jl",
     "lqr_ricatti.jl",
-    #"orbital_transfert_consumption.jl",
+    "orbital_transfert_consumption.jl",
     "orbital_transfert_energy.jl",
     "orbital_transfert_time.jl",
-    #"simple_exponential_consumption.jl",
+    "simple_exponential_consumption.jl",
     "simple_exponential_energy.jl",
     "simple_exponential_time.jl",
     "simple_integrator_energy_free_tf.jl",

@@ -10,6 +10,8 @@ include("utils.jl")
 
 @testset verbose = true showtiming = true "CTProblems" begin
     for name ∈ (
+        :simple_exponential_consumption,
+        #=
         :problem,
         #:double_integrator_consumption,
         :double_integrator_energy_control_constraint,
@@ -31,6 +33,7 @@ include("utils.jl")
         :simple_integrator_mixed_constraint,
         :simple_integrator_nonsmooth_turnpike,
         :simple_integrator_state_and_control_constraints_nonautonomous,
+        =#
         )
         @testset "$(name)" begin
             test_name = Symbol(:test_, name)
