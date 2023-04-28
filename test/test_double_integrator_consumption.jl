@@ -41,7 +41,12 @@ function test_double_integrator_consumption()
         return t0, x0, p0, tf, fp * (t1, f0) * (t2, fm)
     end
 
+    function objective(ξ)
+        t1, t2 = ξ[3:4]
+        return ((t1-t0)+(tf-t2))*γ
+    end
+
     nle = (s, ξ) -> shoot!(s, ξ[1:2], ξ[3], ξ[4])
-    test_by_shooting(ocp, nle, ξ, fparams, sol, 1e-3, title, test_objective=false)
+    test_by_shooting(ocp, nle, ξ, fparams, sol, 1e-3, title, objective=objective)
 
 end
