@@ -13,6 +13,7 @@ $(EXPORTS)
 module CTProblems
 
 #
+import Base
 using CTBase
 using CTFlows
 using DocStringExtensions
@@ -23,6 +24,7 @@ using LinearAlgebra
 #
 
 #
+include("utils.jl")
 include("problem.jl")
 
 # When adding a problem, please follow the nomenclature given in the doc
@@ -51,7 +53,7 @@ list_of_problems_files = [
     "simple_integrator_state_and_control_constraints_nonautonomous.jl",
 ]
 include("list_of_problems.jl")
-include("utils_problems.jl")
+
 #
 export ProblemsDescriptions, Problem, Problems, @ProblemsDescriptions, @Problems
 export plot

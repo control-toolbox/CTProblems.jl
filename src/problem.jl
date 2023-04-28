@@ -137,7 +137,7 @@ _problems_without_dummy() = Tuple(setdiff(problems, ((:dummy,),)))
 """
 $(TYPEDSIGNATURES)
 
-Returns the list of problems descriptions consistent with the description, as a Tuple of Description, 
+Return the list of problems descriptions consistent with the description, as a Tuple of Description, 
 see the page [list of problems descriptions](@ref descriptions-list) for details.
 
 # Example
@@ -156,7 +156,7 @@ end
 """
 $(TYPEDSIGNATURES)
 
-Returns the list of problems consistent with the description, as a Tuple of OptimalControlProblem, 
+Return the list of problems consistent with the description, as a Tuple of OptimalControlProblem, 
 see the page [list of problems](@ref problems-list) for details.
 
 # Example
@@ -174,7 +174,7 @@ end
 """
 $(TYPEDSIGNATURES)
 
-Returns the optimal control problem described by `description`.
+Return the optimal control problem described by `description`.
 See the [Introduction](@ref introduction) and page [list of problems](@ref problems-list) for details.
 
 # Example
@@ -184,19 +184,9 @@ julia> Problem(:integrator, :energy)
 ```
 
 """
-function Problem(description...) 
+function Problem(description...)::OptimalControlProblem 
     example = getFullDescription(makeDescription(description...), problems)
     return OCPDef{example}()
-end
-
-"""
-$(TYPEDSIGNATURES)
-
-A binding to [CTBase.jl](https://control-toolbox.github.io/CTBase.jl) plot function.
-
-"""
-function CTProblems.plot(sol; kwargs...)
-    return CTBase.plot(sol; kwargs...)
 end
 
 # more sophisticated filters
@@ -217,6 +207,7 @@ end
 function _keep(description::Description, e::Expr)
     @assert hasproperty(e, :head) 
     @assert e.head == :call
+    @assert length(e.args) == 2 || length(e.args) == 3
     if length(e.args) == 2
         return _keep(description, e.args[1], e.args[2])
     elseif length(e.args) == 3
@@ -226,15 +217,13 @@ function _keep(description::Description, e::Expr)
         elseif e.args[1] == Symbol("&")
             return _keep(description, e.args[2]) && _keep(description, e.args[3])
         end
-    else
-        error("bad expression")
     end
 end
 
 """
 $(TYPEDSIGNATURES)
 
-Returns the list of problems descriptions consistent with the expression, as a Tuple of Description, 
+Return the list of problems descriptions consistent with the expression, as a Tuple of Description, 
 see the [list of problems descriptions](@ref descriptions-list) page for details.
 
 # Example
@@ -261,7 +250,7 @@ end
 """
 $(TYPEDSIGNATURES)
 
-Returns the list of problems descriptions consistent with the expression, as a Tuple of Description, 
+Return the list of problems descriptions consistent with the expression, as a Tuple of Description, 
 see the [list of problems descriptions](@ref descriptions-list) page for details.
 
 # Example
@@ -286,7 +275,7 @@ end
 """
 $(TYPEDSIGNATURES)
 
-Returns the list of problems consistent with the expression, as a Tuple of OptimalControlProblem, 
+Return the list of problems consistent with the expression, as a Tuple of OptimalControlProblem, 
 see the page [list of problems](@ref problems-list) for details.
 
 # Example
@@ -313,7 +302,7 @@ end
 """
 $(TYPEDSIGNATURES)
 
-Returns the list of problems consistent with the description, as a Tuple of OptimalControlProblem, 
+Return the list of problems consistent with the description, as a Tuple of OptimalControlProblem, 
 see the page [list of problems](@ref problems-list) for details.
 
 # Example
