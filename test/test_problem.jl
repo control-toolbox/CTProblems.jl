@@ -17,8 +17,12 @@ function test_problem()
     @test Problem(:integrator) isa CTProblems.OptimalControlProblem
 
     # get problems with expression
-    @test ProblemsDescriptions(:(:integrator & :energy)) isa Tuple
-    @test Problems(:(:integrator & :energy)) isa Tuple
+    @test (@ProblemsDescriptions) isa Tuple
+    @test (@ProblemsDescriptions :integrator & :energy) isa Tuple
+    @test (@ProblemsDescriptions :integrator) isa Tuple
+    @test (@Problems) isa Tuple
+    @test (@Problems :integrator & :energy) isa Tuple
+    @test (@Problems :integrator) isa Tuple
 
     # _keep
     e = :(:integrator)
@@ -71,7 +75,7 @@ function test_problem()
 
     # list of problems
     ex0 = CTProblems.get_example("dummy_example.jl")
-    ex1 = (:dummy,) #(:integrator, :energy, :state_dim_2, :control_dim_1, :lagrange, :noconstraints)
+    ex1 = (:dummy,) #(:integrator, :energy, :x_dim_2, :u_dim_1, :lagrange, :noconstraints)
     @test ex0 == ex1
 
 end
