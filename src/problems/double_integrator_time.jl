@@ -5,25 +5,30 @@ EXAMPLE=(:integrator, :time, :x_dim_2, :u_dim_1, :mayer, :u_cons)
     title = "Double integrator time - minimise tf under the constraint |u| ≤ γ"
 
     # the model
-    n=2
-    m=1
     t0=0
     x0=[-1, 0]
     xf=[0, 0]
     γ = 1
-    ocp = Model()
-    state!(ocp, n)   # dimension of the state
-    control!(ocp, m) # dimension of the control
-    time!(ocp, :initial, t0)
-    constraint!(ocp, :initial, x0, :initial_constraint)
-    constraint!(ocp, :final,   xf, :final_constraint)
-    constraint!(ocp, :control, -γ, γ, :u_cons)
+
+    @def ocp begin
+        tf ∈ R, variable
+        t ∈ [ t0, tf ], time
+        x ∈ R², state
+        u ∈ R, control
+        x(t0) == x0,    (initial_con) 
+        x(tf) == xf,    (final_con)
+        -γ ≤ u(t) ≤ γ,  (u_con)
+        ẋ(t) == A * x(t) + B * u(t)
+        tf → min
+    end
+
     A = [ 0 1
-        0 0 ]
+          0 0 ]
     B = [ 0
-        1 ]
-    constraint!(ocp, :dynamics, (x, u) -> A*x + B*u)
-    objective!(ocp, :mayer,  (t0, x0, tf, xf) -> tf, :min) 
+          1 ]
+
+    n = ocp.state_dimension
+    m = ocp.control_dimension
 
     # the solution
     a = x0[1]
