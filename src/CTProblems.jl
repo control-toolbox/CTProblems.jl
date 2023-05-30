@@ -15,7 +15,7 @@ module CTProblems
 #
 import Base
 using CTBase
-using CTFlows
+#using CTFLows
 using DocStringExtensions
 using MINPACK
 using OrdinaryDiffEq
