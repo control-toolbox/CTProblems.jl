@@ -23,33 +23,6 @@ EXAMPLE=(:goddard, :all_constraints, :altitude, :x_dim_3, :u_dim_1, :mayer, :x_c
     m0 = 1
     mf = 0.6
     x0 = [ r0, v0, m0 ]
-
-    # model
-    ocp = Model()
-
-    time!(ocp, :initial, t0) # if not provided, final time is free
-    state!(ocp, 3, ["r", "v", "m"]) # state dim
-    control!(ocp, 1) # control dim
-
-    # use all possible types of constraints
-    # initial condition
-    constraint!(ocp, :initial, x0, :initial_constraint)
-    # final condition
-    constraint!(ocp, :final, Index(3), mf, :final_constraint)
-    # state constraint
-    constraint!(ocp, :state, x->x[2], -Inf, vmax, :state_con_vmax)
-    # control constraint
-    constraint!(ocp, :control, u->u, -Inf, 1, :control_con_umax)
-    # mixed constraint
-    constraint!(ocp, :mixed, (x,u)->x[3], mf, Inf, :mixed_con_mmin)
-    # state box
-    constraint!(ocp, :state, Index(1), r0, Inf, :state_box_rmin)
-    constraint!(ocp, :state, Index(2), v0, Inf, :state_box_vmin)
-    # control box
-    constraint!(ocp, :control, Index(1), 0, Inf, :control_box_umin)
-
-    objective!(ocp, :mayer,  (t0, x0, tf, xf) -> xf[1], :max)
-
     function F0(x)
         r, v, m = x
         D = Cd * v^2 * exp(-β*(r - 1))
@@ -61,7 +34,64 @@ EXAMPLE=(:goddard, :all_constraints, :altitude, :x_dim_3, :u_dim_1, :mayer, :x_c
     end
     f(x, u) = F0(x) + u*F1(x)
 
-    constraint!(ocp, :dynamics, f)
+    @def ocp begin
+        tf ∈ R, variable
+        t ∈ [ t0, tf ], time
+        x ∈ R³, state
+        u ∈ R, control
+        x(t0) == x0,    (initial_con) 
+        r = x₁
+        v = x₂
+        m = x₃
+        m(tf) == mf,    (final_con)
+        0 ≤ u(t) ≤ 1,   (u_con)
+        -Inf ≤ v(t) ≤ vmax, (x_con_v)
+        -Inf ≤ u(t) ≤ 1, (u_con_umax)
+        mf ≤ m(t) ≤ Inf, (mixed_con_mmin)
+        r0 ≤ r(t) ≤ Inf, (state_box_rmin)
+        v0 ≤ v(t) ≤ Inf, (state_box_vmin)
+        0 ≤ u(t) ≤ Inf, (control_box_umin)
+        ẋ(t) == f(x(t),u(t))
+        r(tf) → max
+    end
+    # # model
+    # ocp = Model()
+
+    # time!(ocp, :initial, t0) # if not provided, final time is free
+    # state!(ocp, 3, ["r", "v", "m"]) # state dim
+    # control!(ocp, 1) # control dim
+
+    # # use all possible types of constraints
+    # # initial condition
+    # constraint!(ocp, :initial, x0, :initial_constraint)
+    # # final condition
+    # constraint!(ocp, :final, Index(3), mf, :final_constraint)
+    # # state constraint
+    # constraint!(ocp, :state, x->x[2], -Inf, vmax, :state_con_vmax)
+    # # control constraint
+    # constraint!(ocp, :control, u->u, -Inf, 1, :control_con_umax)
+    # # mixed constraint
+    # constraint!(ocp, :mixed, (x,u)->x[3], mf, Inf, :mixed_con_mmin)
+    # # state box
+    # constraint!(ocp, :state, Index(1), r0, Inf, :state_box_rmin)
+    # constraint!(ocp, :state, Index(2), v0, Inf, :state_box_vmin)
+    # # control box
+    # constraint!(ocp, :control, Index(1), 0, Inf, :control_box_umin)
+
+    # objective!(ocp, :mayer,  (t0, x0, tf, xf) -> xf[1], :max)
+
+    # function F0(x)
+    #     r, v, m = x
+    #     D = Cd * v^2 * exp(-β*(r - 1))
+    #     return [ v, -D/m - 1/r^2, 0 ]
+    # end
+    # function F1(x)
+    #     r, v, m = x
+    #     return [ 0, Tmax/m, -b*Tmax ]
+    # end
+    # f(x, u) = F0(x) + u*F1(x)
+
+    # dynamics!(ocp, f)
 
     # +++ NB. solution is supposed to be the same as the original goddard
     # although the exact formulation of the constraints is slightly different

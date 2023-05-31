@@ -13,7 +13,7 @@ function test_double_integrator_energy_state_constraint()
     # constraint
     l = 1/9
     uc(x, p) = 0
-    g(x) = constraint(ocp, :x_cons)(x) - l
+    g(x) = constraint(ocp, :x_con)(x) - l
     μc(x, p) = 0
     fc = Flow(ocp, uc, (x, _) -> g(x), μc)
 

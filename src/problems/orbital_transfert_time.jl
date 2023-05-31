@@ -17,20 +17,31 @@ EXAMPLE=(:orbital_transfert, :time, :x_dim_4, :u_dim_2, :mayer, :u_cons)
     γ_max  = F_max*3600.0^2/(m0*10^3)
     t0     = 0.0
     α      = sqrt(μ/rf3);
-
-    t0=0.0
-    ocp = Model()
-    state!(ocp, n, [ "x" * ctindices(1), "x" * ctindices(2), "v" * ctindices(1), "v" * ctindices(2)])   # dimension of the state
-    control!(ocp, m) # dimension of the control
-    time!(ocp, :initial, t0)
-    constraint!(ocp, :initial, x0, :initial_constraint)
-    constraint!(ocp, :boundary, (t0, x0, tf, xf) -> [sqrt(xf[1]^2 + xf[2]^2)-rf, xf[3] + α*xf[2], xf[4] - α*xf[1]],[0,0,0], :boundary_constraint)
-    constraint!(ocp, :control, u -> norm(u), 0, γ_max, :u_cons)
     A = [ 0 0 1 0; 0 0 0 1; 1 0 0 0; 0 1 0 0]
     B = [ 0 0; 0 0; 1 0; 0 1 ]
+    t0=0.0
 
-    constraint!(ocp, :dynamics, (x, u) -> A*([-μ*x[1]/(sqrt(x[1]^2 + x[2]^2)^3);-μ*x[2]/(sqrt(x[1]^2 + x[2]^2)^3);x[3];x[4]]) + B*u)
-    objective!(ocp, :mayer, (t0, x0, tf, xf) -> tf) # default is to minimise
+    @def ocp begin
+        t ∈ [ t0, tf ], time
+        x ∈ R⁴, state
+        u ∈ R, control
+        x(t0) == x0,    (initial_con) 
+        [norm(x(tf)[1:2])-rf, x₃(tf) + α*x₂(tf), x₄(tf) - α*x₁(tf)] == [0,0,0], (final_con)
+        0 ≤ norm(u(t)) ≤ γ_max, (u_con)
+        ẋ(t) == A*([-μ*x₁(t)/(sqrt(x₁(t)^2 + x₂(t)^2)^3);-μ*x₂(t)/(sqrt(x₁(t)^2 + x₂(t)^2)^3);x₃(t);x₄(t)]) + B*u
+        tf → min
+    end
+    # ocp = Model()
+    # state!(ocp, n, [ "x" * ctindices(1), "x" * ctindices(2), "v" * ctindices(1), "v" * ctindices(2)])   # dimension of the state
+    # control!(ocp, m) # dimension of the control
+    # time!(ocp, :initial, t0)
+    # constraint!(ocp, :initial, x0, :initial_constraint)
+    # constraint!(ocp, :boundary, (t0, x0, tf, xf) -> [sqrt(xf[1]^2 + xf[2]^2)-rf, xf[3] + α*xf[2], xf[4] - α*xf[1]],[0,0,0], :boundary_constraint)
+    # constraint!(ocp, :control, u -> norm(u), 0, γ_max, :u_cons)
+    # A = [ 0 0 1 0; 0 0 0 1; 1 0 0 0; 0 1 0 0]
+    # B = [ 0 0; 0 0; 1 0; 0 1 ]
+    # dynamics!(ocp, (x, u) -> A*([-μ*x[1]/(sqrt(x[1]^2 + x[2]^2)^3);-μ*x[2]/(sqrt(x[1]^2 + x[2]^2)^3);x[3];x[4]]) + B*u)
+    # objective!(ocp, :mayer, (t0, x0, tf, xf) -> tf)
 
     # the solution
 
@@ -95,14 +106,11 @@ EXAMPLE=(:orbital_transfert, :time, :x_dim_4, :u_dim_2, :mayer, :u_cons)
     times = range(t0, tf, N)
     #
     sol = OptimalControlSolution() #n, m, times, x, p, u)
-    sol.state_dimension = n
-    sol.control_dimension = m
-    sol.times = times
-    sol.state = x
-    sol.state_names = [ "x" * ctindices(1), "x" * ctindices(2), "v" * ctindices(1), "v" * ctindices(2)]
-    sol.adjoint = p
-    sol.control = u
-    sol.control_names = [ "u" * ctindices(i) for i ∈ range(1, m)]
+    copy!(sol,ocp)
+    sol.times = Base.deepcopy(times)
+    sol.state = Base.deepcopy(x)
+    sol.costate = Base.deepcopy(p)
+    sol.control = Base.deepcopy(u)
     sol.objective = objective
     sol.iterations = 0
     sol.message = "structure: bang"

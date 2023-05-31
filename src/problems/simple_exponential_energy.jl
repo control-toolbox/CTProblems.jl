@@ -13,14 +13,24 @@ EXAMPLE=(:exponential, :energy, :x_dim_1, :u_dim_1, :lagrange)
     tf=1
     x0=-1
     xf=0
-    ocp = Model()
-    state!(ocp, n)   # dimension of the state
-    control!(ocp, m) # dimension of the control
-    time!(ocp, [t0, tf])
-    constraint!(ocp, :initial, x0, :initial_constraint)
-    constraint!(ocp, :final, xf, :final_constraint)
-    constraint!(ocp, :dynamics, (x, u) -> -x + u)
-    objective!(ocp, :lagrange, (x, u) -> 0.5u^2) # default is to minimise
+
+    @def ocp begin
+        t ∈ [ t0, tf ], time
+        x ∈ R, state
+        u ∈ R, control
+        x(t0) == x0,    (initial_con)
+        x(tf) == xf,    (final_con)
+        ẋ(t) == -x(t) + u(t)
+        .5∫u(t)^2 → min
+    end
+    # ocp = Model()
+    # state!(ocp, n)   # dimension of the state
+    # control!(ocp, m) # dimension of the control
+    # time!(ocp, [t0, tf])
+    # constraint!(ocp, :initial, x0, :initial_constraint)
+    # constraint!(ocp, :final, xf, :final_constraint)
+    # dynamics!(ocp, (x, u) -> -x + u)
+    # objective!(ocp, :lagrange, (x, u) -> 0.5u^2) # default is to minimise
 
     # the solution
     a = xf - x0*exp(-tf)
@@ -35,14 +45,11 @@ EXAMPLE=(:exponential, :energy, :x_dim_1, :u_dim_1, :lagrange)
     times = range(t0, tf, N)
     #
     sol = OptimalControlSolution() #n, m, times, x, p, u)
-    sol.state_dimension = n
-    sol.control_dimension = m
+    copy!(sol,ocp)
     sol.times = Base.deepcopy(times)
     sol.state = Base.deepcopy(x)
-    sol.state_names = [ "x" ]
-    sol.adjoint = Base.deepcopy(p)
+    sol.costate = Base.deepcopy(p)
     sol.control = Base.deepcopy(u)
-    sol.control_names = [ "u" ]
     sol.objective = objective
     sol.iterations = 0
     sol.stopping = :dummy

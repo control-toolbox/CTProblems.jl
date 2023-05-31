@@ -9,6 +9,10 @@ EXAMPLE=(:integrator, :time, :x_dim_2, :u_dim_1, :mayer, :u_cons)
     x0=[-1, 0]
     xf=[0, 0]
     γ = 1
+    A = [ 0 1
+          0 0 ]
+    B = [ 0
+          1 ]
 
     @def ocp begin
         tf ∈ R, variable
@@ -21,14 +25,6 @@ EXAMPLE=(:integrator, :time, :x_dim_2, :u_dim_1, :mayer, :u_cons)
         ẋ(t) == A * x(t) + B * u(t)
         tf → min
     end
-
-    A = [ 0 1
-          0 0 ]
-    B = [ 0
-          1 ]
-
-    n = ocp.state_dimension
-    m = ocp.control_dimension
 
     # the solution
     a = x0[1]
@@ -49,32 +45,12 @@ EXAMPLE=(:integrator, :time, :x_dim_2, :u_dim_1, :mayer, :u_cons)
     N=201
     times = range(t0, tf, N)
     #
-    sol = OptimalControlSolution() #n, m, times, x, p, u)
-    # sol.initial_time_name = ocp.initial_time_name
-    # sol.final_time_name = ocp.final_time_name
-    # sol.time_name = ocp.time_name
-    # sol.control_dimension = ocp.control_dimension
-    # sol.control_components_names = ocp.control_components_names
-    # sol.control_name = ocp.control_name
-    # sol.state_dimension = ocp.state_dimension
-    # sol.state_components_names = ocp.state_components_names
-    # sol.state_name = ocp.state_name
-    # sol.variable_dimension = ocp.variable_dimension
-    # sol.variable_components_names = ocp.variable_components_names
-    # sol.variable_name = ocp.variable_name
-    sol.initial_time_name = "t0"
-    sol.final_time_name = "tf"
-    sol.time_name = "t"
-    sol.state_dimension = n
-    sol.control_dimension = m
+    sol = OptimalControlSolution()
+    copy!(sol,ocp)
     sol.times = Base.deepcopy(times)
     sol.state = Base.deepcopy(x)
-    sol.state_name = "x"
-    sol.state_components_names = [ "x" * ctindices(i) for i ∈ range(1, n)]
     sol.costate = Base.deepcopy(p)
     sol.control = Base.deepcopy(u)
-    sol.control_name = "u"
-    sol.control_components_names = ["u"]
     sol.objective = objective
     sol.iterations = 0
     sol.stopping = :dummy
