@@ -6,14 +6,14 @@ function initial_condition(ocp::OptimalControlModel) # pre-condition: there is a
     constraints = ocp.constraints
     for (_, c) ∈ constraints
         @match c begin
-            (:initial , _, f          , v, w) => begin x0=v end
-            (:final   , _, f          , _, _) => nothing
-            (:boundary, _, f          , _, _) => nothing
-            (:control , _, f::Function, _, _) => nothing
-            (:control , _, rg         , _, _) => nothing
-            (:state   , _, f::Function, _, _) => nothing
-            (:state   , _, rg         , _, _) => nothing
-            (:mixed   , _, f          , _, _) => nothing
+            (:initial , f          , v, w) => begin x0=v end
+            (:final   , f          , _, _) => nothing
+            (:boundary, f          , _, _) => nothing
+            (:control , f::Function, _, _) => nothing
+            (:control , rg         , _, _) => nothing
+            (:state   , f::Function, _, _) => nothing
+            (:state   , rg         , _, _) => nothing
+            (:mixed   , f          , _, _) => nothing
 	    end # match
     end # for
     return x0
@@ -24,14 +24,14 @@ function final_condition(ocp::OptimalControlModel) # pre-condition: there is a x
     constraints = ocp.constraints
     for (_, c) ∈ constraints
         @match c begin
-            (:initial , _, f          , _, _) => nothing
-            (:final   , _, f          , v, w) => begin xf=v end
-            (:boundary, _, f          , _, _) => nothing
-            (:control , _, f::Function, _, _) => nothing
-            (:control , _, rg         , _, _) => nothing
-            (:state   , _, f::Function, _, _) => nothing
-            (:state   , _, rg         , _, _) => nothing
-            (:mixed   , _, f          , _, _) => nothing
+            (:initial , f          , _, _) => nothing
+            (:final   , f          , v, w) => begin xf=v end
+            (:boundary, f          , _, _) => nothing
+            (:control , f::Function, _, _) => nothing
+            (:control , rg         , _, _) => nothing
+            (:state   , f::Function, _, _) => nothing
+            (:state   , rg         , _, _) => nothing
+            (:mixed   , f          , _, _) => nothing
 	    end # match
     end # for
     return xf
@@ -58,19 +58,19 @@ function test_by_shooting(ocp, shoot!, ξ, fparams, sol, atol, title;
     p⁺ = nothing
     u⁺ = nothing
     if flow == :ocp
-        t0, x0, p0⁺, tf, f = fparams(ξ⁺) # compute optimal control solution    
+        t0, x0, p0⁺, tf, f, v = fparams(ξ⁺) # compute optimal control solution    
         ocp⁺ = CTFlows.OptimalControlSolution(f((t0, tf), x0, p0⁺))
         x⁺ = t -> ocp⁺.state(t)
-        p⁺ = t -> ocp⁺.adjoint(t)
+        p⁺ = t -> ocp⁺.costate(t)
         u⁺ = t -> ocp⁺.control(t)
     elseif flow == :hamiltonian
-        t0, x0, p0⁺, tf, f, u = fparams(ξ⁺) # compute optimal control solution    
+        t0, x0, p0⁺, tf, f, u, v = fparams(ξ⁺) # compute optimal control solution    
         z = f((t0, tf), x0, p0⁺)
         x⁺ = t -> z(t)[1:n]
         p⁺ = t -> z(t)[n+1:2n]
         u⁺ = t -> u(x⁺(t), p⁺(t))
     elseif flow == :noflow
-        t0, x0, tf, x⁺, p⁺, u⁺ = fparams(ξ⁺)
+        t0, x0, tf, x⁺, p⁺, u⁺, v = fparams(ξ⁺)
     else
         error("flow must be :ocp, :hamiltonian or :noflow")
     end
@@ -84,9 +84,9 @@ function test_by_shooting(ocp, shoot!, ξ, fparams, sol, atol, title;
             end
         end
         for i ∈ 1:n
-            subtitle = "adjoint " * string(i)
+            subtitle = "costate " * string(i)
             @testset "$subtitle" begin
-                @test normL2(T, t -> (p⁺(t)[i] - sol.adjoint(t)[i]) ) ≈ 0 atol=atol
+                @test normL2(T, t -> (p⁺(t)[i] - sol.costate(t)[i]) ) ≈ 0 atol=atol
             end
         end
         for i ∈ 1:m
@@ -103,12 +103,12 @@ function test_by_shooting(ocp, shoot!, ξ, fparams, sol, atol, title;
             elseif !isnothing(ocp.mayer) && isnothing(ocp.lagrange)
                 # Mayer case
                 @testset "objective - mayer case" begin
-                    @test ocp.mayer(t0, x0, tf, x⁺(tf)) ≈ sol.objective atol=atol
+                    @test ocp.mayer(x0, x⁺(tf),v) ≈ sol.objective atol=atol #@test ocp.mayer(t0, x0, tf, x⁺(tf)) ≈ sol.objective atol=atol
                 end
             elseif isnothing(ocp.mayer) && !isnothing(ocp.lagrange)
                 # Lagrange case
                 @testset "objective - lagrange case" begin
-                    ϕ(_, _, t) = [ocp.lagrange(t, x⁺(t), u⁺(t))]
+                    ϕ(_, _, t) = [ocp.lagrange(t, x⁺(t), u⁺(t), v)]
                     tspan = (t0, tf)
                     x0 = [0.0]
                     prob = ODEProblem(ϕ, x0, tspan)
@@ -118,12 +118,12 @@ function test_by_shooting(ocp, shoot!, ξ, fparams, sol, atol, title;
             elseif !isnothing(ocp.mayer) && !isnothing(ocp.lagrange)
                 # Bolza case
                 @testset "objective - bolza case" begin
-                    ϕ(_, _, t) = [ocp.lagrange(t, x⁺(t), u⁺(t))]
+                    ϕ(_, _, t) = [ocp.lagrange(t, x⁺(t), u⁺(t), v)]
                     tspan = (t0, tf)
                     x0 = [0.0]
                     prob = ODEProblem(ϕ, x0, tspan)
                     ode_sol = solve(prob, Tsit5(), reltol=1e-6, abstol=1e-6)
-                    @test ocp.mayer(t0, x0, tf, x⁺(tf)) + ode_sol(tf)[1] ≈ sol.objective atol=atol rtol=1e-5
+                    @test ocp.mayer(x0, x⁺(tf), v) + ode_sol(tf)[1] ≈ sol.objective atol=atol rtol=1e-5 #@test ocp.mayer(t0, x0, tf, x⁺(tf)) + ode_sol(tf)[1] ≈ sol.objective atol=atol rtol=1e-5
                 end
             end
         end

@@ -55,7 +55,7 @@ function test_orbital_transfer_consumption()
         p0 = ξ[1:4]
         t1, t2, t3, t4 = ξ[5:8]
         f = f1 * (t1, f0) * (t2, f1) * (t3, f0) * (t4, f1)
-        return (t0, x0, p0, tf, f)
+        return (t0, x0, p0, tf, f, Real[])
     end
 
     function objective(ξ)

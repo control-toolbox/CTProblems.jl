@@ -38,7 +38,7 @@ function test_double_integrator_energy_control_constraint()
         # concatenation of the flows
         p0 = ξ[1:2]
         t1, t2 = ξ[3:4]
-        return t0, x0, p0, tf, fp * (t1, fs) * (t2, fm)
+        return t0, x0, p0, tf, fp * (t1, fs) * (t2, fm), Real[]
     end
 
     nle = (s, ξ) -> shoot!(s, ξ[1:2], ξ[3], ξ[4])

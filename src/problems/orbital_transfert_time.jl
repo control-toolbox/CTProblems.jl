@@ -22,6 +22,7 @@ EXAMPLE=(:orbital_transfert, :time, :x_dim_4, :u_dim_2, :mayer, :u_cons)
     t0=0.0
 
     @def ocp begin
+        tf ∈ R, variable
         t ∈ [ t0, tf ], time
         x ∈ R⁴, state
         u ∈ R, control

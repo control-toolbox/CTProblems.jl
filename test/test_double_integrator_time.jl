@@ -35,7 +35,7 @@ function test_double_integrator_time()
         # concatenation of the flows
         p0 = ξ[1:2]
         t1, tf = ξ[3:4]
-        return t0, x0, p0, tf, fp * (t1, fm)
+        return t0, x0, p0, tf, fp * (t1, fm), tf
     end
 
     nle = (s, ξ) -> shoot!(s, ξ[1:2], ξ[3], ξ[4])

@@ -30,7 +30,7 @@ function test_simple_exponential_time()
     function fparams(ξ)
         p0 = ξ[1]
         tf = ξ[2]
-        return (t0, x0, p0, tf, f⁺)
+        return (t0, x0, p0, tf, f⁺, tf)
     end
 
     nle = (s, ξ) -> shoot!(s, ξ[1], ξ[2])
