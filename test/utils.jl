@@ -1,6 +1,8 @@
 normL1(T, f) = sum( (T[2:end]-T[1:end-1]) .* [ abs(f(T[i])) for i ∈ 1:length(T)-1] ) 
 normL2(T, f) = sqrt(sum( (T[2:end]-T[1:end-1]) .* [ abs(f(T[i]))^2 for i ∈ 1:length(T)-1] ))
 
+range(i,j) = i == j ? i : i:j 
+
 function initial_condition(ocp::OptimalControlModel) # pre-condition: there is an x0
     x0 = nothing
     constraints = ocp.constraints
@@ -66,8 +68,8 @@ function test_by_shooting(ocp, shoot!, ξ, fparams, sol, atol, title;
     elseif flow == :hamiltonian
         t0, x0, p0⁺, tf, f, u, v = fparams(ξ⁺) # compute optimal control solution    
         z = f((t0, tf), x0, p0⁺, v)
-        x⁺ = t -> n == 1 ? z(t)[1:n][1] : z(t)[1:n] # to have scalar in 1d
-        p⁺ = t -> n == 1 ? z(t)[n+1:2n][1] : z(t)[n+1:2n] # to have scalar in 1d
+        x⁺ = t -> z(t)[range(1,n)] # to have scalar in 1d
+        p⁺ = t -> z(t)[range(n+1,2n)] # to have scalar in 1d
         u⁺ = t -> u(x⁺(t), p⁺(t))
     elseif flow == :noflow
         t0, x0, tf, x⁺, p⁺, u⁺, v = fparams(ξ⁺)
@@ -128,5 +130,4 @@ function test_by_shooting(ocp, shoot!, ξ, fparams, sol, atol, title;
             end
         end
     end
-
 end
