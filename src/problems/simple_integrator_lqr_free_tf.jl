@@ -19,7 +19,7 @@ EXAMPLE=(:integrator, :lqr, :free_final_time, :x_dim_1, :u_dim_1, :bolza)
         x(t0) == x0,    (initial_con)
         x(tf) == xf,    (final_con)
         ẋ(t) == u(t)
-        tf + .5∫(u(t)^2+x(t)^2) → min
+        tf + ∫(0.5*(u(t)^2 + x(t)^2)) → min
     end
     # ocp = Model()
     # state!(ocp, n)   # dimension of the state

@@ -24,7 +24,7 @@ EXAMPLE=(:orbital_transfert, :energy, :x_dim_4, :u_dim_2, :lagrange)
     @def ocp begin
         t ∈ [ t0, tf ], time
         x ∈ R⁴, state
-        u ∈ R, control
+        u ∈ R², control
         x(t0) == x0,    (initial_con) 
         [norm(x(tf)[1:2])-rf, x₃(tf) + α*x₂(tf), x₄(tf) - α*x₁(tf)] == [0,0,0], (final_con)
         0 ≤ norm(u(t)) ≤ 1, (u_con)

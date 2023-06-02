@@ -20,7 +20,7 @@ EXAMPLE=(:integrator, :state_dime_1, :lagrange, :x_cons, :u_cons, :nonautonomous
         0 ≤ u(t) ≤ 3,   (u_con) 
         -Inf ≤ 1-x(t)-(t-2)^2 ≤ 0,  (x_con)
         ẋ(t) == u(t)
-        ∫exp(-α*t)*u(t) → min
+        ∫(exp(-α*t)*u(t)) → min
     end
     # ocp = Model(autonomous=false)
     # state!(ocp, n)   # dimension of the state

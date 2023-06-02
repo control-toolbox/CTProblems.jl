@@ -9,8 +9,8 @@ function test_double_integrator_time()
 
     # Flow(ocp, u)
     γ  = 1
-    fm = Flow(ocp, (x, p) -> -γ)
-    fp = Flow(ocp, (x, p) -> +γ)
+    fm = Flow(ocp, (x, p, v) -> -γ)
+    fp = Flow(ocp, (x, p, v) -> +γ)
 
     # shooting function
     t0 = ocp.initial_time
@@ -18,8 +18,8 @@ function test_double_integrator_time()
     xf = final_condition(ocp)
     #
     function shoot!(s, p0, t1, tf)
-        x1, p1 = fp(t0, x0, p0, t1)
-        xf_, pf = fm(t1, x1, p1, tf)
+        x1, p1 = fp(t0, x0, p0, tf, t1)
+        xf_, pf = fm(t1, x1, p1, tf, tf)
         s[1:2] = xf_ - xf
         s[3] = p1[2]
         s[4] = pf[1]*xf_[2]+pf[2]*(-γ) - 1

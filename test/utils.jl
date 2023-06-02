@@ -65,9 +65,9 @@ function test_by_shooting(ocp, shoot!, ξ, fparams, sol, atol, title;
         u⁺ = t -> ocp⁺.control(t)
     elseif flow == :hamiltonian
         t0, x0, p0⁺, tf, f, u, v = fparams(ξ⁺) # compute optimal control solution    
-        z = f((t0, tf), x0, p0⁺)
-        x⁺ = t -> z(t)[1:n]
-        p⁺ = t -> z(t)[n+1:2n]
+        z = f((t0, tf), x0, p0⁺, v)
+        x⁺ = t -> n == 1 ? z(t)[1:n][1] : z(t)[1:n] # to have scalar in 1d
+        p⁺ = t -> n == 1 ? z(t)[n+1:2n][1] : z(t)[n+1:2n] # to have scalar in 1d
         u⁺ = t -> u(x⁺(t), p⁺(t))
     elseif flow == :noflow
         t0, x0, tf, x⁺, p⁺, u⁺, v = fparams(ξ⁺)

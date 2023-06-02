@@ -103,14 +103,14 @@ EXAMPLE=(:goddard, :all_constraints, :altitude, :x_dim_3, :u_dim_1, :mayer, :x_c
     u0(x, p) = 0.
     u1(x, p) = 1.
     #
-    H0(x, p) = p' * F0(x)
-    H1(x, p) = p' * F1(x)
+    H0 = Hamiltonian((x, p) -> p' * F0(x))
+    H1 = Hamiltonian((x, p) -> p' * F1(x))
     H01 = Poisson(H0, H1)
     H001 = Poisson(H0, H01)
     H101 = Poisson(H1, H01)
     us(x, p) = -H001(x, p) / H101(x, p) # singular control of order 1
     #
-    g(x) = vmax-constraint(ocp, :state_con_vmax)(x) # g(x, u) ≥ 0 (cf. nonnegative multiplier)
+    g(x) = vmax-constraint(ocp, :x_con_v)(x) # g(x, u) ≥ 0 (cf. nonnegative multiplier)
     ub(x, _) = -Ad(F0, g)(x) / Ad(F1, g)(x) # boundary control
     μb(x, p) = H01(x, p) / Ad(F1, g)(x)
 

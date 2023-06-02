@@ -25,7 +25,7 @@ EXAMPLE=(:orbital_transfert, :time, :x_dim_4, :u_dim_2, :mayer, :u_cons)
         tf ∈ R, variable
         t ∈ [ t0, tf ], time
         x ∈ R⁴, state
-        u ∈ R, control
+        u ∈ R², control
         x(t0) == x0,    (initial_con) 
         [norm(x(tf)[1:2])-rf, x₃(tf) + α*x₂(tf), x₄(tf) - α*x₁(tf)] == [0,0,0], (final_con)
         0 ≤ norm(u(t)) ≤ γ_max, (u_con)

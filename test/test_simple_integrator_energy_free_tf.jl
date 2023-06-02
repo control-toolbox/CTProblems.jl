@@ -8,15 +8,15 @@ function test_simple_integrator_energy_free_tf()
     title = prob.title
 
     # Flow(ocp, u)
-    f = Flow(ocp, (x, p) -> p)
+    f = Flow(ocp, (x, p, v) -> p)
 
     # shooting function
     t0 = ocp.initial_time
     x0 = initial_condition(ocp)
-    c(tf, xf) = constraint(ocp, :boundary_constraint)(t0, x0, tf, xf)
+    c(tf, xf) = constraint(ocp, :boundary_constraint)(x0, xf, tf)
     #
     function shoot!(s, p0, tf)
-        xf, pf = f(t0, x0, p0, tf)
+        xf, pf = f(t0, x0, p0, tf, tf)
         s[1] = c(tf, xf)
         s[2] = pf - 2
     end

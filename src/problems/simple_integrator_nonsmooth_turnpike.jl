@@ -20,7 +20,7 @@ EXAMPLE=(:turnpike, :integrator, :state_energy, :x_dim_1, :u_dim_1, :lagrange, :
         x(tf) == xf,    (final_con)
         -1 ≤ u(t) ≤ 1,  (u_con) 
         ẋ(t) == u(t)
-        ∫x(t)^2 → min
+        ∫(x(t)^2) → min
     end
     # ocp = Model()
     # state!(ocp, n)   # dimension of the state

@@ -8,7 +8,7 @@ function test_simple_integrator_lqr_free_tf()
     title = prob.title
 
     # Flow(ocp, u)
-    f = Flow(ocp, (x, p) -> p)
+    f = Flow(ocp, (x, p, v) -> p)
 
     # shooting function
     t0 = ocp.initial_time
@@ -16,7 +16,7 @@ function test_simple_integrator_lqr_free_tf()
     xf = final_condition(ocp)
     #
     function shoot!(s, p0, tf)
-        xf_, pf = f(t0, x0, p0, tf)
+        xf_, pf = f(t0, x0, p0, tf, tf)
         s[1] = xf - xf_
         s[2] = 0.5*(pf^2-xf_^2) - 1 # H = 1
     end

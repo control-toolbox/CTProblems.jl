@@ -8,7 +8,7 @@ function test_simple_exponential_time()
     title = prob.title
 
     # Flow(ocp, u)
-    f⁺ = Flow(ocp, (x, p) -> 1)
+    f⁺ = Flow(ocp, (x, p, v) -> 1)
     H⁺(x, p) = p * (-x + 1)
 
     # shooting function
@@ -17,7 +17,7 @@ function test_simple_exponential_time()
     xf_ = final_condition(ocp)
     #
     function shoot!(s, p0, tf)
-        xf, pf = f⁺(t0, x0, p0, tf)
+        xf, pf = f⁺(t0, x0, p0, tf, tf)
         s[1] = xf - xf_
         s[2] = H⁺(xf, pf) - 1
     end

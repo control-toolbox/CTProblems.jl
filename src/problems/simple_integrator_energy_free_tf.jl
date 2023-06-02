@@ -18,7 +18,7 @@ EXAMPLE=(:integrator, :energy, :free_final_time, :x_dim_1, :u_dim_1, :lagrange)
         x(t0) == x0,    (initial_con)
         x(tf)-tf-10 == 0,  (boundary_constraint) 
         ẋ(t) == u(t)
-        .5∫u(t)^2 → min
+        ∫( 0.5u(t)^2 ) → min
     end
     # ocp = Model()
     # state!(ocp, n)   # dimension of the state

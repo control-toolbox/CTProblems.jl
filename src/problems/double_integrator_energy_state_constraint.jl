@@ -18,7 +18,6 @@ EXAMPLE=(:integrator, :energy, :x_dim_2, :u_dim_1, :lagrange, :x_cons, :order_2)
         1 ]
     
     @def ocp begin
-        tf ∈ R, variable
         t ∈ [ t0, tf ], time
         x ∈ R², state
         u ∈ R, control
@@ -29,12 +28,12 @@ EXAMPLE=(:integrator, :energy, :x_dim_2, :u_dim_1, :lagrange, :x_cons, :order_2)
         ∫( 0.5u(t)^2 ) → min
     end
     # ocp = Model()
-    # state!(ocp, n, ["x","v"])   # dimension of the state
+    # state!(ocp, n, "x", ["x","v"])   # dimension of the state
     # control!(ocp, m) # dimension of the control
     # time!(ocp, [t0, tf])
     # constraint!(ocp, :initial, x0, :initial_constraint)
     # constraint!(ocp, :final,   xf, :final_constraint)
-    # constraint!(ocp, :state, Index(1), -Inf, l, :x_cons)
+    # constraint!(ocp, :state, Index(1), -Inf, l, :x_con)
     # A = [ 0 1
     # 0 0 ]
     # B = [ 0
