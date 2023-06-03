@@ -13,8 +13,8 @@ MINPACK = "4854310b-de5a-5eb6-a2a5-c1dee2bd17f9"
 OrdinaryDiffEq = "1dea7af3-3e70-54e6-95c3-0bf5283fa5ed"
 
 [compat]
-CTBase = "0.6"
-CTFlows = "0.2"
+CTBase = "0.7"
+CTFlows = "0.3"
 DocStringExtensions = "0.9"
 ForwardDiff = "0.10"
 LinearAlgebra = "1.8"

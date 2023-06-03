@@ -9,14 +9,14 @@ function test_double_integrator_energy_state_constraint()
 
     # Flow(ocp, u)
     #
-    fs = Flow(ocp, (x, p) -> p[2])
+    fs = Flow(ocp, (x, p) -> 0)
     # constraint
     l = 1/9
     uc(x, p) = 0
-    g(x) = constraint(ocp, :x_cons)(x) - l
+    g(x) = constraint(ocp, :x_con)(x) - l
     μc(x, p) = 0
-    fc = Flow(ocp, uc, (x, _) -> g(x), μc)
-
+    fc = Flow(ocp, uc, (x, p) -> g(x), μc)
+    
     # shooting function
     t0 = ocp.initial_time
     tf = ocp.final_time
@@ -50,8 +50,8 @@ function test_double_integrator_energy_state_constraint()
         fsol3 = fs((t2, tf), sol2(t2)[1:2], sol2(t2)[3:4]+ν2*[1, 0]); sol3 = fsol3.ode_sol
         x(t) = (t ≤ t1)*sol1(t)[1:2] + (t1 < t ≤ t2)*sol2(t)[1:2] + (t2 < t)*sol3(t)[1:2]
         p(t) = (t ≤ t1)*sol1(t)[3:4] + (t1 < t ≤ t2)*sol2(t)[3:4] + (t2 < t)*sol3(t)[3:4]
-        u(t) = (t ≤ t1)*sol1(t)[4:4] + (t1 < t ≤ t2)*[0] + (t2 < t)*sol3(t)[4:4]
-        return t0, x0, tf, deepcopy(x), deepcopy(p), deepcopy(u)
+        u(t) = (t ≤ t1)*sol1(t)[4] + (t1 < t ≤ t2)*0 + (t2 < t)*sol3(t)[4]
+        return (t0, x0, tf, deepcopy(x), deepcopy(p), deepcopy(u), Real[])
     end
 
     nle = (s, ξ) -> shoot!(s, ξ[1:2], ξ[3:6]...)

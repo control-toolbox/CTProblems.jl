@@ -24,7 +24,7 @@ function test_orbital_transfer_consumption()
     t0 = ocp.initial_time
     tf = ocp.final_time
     x0 = initial_condition(ocp)
-    c(xf) = constraint(ocp, :boundary_constraint)(t0, x0, tf, xf)
+    c(xf) = constraint(ocp, :boundary_constraint)(x0, xf)
     Φ(x, p) = x[2]*(p[1]+α*p[4]) - x[1]*(p[2]-α*p[3])
     sw(p) = γ_max*(p[3]^2 + p[4]^2) - 1
 
@@ -55,7 +55,7 @@ function test_orbital_transfer_consumption()
         p0 = ξ[1:4]
         t1, t2, t3, t4 = ξ[5:8]
         f = f1 * (t1, f0) * (t2, f1) * (t3, f0) * (t4, f1)
-        return (t0, x0, p0, tf, f)
+        return (t0, x0, p0, tf, f, Real[])
     end
 
     function objective(ξ)

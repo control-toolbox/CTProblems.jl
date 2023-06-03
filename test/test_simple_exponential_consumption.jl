@@ -32,7 +32,7 @@ function test_simple_exponential_consumption()
         p0 = ξ[1]
         t1 = ξ[2]
         f = f0 * (t1, f1)
-        return (t0, x0, p0, tf, f)
+        return (t0, x0, p0, tf, f, Real[])
     end
 
     function objective(ξ)

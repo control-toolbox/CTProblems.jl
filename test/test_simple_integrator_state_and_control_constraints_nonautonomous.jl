@@ -13,7 +13,7 @@ function test_simple_integrator_state_and_control_constraints_nonautonomous()
     # constraint
     α=1
     uc(t, x, p) = -2*(t-2)
-    g(t, x) = constraint(ocp, :x_cons)(t, x)
+    g(t, x) = constraint(ocp, :x_con)(t, x)
     μc(t, x, p) = -α*p
     fc = Flow(ocp, uc, (t, x, _) -> g(t, x), μc)
 
@@ -44,10 +44,10 @@ function test_simple_integrator_state_and_control_constraints_nonautonomous()
         fsol1 = f0((t0, t1), x0, p0); sol1 = fsol1.ode_sol
         fsol2 = fc((t1, t2), sol1(t1)[1], sol1(t1)[2]); sol2 = fsol2.ode_sol
         fsol3 = f0((t2, tf), sol2(t2)[1], sol2(t2)[2]+ν2); sol3 = fsol3.ode_sol
-        x(t) = (t ≤ t1)*sol1(t)[1:1] + (t1 < t ≤ t2)*sol2(t)[1:1] + (t2 < t)*sol3(t)[1:1]
-        p(t) = (t ≤ t1)*sol1(t)[2:2] + (t1 < t ≤ t2)*sol2(t)[2:2] + (t2 < t)*sol3(t)[2:2]
-        u(t) = (t ≤ t1)*[0] + (t1 < t ≤ t2)*[-2*(t-2)] + (t2 < t)*[0]
-        return t0, x0, tf, deepcopy(x), deepcopy(p), deepcopy(u)
+        x(t) = (t ≤ t1)*sol1(t)[1] + (t1 < t ≤ t2)*sol2(t)[1] + (t2 < t)*sol3(t)[1]
+        p(t) = (t ≤ t1)*sol1(t)[2] + (t1 < t ≤ t2)*sol2(t)[2] + (t2 < t)*sol3(t)[2]
+        u(t) = (t ≤ t1)*0 + (t1 < t ≤ t2)*(-2*(t-2)) + (t2 < t)*0
+        return t0, x0, tf, deepcopy(x), deepcopy(p), deepcopy(u), Real[]
     end
 
     nle = (s, ξ) -> shoot!(s, ξ...)

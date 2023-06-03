@@ -38,7 +38,7 @@ function test_simple_integrator_nonsmooth_turnpike()
         p0 = ξ[1]
         t1, t2 = ξ[2:3]
         f  = fm * (t1, f0) * (t2, fp)
-        return t0, x0, p0, tf, f
+        return t0, x0, p0, tf, f, tf
     end
 
     nle = (s, ξ) -> shoot!(s, ξ[1], ξ[2], ξ[3])

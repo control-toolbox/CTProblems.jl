@@ -91,7 +91,7 @@ function test_goddard_all_constraints()
         p0 = ξ[1:3]
         t1, t2, t3, tf = ξ[4:7]
         f1sb0 = f1 * (t1, fs) * (t2, fb) * (t3, f0)
-        return t0, x0, p0, tf, f1sb0 # t0, x0, p0, tf, flow
+        return t0, x0, p0, tf, f1sb0, tf # t0, x0, p0, tf, flow, v
     end
 
     nle = (s, ξ) -> shoot!(s, ξ[1:3], ξ[4], ξ[5], ξ[6], ξ[7])

@@ -9,6 +9,10 @@ EXAMPLE=(:integrator, :time, :x_dim_2, :u_dim_1, :mayer, :u_cons)
     x0=[-1, 0]
     xf=[0, 0]
     γ = 1
+    A = [ 0 1
+          0 0 ]
+    B = [ 0
+          1 ]
 
     @def ocp begin
         tf ∈ R, variable
@@ -21,14 +25,6 @@ EXAMPLE=(:integrator, :time, :x_dim_2, :u_dim_1, :mayer, :u_cons)
         ẋ(t) == A * x(t) + B * u(t)
         tf → min
     end
-
-    A = [ 0 1
-          0 0 ]
-    B = [ 0
-          1 ]
-
-    n = ocp.state_dimension
-    m = ocp.control_dimension
 
     # the solution
     a = x0[1]
@@ -49,22 +45,18 @@ EXAMPLE=(:integrator, :time, :x_dim_2, :u_dim_1, :mayer, :u_cons)
     N=201
     times = range(t0, tf, N)
     #
-    sol = OptimalControlSolution() #n, m, times, x, p, u)
-    sol.state_dimension = n
-    sol.control_dimension = m
+    sol = OptimalControlSolution()
+    copy!(sol,ocp)
     sol.times = Base.deepcopy(times)
     sol.state = Base.deepcopy(x)
-    sol.state_names = [ "x" * ctindices(i) for i ∈ range(1, n)]
-    sol.adjoint = Base.deepcopy(p)
+    sol.costate = Base.deepcopy(p)
     sol.control = Base.deepcopy(u)
-    sol.control_names = [ "u" ]
     sol.objective = objective
     sol.iterations = 0
     sol.stopping = :dummy
     sol.message = "structure: B+B-"
     sol.success = true
     sol.infos[:resolution] = :analytical
-
     #
     return OptimalControlProblem(title, ocp, sol)
 

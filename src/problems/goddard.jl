@@ -24,22 +24,6 @@ EXAMPLE=(:goddard, :classical, :altitude, :x_dim_3, :u_dim_1, :mayer, :x_cons, :
     mf = 0.6
     x0 = [ r0, v0, m0 ]
 
-    # model
-    ocp = Model()
-
-    time!(ocp, :initial, t0) # if not provided, final time is free
-    state!(ocp, 3, ["r", "v", "m"]) # state dim
-    control!(ocp, 1) # control dim
-
-    constraint!(ocp, :initial, x0, :initial_constraint) # initial condition
-    constraint!(ocp, :final, Index(3), mf, :final_constraint)
-    constraint!(ocp, :control, 0, 1, :u_cons) # constraints can be labeled or not
-    constraint!(ocp, :state, Index(1), r0, Inf,  :x_cons_r)
-    constraint!(ocp, :state, Index(2), 0, vmax,  :x_cons_v)
-    #
-
-    objective!(ocp, :mayer,  (t0, x0, tf, xf) -> xf[1], :max)
-
     function F0(x)
         r, v, m = x
         D = Cd * v^2 * exp(-β*(r - 1))
@@ -50,8 +34,51 @@ EXAMPLE=(:goddard, :classical, :altitude, :x_dim_3, :u_dim_1, :mayer, :x_cons, :
         return [ 0, Tmax/m, -b*Tmax ]
     end
     f(x, u) = F0(x) + u*F1(x)
+    
+    @def ocp begin
+        tf ∈ R, variable
+        t ∈ [ t0, tf ], time
+        x ∈ R³, state
+        u ∈ R, control
+        x(t0) == x0,    (initial_con) 
+        r = x₁
+        v = x₂
+        m = x₃
+        m(tf) == mf,    (final_con)
+        0 ≤ u(t) ≤ 1,   (u_con)
+        r0 ≤ r(t) ≤ Inf, (x_con_r)
+        0 ≤ v(t) ≤ vmax, (x_con_v)
+        ẋ(t) == f(x(t),u(t))
+        r(tf) → max
+    end
+    # # model
+    # ocp = Model()
 
-    constraint!(ocp, :dynamics, f)
+    # time!(ocp, :initial, t0) # if not provided, final time is free
+    # state!(ocp, 3, ["r", "v", "m"]) # state dim
+    # control!(ocp, 1) # control dim
+
+    # constraint!(ocp, :initial, x0, :initial_constraint) # initial condition
+    # constraint!(ocp, :final, Index(3), mf, :final_constraint)
+    # constraint!(ocp, :control, 0, 1, :u_cons) # constraints can be labeled or not
+    # constraint!(ocp, :state, Index(1), r0, Inf,  :x_cons_r)
+    # constraint!(ocp, :state, Index(2), 0, vmax,  :x_cons_v)
+    # #
+
+    # objective!(ocp, :mayer,  (t0, x0, tf, xf) -> xf[1], :max)
+
+    # function F0(x)
+    #     r, v, m = x
+    #     D = Cd * v^2 * exp(-β*(r - 1))
+    #     return [ v, -D/m - 1/r^2, 0 ]
+    # end
+    # function F1(x)
+    #     r, v, m = x
+    #     return [ 0, Tmax/m, -b*Tmax ]
+    # end
+    # f(x, u) = F0(x) + u*F1(x)
+
+    # dynamics!(ocp, f)
 
     # ------------------------------------------------------------------------------------------
     # the solution
