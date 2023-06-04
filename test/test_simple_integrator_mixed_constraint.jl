@@ -13,6 +13,10 @@ function test_simple_integrator_mixed_constraint()
     u(x, p) = -x
     H(x, p) = H(x, p, u(x, p), η(x, p))
     f = Flow(Hamiltonian(H))
+#    u = FeedbackControl(x -> -x)
+#    g = MixedConstraint((x, u) -> x+u)
+#    η = Multiplier((x, p) -> -(p+1))
+#    f = Flow(ocp, u, g, η)
 
     # shooting function
     t0 = ocp.initial_time

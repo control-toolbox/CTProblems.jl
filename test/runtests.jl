@@ -13,7 +13,7 @@ include("utils.jl")
         :double_integrator_consumption,
         :double_integrator_energy_control_constraint,
         :double_integrator_energy_distance,
-        # :double_integrator_energy_state_constraint, #6 fails
+        :double_integrator_energy_state_constraint,
         :double_integrator_energy,
         # :double_integrator_time, #4 fails
         # :goddard_all_constraints,

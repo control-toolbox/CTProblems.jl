@@ -21,9 +21,9 @@ EXAMPLE=(:integrator, :energy, :x_dim_2, :u_dim_1, :lagrange, :x_cons, :order_2)
         t ∈ [ t0, tf ], time
         x ∈ R², state
         u ∈ R, control
-        x(t0) == x0,    (initial_con) 
-        x(tf) == xf,    (final_con)
-        -Inf ≤ x₁(t) ≤ l,  (x_con)
+        x(t0) == x0,                    (initial_con) 
+        x(tf) == xf,                    (final_con)
+        -Inf ≤ x₁(t) ≤ l,               (x_con)
         ẋ(t) == A * x(t) + B * u(t)
         ∫( 0.5u(t)^2 ) → min
     end

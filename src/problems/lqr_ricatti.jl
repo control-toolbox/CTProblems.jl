@@ -40,34 +40,27 @@ EXAMPLE=(:lqr, :x_dim_2, :u_dim_1, :lagrange)
     b = x0[2]
 
     # computing S
-    ricatti(S, params, t) = -S*B*Rm1*B'*S - (-Q + A'*S + S*A)
-    Sf = zeros(size(A))
-    tspan = (tf, 0)
-    prob = ODEProblem(ricatti,Sf,tspan)
-    S = solve(prob, Tsit5(), reltol=1e-12, abstol=1e-12)
+    ricatti(S) = -S*B*Rm1*B'*S - (-Q+A'*S+S*A)
+    f = Flow(ricatti, autonomous=true, variable=false)
+    S = f((tf, t0), zeros(size(A)))
 
     # computing x
-    dyn(x, params, t) = A*x + B*Rm1*B'*S(t)*x
-    tspan = (0, tf)
-    prob = ODEProblem(dyn,x0,tspan)
-    x = solve(prob, Tsit5(), reltol=1e-8, abstol=1e-8)
+    dyn(t, x) = A*x + B*Rm1*B'*S(t)*x
+    f = Flow(dyn, autonomous=false, variable=false)
+    x = f((t0, tf), x0)
 
     # computing u
     u(t) = Rm1*B'*S(t)*x(t) 
     
     # computing p
-    ϕ(p, params, t) =  [p[2]+x(t)[1] ; x(t)[2]-p[1]]
-    pf = [0;0]
-    tspan = (tf, 0)
-    prob = ODEProblem(ϕ,pf,tspan)
-    p = solve(prob, Tsit5(), reltol=1e-8, abstol=1e-8)
+    ϕ(t, p) = [p[2]+x(t)[1], x(t)[2]-p[1]]
+    f = Flow(ϕ, autonomous=false, variable=false)
+    p = f((tf, t0), zeros(2))
 
     # computing objective
-    ψ(c,params,t) = 0.5*(x(t)[1]^2 + x(t)[2]^2 + u(t)^2)
-    tspan = (0,tf)
-    c0 = 0
-    prob = ODEProblem(ψ,0,tspan)
-    obj = solve(prob, Tsit5(), reltol=1e-8, abstol=1e-8)
+    ψ(t) = 0.5*(x(t)[1]^2 + x(t)[2]^2 + u(t)^2)
+    f = Flow((t, _) -> ψ(t), autonomous=false, variable=false)
+    obj = f((t0, tf), 0)
     objective = obj(tf)
     
     #
@@ -77,8 +70,8 @@ EXAMPLE=(:lqr, :x_dim_2, :u_dim_1, :lagrange)
     sol = OptimalControlSolution()
     copy!(sol,ocp)
     sol.times = Base.deepcopy(times)
-    sol.state = t -> x(t)#Base.deepcopy(x)
-    sol.costate = t -> p(t)#Base.deepcopy(p)
+    sol.state = Base.deepcopy(t -> x(t))
+    sol.costate = Base.deepcopy(t -> p(t))
     sol.control = Base.deepcopy(u)
     sol.objective = objective
     sol.iterations = 0

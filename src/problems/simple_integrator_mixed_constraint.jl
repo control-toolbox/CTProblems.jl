@@ -15,8 +15,8 @@ EXAMPLE=(:integrator, :x_dim_1, :u_dim_1, :lagrange, :mixed_constraint)
         t ∈ [ t0, tf ], time
         x ∈ R, state
         u ∈ R, control
-        x(t0) == x0,    (initial_con)
-        0 ≤ u(t) ≤ +Inf,  (u_con) 
+        x(t0) == x0,            (initial_con)
+        0 ≤ u(t) ≤ +Inf,        (u_con) 
         -Inf ≤ x(t) + u(t) ≤ 0, (mixed_con)
         ẋ(t) == u(t)
         ∫(-u(t)) → min
