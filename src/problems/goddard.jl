@@ -104,7 +104,7 @@ EXAMPLE=(:goddard, :classical, :altitude, :x_dim_3, :u_dim_1, :mayer, :x_cons, :
     f0 = Flow(ocp, u0, abstol=abstol, reltol=reltol)
     f1 = Flow(ocp, u1, abstol=abstol, reltol=reltol)
     fs = Flow(ocp, us, abstol=abstol, reltol=reltol)
-    fb = Flow(ocp, ub, (x, p, v) -> g(x, v), μb, abstol=abstol, reltol=reltol)
+    fb = Flow(ocp, ub, (x, _, v) -> g(x, v), μb, abstol=abstol, reltol=reltol)
     #
     p0 = [3.945764658668555, 0.15039559623198723, 0.053712712939991955]
     t1 = 0.023509684041475312
