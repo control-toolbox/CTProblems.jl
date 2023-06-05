@@ -83,19 +83,20 @@ EXAMPLE=(:goddard, :classical, :altitude, :x_dim_3, :u_dim_1, :mayer, :x_cons, :
     # ------------------------------------------------------------------------------------------
     # the solution
 
-    u0(x, p) = 0.
-    u1(x, p) = 1.
+    u0 = ControlLaw((x, p, v) -> 0., NonFixed)
+    u1 = ControlLaw((x, p, v) -> 1., NonFixed)
     #
-    H0(x, p) = p' * F0(x)
-    H1(x, p) = p' * F1(x)
+    H0 = Hamiltonian((x, p, v) -> p' * F0(x), NonFixed)
+    H1 = Hamiltonian((x, p, v) -> p' * F1(x), NonFixed)
     H01 = Poisson(H0, H1)
     H001 = Poisson(H0, H01)
     H101 = Poisson(H1, H01)
-    us(x, p) = -H001(x, p) / H101(x, p) # singular control of order 1
+    us = ControlLaw((x, p, v) -> -H001(x, p, v) / H101(x, p, v), NonFixed) # singular control of order 1
     #
-    g(x) = vmax-constraint(ocp, :x_cons_v)(x) # g(x, u) ≥ 0 (cf. nonnegative multiplier)
-    ub(x, _) = -Ad(F0, g)(x) / Ad(F1, g)(x) # boundary control
-    μb(x, p) = H01(x, p) / Ad(F1, g)(x)
+    #g = StateConstraint((x, v) -> vmax-constraint(ocp, :x_con_v)(x, v), NonFixed) # g(x, u) ≥ 0 (cf. nonnegative multiplier)
+    g(x, v) = vmax-constraint(ocp, :x_con_v)(x, v)
+    ub = ControlLaw((x, _, v) -> -Lie(F0,g)(x, v) / Lie(F1,g)(x, v), NonFixed) # boundary control
+    μb = Multiplier((x, p, v) -> H01(x, p, v) / Lie(F1,g)(x, v), NonFixed)
 
     # associated flows
     abstol=1e-12
@@ -103,7 +104,7 @@ EXAMPLE=(:goddard, :classical, :altitude, :x_dim_3, :u_dim_1, :mayer, :x_cons, :
     f0 = Flow(ocp, u0, abstol=abstol, reltol=reltol)
     f1 = Flow(ocp, u1, abstol=abstol, reltol=reltol)
     fs = Flow(ocp, us, abstol=abstol, reltol=reltol)
-    fb = Flow(ocp, ub, (x, _) -> g(x), μb, abstol=abstol, reltol=reltol)
+    fb = Flow(ocp, ub, (x, p, v) -> g(x, v), μb, abstol=abstol, reltol=reltol)
     #
     p0 = [3.945764658668555, 0.15039559623198723, 0.053712712939991955]
     t1 = 0.023509684041475312
@@ -112,7 +113,7 @@ EXAMPLE=(:goddard, :classical, :altitude, :x_dim_3, :u_dim_1, :mayer, :x_cons, :
     tf = 0.20204744057146434
     
     f1sb0 = f1 * (t1, fs) * (t2, fb) * (t3, f0) # concatenation of the flows
-    flow_sol = f1sb0((t0, tf), x0, p0)
+    flow_sol = f1sb0((t0, tf), x0, p0, tf)
     sol = CTFlows.OptimalControlSolution(flow_sol)
 
     # add to the sol

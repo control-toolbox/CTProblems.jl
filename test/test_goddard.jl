@@ -20,9 +20,9 @@ function test_goddard()
     mf = 0.6
 
     #
-    remove_constraint!(ocp, :x_cons_r)
-    g(x) = vmax-constraint(ocp, :x_cons_v)(x) # g(x, u) ≥ 0 (cf. nonnegative multiplier)
-    final_mass_cons(xf) = mf-constraint(ocp, :final_constraint)(xf)
+    remove_constraint!(ocp, :x_con_r)
+    g(x) = vmax-constraint(ocp, :x_con_v)(x) # g(x, u) ≥ 0 (cf. nonnegative multiplier)
+    final_mass_cons(xf) = mf-constraint(ocp, :final_con)(xf)
 
     function F0(x)
         r, v, m = x

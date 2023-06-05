@@ -61,7 +61,7 @@ function test_by_shooting(ocp, shoot!, ξ, fparams, sol, atol, title;
     u⁺ = nothing
     if flow == :ocp
         t0, x0, p0⁺, tf, f, v = fparams(ξ⁺) # compute optimal control solution    
-        ocp⁺ = CTFlows.OptimalControlSolution(f((t0, tf), x0, p0⁺))
+        ocp⁺ = CTFlows.OptimalControlSolution(f((t0, tf), x0, p0⁺, v))
         x⁺ = t -> ocp⁺.state(t)
         p⁺ = t -> ocp⁺.costate(t)
         u⁺ = t -> ocp⁺.control(t)
@@ -105,7 +105,7 @@ function test_by_shooting(ocp, shoot!, ξ, fparams, sol, atol, title;
             elseif !isnothing(ocp.mayer) && isnothing(ocp.lagrange)
                 # Mayer case
                 @testset "objective - mayer case" begin
-                    @test ocp.mayer(x0, x⁺(tf),v) ≈ sol.objective atol=atol #@test ocp.mayer(t0, x0, tf, x⁺(tf)) ≈ sol.objective atol=atol
+                    @test ocp.mayer(x0, x⁺(tf), v) ≈ sol.objective atol=atol #@test ocp.mayer(t0, x0, tf, x⁺(tf)) ≈ sol.objective atol=atol
                 end
             elseif isnothing(ocp.mayer) && !isnothing(ocp.lagrange)
                 # Lagrange case
