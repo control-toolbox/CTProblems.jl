@@ -6,6 +6,7 @@ EXAMPLE=(:exponential, :time, :x_dim_1, :u_dim_1, :lagrange)
     #
     title = "simple exponential - time min"
 
+    # ------------------------------------------------------------------------------------------
     # the model
     t0=0
     x0=-1
@@ -23,16 +24,8 @@ EXAMPLE=(:exponential, :time, :x_dim_1, :u_dim_1, :lagrange)
         ẋ(t) == -x(t) + u(t)
         tf → min
     end
-    # ocp = Model()
-    # state!(ocp, n)   # dimension of the state
-    # control!(ocp, m) # dimension of the control
-    # time!(ocp, :initial, t0)
-    # constraint!(ocp, :initial, x0, :initial_constraint)
-    # constraint!(ocp, :final, xf, :final_constraint)
-    # constraint!(ocp, :control, -γ, γ, :u_cons) # constraints can be labeled or not
-    # dynamics!(ocp, (x, u) -> -x + u)
-    # objective!(ocp, :mayer, (t0, x0, tf, xf) -> tf, :min)
 
+    # ------------------------------------------------------------------------------------------
     # the solution
     tf = log((-1-γ)/(xf-γ))
     x(t) = (-1-γ)*exp(-t) + γ

@@ -4,9 +4,8 @@ EXAMPLE=(:lqr, :x_dim_2, :u_dim_1, :lagrange)
     # 
     title = "lqr - dimension 2 - ricatti"
 
+    # ------------------------------------------------------------------------------------------
     # the model
-    n=2
-    m=1
     t0=0
     tf=5
     x0=[0, 1]
@@ -21,17 +20,8 @@ EXAMPLE=(:lqr, :x_dim_2, :u_dim_1, :lagrange)
         ẋ(t) == A * x(t) + B * u(t)
         ∫( 0.5*(x₁(t)^2 + x₂(t)^2 + u(t)^2) ) → min
     end
-    # ocp = Model()
-    # state!(ocp, n)   # dimension of the state
-    # control!(ocp, m) # dimension of the control
-    # time!(ocp, [t0, tf])
-    # constraint!(ocp, :initial, x0, :initial_constraint)
-    # A = [0 1 ; -1 0]
-    # B = [0 ; 1]
-    # dynamics!(ocp, (x, u) -> A*x + B*u)
-    # objective!(ocp, :lagrange, (x, u) -> 0.5*(x[1]^2 + x[2]^2 + u^2))
 
-
+    # ------------------------------------------------------------------------------------------
     # the solution
     Q = I
     R = I

@@ -6,9 +6,8 @@ EXAMPLE=(:exponential, :energy, :x_dim_1, :u_dim_1, :lagrange)
     #
     title = "simple exponential - energy min"
 
+    # ------------------------------------------------------------------------------------------
     # the model
-    n=1
-    m=1
     t0=0
     tf=1
     x0=-1
@@ -23,15 +22,8 @@ EXAMPLE=(:exponential, :energy, :x_dim_1, :u_dim_1, :lagrange)
         ẋ(t) == -x(t) + u(t)
         ∫( 0.5u(t)^2 ) → min
     end
-    # ocp = Model()
-    # state!(ocp, n)   # dimension of the state
-    # control!(ocp, m) # dimension of the control
-    # time!(ocp, [t0, tf])
-    # constraint!(ocp, :initial, x0, :initial_constraint)
-    # constraint!(ocp, :final, xf, :final_constraint)
-    # dynamics!(ocp, (x, u) -> -x + u)
-    # objective!(ocp, :lagrange, (x, u) -> 0.5u^2) # default is to minimise
 
+    # ------------------------------------------------------------------------------------------
     # the solution
     a = xf - x0*exp(-tf)
     b = sinh(tf)

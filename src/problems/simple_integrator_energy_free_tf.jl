@@ -4,9 +4,8 @@ EXAMPLE=(:integrator, :energy, :free_final_time, :x_dim_1, :u_dim_1, :lagrange)
     # 
     title = "simple integrator - energy min - free tf"
 
+    # ------------------------------------------------------------------------------------------
     # the model
-    n=1
-    m=1
     t0=0
     x0=0
 
@@ -20,15 +19,8 @@ EXAMPLE=(:integrator, :energy, :free_final_time, :x_dim_1, :u_dim_1, :lagrange)
         ẋ(t) == u(t)
         ∫( 0.5u(t)^2 ) → min
     end
-    # ocp = Model()
-    # state!(ocp, n)   # dimension of the state
-    # control!(ocp, m) # dimension of the control
-    # time!(ocp, :initial, t0)
-    # constraint!(ocp, :initial, x0, :initial_constraint)
-    # constraint!(ocp, :boundary, (t0, x0, tf, xf) -> xf-tf-10, 0, :boundary_constraint)
-    # dynamics!(ocp, (x, u) -> u)
-    # objective!(ocp, :lagrange, (x, u) -> 0.5u^2) # default is to minimise
 
+    # ------------------------------------------------------------------------------------------
     # the solution
     tf = 10
     x(t) = t*(tf+10)/tf

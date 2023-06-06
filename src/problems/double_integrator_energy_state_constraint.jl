@@ -4,9 +4,8 @@ EXAMPLE=(:integrator, :energy, :x_dim_2, :u_dim_1, :lagrange, :x_cons, :order_2)
     # 
     title = "Double integrator energy - mininimise ∫ u² under the constraint x₁ ≤ l"
 
+    # ------------------------------------------------------------------------------------------
     # the model
-    n=2
-    m=1
     t0=0
     tf=1
     x0=[0, 1]
@@ -27,21 +26,8 @@ EXAMPLE=(:integrator, :energy, :x_dim_2, :u_dim_1, :lagrange, :x_cons, :order_2)
         ẋ(t) == A * x(t) + B * u(t)
         ∫( 0.5u(t)^2 ) → min
     end
-    # ocp = Model()
-    # state!(ocp, n, "x", ["x","v"])   # dimension of the state
-    # control!(ocp, m) # dimension of the control
-    # time!(ocp, [t0, tf])
-    # constraint!(ocp, :initial, x0, :initial_constraint)
-    # constraint!(ocp, :final,   xf, :final_constraint)
-    # constraint!(ocp, :state, Index(1), -Inf, l, :x_con)
-    # A = [ 0 1
-    # 0 0 ]
-    # B = [ 0
-    # 1 ]
-    # dynamics!(ocp, (x, u) -> A*x + B*u)
-    # objective!(ocp, :lagrange, (x, u) -> 0.5u^2) # default is to minimise
 
-
+    # ------------------------------------------------------------------------------------------
     # the solution (case l ≤ 1/6 because it has 3 arc)
     arc(t) = [0 ≤ t ≤ 3*l, 3*l < t ≤ 1 - 3*l, 1 - 3*l < t ≤ 1]
     x(t) =  arc(t)[1]*[l*(1-(1-t/(3l))^3), (1-t/(3l))^2] + 
@@ -50,7 +36,7 @@ EXAMPLE=(:integrator, :energy, :x_dim_2, :u_dim_1, :lagrange, :x_cons, :order_2)
     u(t) =  arc(t)[1]*(-2/(3l)*(1-t/(3l))) + 
             arc(t)[2]*0 + 
             arc(t)[3]*(-2/(3l)*(1-(1-t)/(3l)))
-#    p(t) = arc(t)[1]*[2/9*l^2, 2/(3*l)*(1-t/(3*l))] + arc(t)[2]*[0, 0] + arc(t)[3]*[-2/9*l^2, 2/(3*l)*(1-(1-t)/(3*l))]    
+    # p(t) = arc(t)[1]*[2/9*l^2, 2/(3*l)*(1-t/(3*l))] + arc(t)[2]*[0, 0] + arc(t)[3]*[-2/9*l^2, 2/(3*l)*(1-(1-t)/(3*l))]    
     α = -18
     β = -6
     p(t) = arc(t)[1]*[α, -α*t+β] + arc(t)[2]*[0, 0] + arc(t)[3]*[-α, α*(t-2/3)]

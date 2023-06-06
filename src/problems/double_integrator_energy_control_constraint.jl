@@ -4,6 +4,7 @@ EXAMPLE=(:integrator, :energy, :x_dim_2, :u_dim_1, :lagrange, :u_cons)
     # 
     title = "Double integrator energy - mininimise ∫ u² under the constraint |u| ≤ γ"
 
+    # ------------------------------------------------------------------------------------------
     # the model
     t0=0
     tf=1
@@ -25,21 +26,8 @@ EXAMPLE=(:integrator, :energy, :x_dim_2, :u_dim_1, :lagrange, :u_cons)
         ẋ(t) == A * x(t) + B * u(t)
         ∫( 0.5u(t)^2 ) → min
     end
-    # ocp = Model()
-    # state!(ocp, n)   # dimension of the state
-    # control!(ocp, m) # dimension of the control
-    # time!(ocp, [t0, tf])
-    # constraint!(ocp, :initial, x0, :initial_constraint)
-    # constraint!(ocp, :final,   xf, :final_constraint)
-    # A = [ 0 1
-    #     0 0 ]
-    # B = [ 0
-    #     1 ]
-    # dynamics!(ocp, (x, u) -> A*x + B*u)
-    # constraint!(ocp, :control, -γ, γ, :u_cons)
-    # objective!(ocp, :lagrange, (x, u) -> 0.5u^2) # default is to minimise
 
-
+    # ------------------------------------------------------------------------------------------
     # the solution
     a = x0[1]
     b = x0[2]
