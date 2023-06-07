@@ -4,28 +4,30 @@ EXAMPLE=(:integrator, :consumption, :x_dim_2, :u_dim_1, :lagrange, :u_cons, :non
     # 
     title = "Double integrator consumption - mininimise ∫ |u| under the constraint |u| ≤ γ"
 
+    # ------------------------------------------------------------------------------------------
     # the model
-    n=2
-    m=1
     t0=0
     tf=1
     x0=[-1, 0]
     xf=[0, 0]
     γ = 5
-    ocp = Model()
-    state!(ocp, n)   # dimension of the state
-    control!(ocp, m) # dimension of the control
-    time!(ocp, [t0, tf])
-    constraint!(ocp, :initial, x0, :initial_constraint)
-    constraint!(ocp, :final,   xf, :final_constraint)
     A = [ 0 1
         0 0 ]
     B = [ 0
         1 ]
-    constraint!(ocp, :dynamics, (x, u) -> A*x + B*u)
-    constraint!(ocp, :control, -γ, γ, :u_cons)
-    objective!(ocp, :lagrange, (x, u) -> abs(u)) # default is to minimise
-
+    
+    @def ocp begin
+        t ∈ [ t0, tf ], time
+        x ∈ R², state
+        u ∈ R, control
+        x(t0) == x0,    (initial_con) 
+        x(tf) == xf,    (final_con)
+        -γ ≤ u(t) ≤ γ,  (u_con)
+        ẋ(t) == A * x(t) + B * u(t)
+        ∫abs(u(t)) → min 
+    end
+    
+    # ------------------------------------------------------------------------------------------
     # the solution
     a = x0[1]
     b = x0[2]
@@ -87,15 +89,12 @@ EXAMPLE=(:integrator, :consumption, :x_dim_2, :u_dim_1, :lagrange, :u_cons, :non
     N=201
     times = range(t0, tf, N)
     #
-    sol = OptimalControlSolution() #n, m, times, x, p, u)
-    sol.state_dimension = n
-    sol.control_dimension = m
+    sol = OptimalControlSolution()
+    copy!(sol,ocp)
     sol.times = Base.deepcopy(times)
     sol.state = Base.deepcopy(x)
-    sol.state_names = [ "x" * ctindices(i) for i ∈ range(1, n)]
-    sol.adjoint = Base.deepcopy(p)
+    sol.costate = Base.deepcopy(p)
     sol.control = Base.deepcopy(u)
-    sol.control_names = [ "u" ]
     sol.objective = objective
     sol.iterations = 0
     sol.stopping = :dummy

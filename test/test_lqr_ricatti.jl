@@ -22,7 +22,7 @@ function test_lqr_ricatti()
 
     # tests
     ξ = [1, 2]
-    fparams(ξ) = (t0, x0, ξ, tf, f)
+    fparams(ξ) = (t0, x0, ξ, tf, f, Real[])
     test_by_shooting(ocp, shoot!, ξ, fparams, sol, 1e-3, title)
 
 end

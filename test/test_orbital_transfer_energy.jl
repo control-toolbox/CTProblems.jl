@@ -13,7 +13,7 @@ function test_orbital_transfer_energy()
     t0 = ocp.initial_time
     tf = ocp.final_time
     x0 = initial_condition(ocp)
-    c(x) = constraint(ocp, :boundary_constraint)(t0, x0, tf, x)
+    c(x) = constraint(ocp, :boundary_con)(x0, x)
     μ      = 5.1658620912*1.0e12
     rf     = 42165
     rf3    = rf^3
@@ -29,7 +29,7 @@ function test_orbital_transfer_energy()
 
     # tests
     ξ = [131.44483634894812, 34.16617425875177, 249.15735272382514, -23.9732920001312]   # pour F_max = 100N
-    fparams(ξ) = (t0, x0, ξ, tf, f)
+    fparams(ξ) = (t0, x0, ξ, tf, f, Real[])
     test_by_shooting(ocp, shoot!, ξ, fparams, sol, 1e-3, title)
 
 end

@@ -42,7 +42,7 @@ Thus, solving this optimal control problem leads to solve the following boundary
     \right.
 ```
 
-where $p(t) = (p_1(t), p_2(t))$ is the adjoint vector.
+where $p(t) = (p_1(t), p_2(t))$ is the costate vector.
 Integrating first the differential system, we get
 
 ```math

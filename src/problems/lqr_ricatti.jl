@@ -4,22 +4,24 @@ EXAMPLE=(:lqr, :x_dim_2, :u_dim_1, :lagrange)
     # 
     title = "lqr - dimension 2 - ricatti"
 
+    # ------------------------------------------------------------------------------------------
     # the model
-    n=2
-    m=1
     t0=0
     tf=5
     x0=[0, 1]
-    ocp = Model()
-    state!(ocp, n)   # dimension of the state
-    control!(ocp, m) # dimension of the control
-    time!(ocp, [t0, tf])
-    constraint!(ocp, :initial, x0, :initial_constraint)
     A = [0 1 ; -1 0]
     B = [0 ; 1]
-    constraint!(ocp, :dynamics, (x, u) -> A*x + B*u)
-    objective!(ocp, :lagrange, (x, u) -> 0.5*(x[1]^2 + x[2]^2 + u^2))
 
+    @def ocp begin
+        t ∈ [ t0, tf ], time
+        x ∈ R², state
+        u ∈ R, control
+        x(t0) == x0,    (initial_con) 
+        ẋ(t) == A * x(t) + B * u(t)
+        ∫( 0.5*(x₁(t)^2 + x₂(t)^2 + u(t)^2) ) → min
+    end
+
+    # ------------------------------------------------------------------------------------------
     # the solution
     Q = I
     R = I
@@ -28,49 +30,39 @@ EXAMPLE=(:lqr, :x_dim_2, :u_dim_1, :lagrange)
     b = x0[2]
 
     # computing S
-    ricatti(S, params, t) = -S*B*Rm1*B'*S - (-Q + A'*S + S*A)
-    Sf = zeros(size(A))
-    tspan = (tf, 0)
-    prob = ODEProblem(ricatti,Sf,tspan)
-    S = solve(prob, Tsit5(), reltol=1e-12, abstol=1e-12)
+    ricatti(S) = -S*B*Rm1*B'*S - (-Q+A'*S+S*A)
+    f = Flow(ricatti, autonomous=true, variable=false)
+    S = f((tf, t0), zeros(size(A)))
 
     # computing x
-    dyn(x, params, t) = A*x + B*Rm1*B'*S(t)*x
-    tspan = (0, tf)
-    prob = ODEProblem(dyn,x0,tspan)
-    x = solve(prob, Tsit5(), reltol=1e-8, abstol=1e-8)
+    dyn(t, x) = A*x + B*Rm1*B'*S(t)*x
+    f = Flow(dyn, autonomous=false, variable=false)
+    x = f((t0, tf), x0)
 
     # computing u
     u(t) = Rm1*B'*S(t)*x(t) 
     
     # computing p
-    ϕ(p, params, t) =  [p[2]+x(t)[1] ; x(t)[2]-p[1]]
-    pf = [0;0]
-    tspan = (tf, 0)
-    prob = ODEProblem(ϕ,pf,tspan)
-    p = solve(prob, Tsit5(), reltol=1e-8, abstol=1e-8)
+    ϕ(t, p) = [p[2]+x(t)[1], x(t)[2]-p[1]]
+    f = Flow(ϕ, autonomous=false, variable=false)
+    p = f((tf, t0), zeros(2))
 
     # computing objective
-    ψ(c,params,t) = 0.5*(x(t)[1]^2 + x(t)[2]^2 + u(t)^2)
-    tspan = (0,tf)
-    c0 = 0
-    prob = ODEProblem(ψ,0,tspan)
-    obj = solve(prob, Tsit5(), reltol=1e-8, abstol=1e-8)
+    ψ(t) = 0.5*(x(t)[1]^2 + x(t)[2]^2 + u(t)^2)
+    f = Flow((t, _) -> ψ(t), autonomous=false, variable=false)
+    obj = f((t0, tf), 0)
     objective = obj(tf)
     
     #
     N=201
     times = range(t0, tf, N)
     #
-    sol = OptimalControlSolution() #n, m, times, x, p, u)
-    sol.state_dimension = n
-    sol.control_dimension = m
+    sol = OptimalControlSolution()
+    copy!(sol,ocp)
     sol.times = Base.deepcopy(times)
-    sol.state = t -> x(t)
-    sol.state_names = [ "x" * ctindices(i) for i ∈ range(1, n)]
-    sol.adjoint = t -> p(t)
+    sol.state = Base.deepcopy(t -> x(t))
+    sol.costate = Base.deepcopy(t -> p(t))
     sol.control = Base.deepcopy(u)
-    sol.control_names = [ "u" ]
     sol.objective = objective
     sol.iterations = 0
     sol.stopping = :dummy
