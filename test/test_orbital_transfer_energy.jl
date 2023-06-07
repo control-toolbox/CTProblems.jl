@@ -13,7 +13,7 @@ function test_orbital_transfer_energy()
     t0 = ocp.initial_time
     tf = ocp.final_time
     x0 = initial_condition(ocp)
-    c(x) = constraint(ocp, :boundary_constraint)(t0, x0, tf, x)
+    c(x) = constraint(ocp, :boundary_con)(x0, x)
     μ      = 5.1658620912*1.0e12
     rf     = 42165
     rf3    = rf^3

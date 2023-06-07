@@ -49,7 +49,7 @@ function test_by_shooting(ocp, shoot!, ξ, fparams, sol, atol, title;
         Float64.(isreal ? [ξ] : ξ), 
         show_trace=display)
     display ? println(shoot_sol) : nothing
-    ξ⁺ = isreal ? shoot_sol.x[1] : shoot_sol.x
+    ξ⁺ = Base.deepcopy(isreal ? shoot_sol.x[1] : shoot_sol.x) # may not work without deepcopy
     
     #
     T = sol.times # flow_sol.ode_sol.t
@@ -59,23 +59,12 @@ function test_by_shooting(ocp, shoot!, ξ, fparams, sol, atol, title;
     x⁺ = nothing
     p⁺ = nothing
     u⁺ = nothing
-    if flow == :ocp
-        t0, x0, p0⁺, tf, f, v = fparams(ξ⁺) # compute optimal control solution    
-        ocp⁺ = CTFlows.OptimalControlSolution(f((t0, tf), x0, p0⁺))
-        x⁺ = t -> ocp⁺.state(t)
-        p⁺ = t -> ocp⁺.costate(t)
-        u⁺ = t -> ocp⁺.control(t)
-    elseif flow == :hamiltonian
-        t0, x0, p0⁺, tf, f, u, v = fparams(ξ⁺) # compute optimal control solution    
-        z = f((t0, tf), x0, p0⁺, v)
-        x⁺ = t -> z(t)[range(1,n)] # to have scalar in 1d
-        p⁺ = t -> z(t)[range(n+1,2n)] # to have scalar in 1d
-        u⁺ = t -> u(x⁺(t), p⁺(t))
-    elseif flow == :noflow
-        t0, x0, tf, x⁺, p⁺, u⁺, v = fparams(ξ⁺)
-    else
-        error("flow must be :ocp, :hamiltonian or :noflow")
-    end
+
+    t0, x0, p0⁺, tf, f, v = fparams(ξ⁺) # compute optimal control solution    
+    ocp⁺ = CTFlows.OptimalControlSolution(f((t0, tf), x0, p0⁺, v))
+    x⁺ = t -> ocp⁺.state(t)
+    p⁺ = t -> ocp⁺.costate(t)
+    u⁺ = t -> ocp⁺.control(t)
 
     #
     @testset "$title" begin
@@ -105,7 +94,7 @@ function test_by_shooting(ocp, shoot!, ξ, fparams, sol, atol, title;
             elseif !isnothing(ocp.mayer) && isnothing(ocp.lagrange)
                 # Mayer case
                 @testset "objective - mayer case" begin
-                    @test ocp.mayer(x0, x⁺(tf),v) ≈ sol.objective atol=atol #@test ocp.mayer(t0, x0, tf, x⁺(tf)) ≈ sol.objective atol=atol
+                    @test ocp.mayer(x0, x⁺(tf), v) ≈ sol.objective atol=atol #@test ocp.mayer(t0, x0, tf, x⁺(tf)) ≈ sol.objective atol=atol
                 end
             elseif isnothing(ocp.mayer) && !isnothing(ocp.lagrange)
                 # Lagrange case

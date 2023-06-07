@@ -4,6 +4,7 @@ EXAMPLE=(:turnpike, :integrator, :state_energy, :x_dim_1, :u_dim_1, :lagrange, :
     # 
     title = "simple nonsmooth turnpike - state energy min - affine system in u"
 
+    # ------------------------------------------------------------------------------------------
     # the model
     n=1
     m=1
@@ -22,16 +23,8 @@ EXAMPLE=(:turnpike, :integrator, :state_energy, :x_dim_1, :u_dim_1, :lagrange, :
         ẋ(t) == u(t)
         ∫(x(t)^2) → min
     end
-    # ocp = Model()
-    # state!(ocp, n)   # dimension of the state
-    # control!(ocp, m) # dimension of the control
-    # time!(ocp, [t0, tf])
-    # constraint!(ocp, :initial, x0, :initial_constraint)
-    # constraint!(ocp, :final, xf, :final_constraint)
-    # constraint!(ocp, :control, -1, 1, :u_cons)
-    # dynamics!(ocp, (x, u) -> u)
-    # objective!(ocp, :lagrange, (x, u) -> x^2)
 
+    # ------------------------------------------------------------------------------------------
     # the solution
     t1 = x0
     t2 = tf - xf

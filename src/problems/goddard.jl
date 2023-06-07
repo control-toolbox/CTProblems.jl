@@ -8,9 +8,6 @@ EXAMPLE=(:goddard, :classical, :altitude, :x_dim_3, :u_dim_1, :mayer, :x_cons, :
 
     # ------------------------------------------------------------------------------------------
     # the model
-    n = 3
-    m = 1
-    #
     # parameters
     Cd = 310
     Tmax = 3.5
@@ -46,65 +43,38 @@ EXAMPLE=(:goddard, :classical, :altitude, :x_dim_3, :u_dim_1, :mayer, :x_cons, :
         m = x₃
         m(tf) == mf,    (final_con)
         0 ≤ u(t) ≤ 1,   (u_con)
-        r0 ≤ r(t) ≤ Inf, (x_con_r)
-        0 ≤ v(t) ≤ vmax, (x_con_v)
+        r0 ≤ r(t) ≤ Inf, (x_con_rmin)
+        0 ≤ v(t) ≤ vmax, (x_con_vmax)
         ẋ(t) == f(x(t),u(t))
         r(tf) → max
     end
-    # # model
-    # ocp = Model()
-
-    # time!(ocp, :initial, t0) # if not provided, final time is free
-    # state!(ocp, 3, ["r", "v", "m"]) # state dim
-    # control!(ocp, 1) # control dim
-
-    # constraint!(ocp, :initial, x0, :initial_constraint) # initial condition
-    # constraint!(ocp, :final, Index(3), mf, :final_constraint)
-    # constraint!(ocp, :control, 0, 1, :u_cons) # constraints can be labeled or not
-    # constraint!(ocp, :state, Index(1), r0, Inf,  :x_cons_r)
-    # constraint!(ocp, :state, Index(2), 0, vmax,  :x_cons_v)
-    # #
-
-    # objective!(ocp, :mayer,  (t0, x0, tf, xf) -> xf[1], :max)
-
-    # function F0(x)
-    #     r, v, m = x
-    #     D = Cd * v^2 * exp(-β*(r - 1))
-    #     return [ v, -D/m - 1/r^2, 0 ]
-    # end
-    # function F1(x)
-    #     r, v, m = x
-    #     return [ 0, Tmax/m, -b*Tmax ]
-    # end
-    # f(x, u) = F0(x) + u*F1(x)
-
-    # dynamics!(ocp, f)
 
     # ------------------------------------------------------------------------------------------
     # the solution
+    # bang controls
+    u0 = 0
+    u1 = 1
 
-    u0(x, p) = 0.
-    u1(x, p) = 1.
-    #
-    H0(x, p) = p' * F0(x)
-    H1(x, p) = p' * F1(x)
-    H01 = Poisson(H0, H1)
-    H001 = Poisson(H0, H01)
-    H101 = Poisson(H1, H01)
-    us(x, p) = -H001(x, p) / H101(x, p) # singular control of order 1
-    #
-    g(x) = vmax-constraint(ocp, :x_cons_v)(x) # g(x, u) ≥ 0 (cf. nonnegative multiplier)
-    ub(x, _) = -Ad(F0, g)(x) / Ad(F1, g)(x) # boundary control
-    μb(x, p) = H01(x, p) / Ad(F1, g)(x)
+    # singular control
+    H0 = Lift(F0)
+    H1 = Lift(F1)
+    H01  = @Poisson {H0, H1}
+    H001 = @Poisson {H0, H01}
+    H101 = @Poisson {H1, H01}
+    us(x, p) = -H001(x, p) / H101(x, p)
 
-    # associated flows
-    abstol=1e-12
-    reltol=1e-12
-    f0 = Flow(ocp, u0, abstol=abstol, reltol=reltol)
-    f1 = Flow(ocp, u1, abstol=abstol, reltol=reltol)
-    fs = Flow(ocp, us, abstol=abstol, reltol=reltol)
-    fb = Flow(ocp, ub, (x, _) -> g(x), μb, abstol=abstol, reltol=reltol)
-    #
+    # boundary control
+    g(x)    = vmax-x[2] # g(x) ≥ 0
+    ub(x)   = -Lie(F0, g)(x) / Lie(F1, g)(x)
+    μ(x, p) = H01(x, p) / Lie(F1, g)(x)
+
+    # flows
+    f0 = Flow(ocp, (x, p, v) -> u0)
+    f1 = Flow(ocp, (x, p, v) -> u1)
+    fs = Flow(ocp, (x, p, v) -> us(x, p))
+    fb = Flow(ocp, (x, p, v) -> ub(x), (x, u, v) -> g(x), (x, p, v) -> μ(x, p))
+
+    # solution
     p0 = [3.945764658668555, 0.15039559623198723, 0.053712712939991955]
     t1 = 0.023509684041475312
     t2 = 0.059737380900899015

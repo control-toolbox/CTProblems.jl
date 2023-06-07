@@ -21,8 +21,8 @@ function test_goddard_all_constraints()
 
     #
     remove_constraint!(ocp, :state_box_rmin)
-    g(x) = vmax-constraint(ocp, :state_con_vmax)(x) # g(x, u) ≥ 0 (cf. nonnegative multiplier)
-    final_mass_cons(xf) = mf-constraint(ocp, :final_constraint)(xf)
+    g(x) = vmax-constraint(ocp, :x_con_vmax)(x, Real[]) # g(x, u) ≥ 0 (cf. nonnegative multiplier)
+    final_mass_cons(xf) = mf-constraint(ocp, :final_con)(x0,xf,Real[])
 
     function F0(x)
         r, v, m = x
@@ -36,26 +36,27 @@ function test_goddard_all_constraints()
 
     # flows
     # bang controls
-    u0(x, p) = 0.
-    u1(x, p) = 1.
+    u0 = 0
+    u1 = 1
 
-    # singular control of order 1
-    H0(x, p) = p' * F0(x)
-    H1(x, p) = p' * F1(x)
-    H01 = Poisson(H0, H1)
-    H001 = Poisson(H0, H01)
-    H101 = Poisson(H1, H01)
+    # singular control
+    H0 = Lift(F0)
+    H1 = Lift(F1)
+    H01  = @Poisson {H0, H1}
+    H001 = @Poisson {H0, H01}
+    H101 = @Poisson {H1, H01}
     us(x, p) = -H001(x, p) / H101(x, p)
 
     # boundary control
-    ub(x, _) = -Ad(F0, g)(x) / Ad(F1, g)(x)
-    μb(x, p) = H01(x, p) / Ad(F1, g)(x)
+    #g(x)    = vmax-x[2] # g(x) ≥ 0
+    ub(x)   = -Lie(F0, g)(x) / Lie(F1, g)(x)
+    μ(x, p) = H01(x, p) / Lie(F1, g)(x)
 
-    # associated flows
-    f0 = Flow(ocp, u0)
-    f1 = Flow(ocp, u1)
-    fs = Flow(ocp, us)
-    fb = Flow(ocp, ub, (x, _) -> g(x), μb)
+    # flows
+    f0 = Flow(ocp, (x, p, v) -> u0)
+    f1 = Flow(ocp, (x, p, v) -> u1)
+    fs = Flow(ocp, (x, p, v) -> us(x, p))
+    fb = Flow(ocp, (x, p, v) -> ub(x), (x, u, v) -> g(x), (x, p, v) -> μ(x, p))
 
     # shooting function
     t0 = ocp.initial_time

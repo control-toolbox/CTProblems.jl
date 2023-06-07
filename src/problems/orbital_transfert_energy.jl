@@ -4,10 +4,8 @@ EXAMPLE=(:orbital_transfert, :energy, :x_dim_4, :u_dim_2, :lagrange)
     # 
     title = "Orbital transfert - energy minimisation - min ∫ ‖u‖² dt"
 
+    # ------------------------------------------------------------------------------------------
     # the model
-    n=4
-    m=2
-
     x0     = [-42272.67, 0, 0, -5796.72]
     μ      = 5.1658620912*1.0e12
     rf     = 42165.0 ;
@@ -26,22 +24,13 @@ EXAMPLE=(:orbital_transfert, :energy, :x_dim_4, :u_dim_2, :lagrange)
         x ∈ R⁴, state
         u ∈ R², control
         x(t0) == x0,    (initial_con) 
-        [norm(x(tf)[1:2])-rf, x₃(tf) + α*x₂(tf), x₄(tf) - α*x₁(tf)] == [0,0,0], (final_con)
+        [norm(x(tf)[1:2])-rf, x₃(tf) + α*x₂(tf), x₄(tf) - α*x₁(tf)] == [0,0,0], (boundary_con)
         0 ≤ norm(u(t)) ≤ 1, (u_con)
-        ẋ(t) == A*([-μ*x₁(t)/(sqrt(x₁(t)^2 + x₂(t)^2)^3);-μ*x₂(t)/(sqrt(x₁(t)^2 + x₂(t)^2)^3);x₃(t);x₄(t)]) + B*u
-        .5∫(u₁(t)^2 + u₂(t)^2) → min
+        ẋ(t) == A*([-μ*x₁(t)/(sqrt(x₁(t)^2 + x₂(t)^2)^3);-μ*x₂(t)/(sqrt(x₁(t)^2 + x₂(t)^2)^3);x₃(t);x₄(t)]) + B*u(t)
+        ∫(0.5(u₁(t)^2 + u₂(t)^2)) → min
     end
-    # ocp = Model()
-    # state!(ocp, n, [ "x" * ctindices(1), "x" * ctindices(2), "v" * ctindices(1), "v" * ctindices(2)])   # dimension of the state
-    # control!(ocp, m) # dimension of the control
-    # time!(ocp, [t0, tf])
-    # constraint!(ocp, :initial, x0, :initial_constraint)
-    # constraint!(ocp, :boundary, (t0, x0, tf, xf) -> [norm(xf[1:2])-rf, xf[3] + α*xf[2], xf[4] - α*xf[1]], [0,0,0], :boundary_constraint)
-    # A = [ 0 0 1 0; 0 0 0 1; 1 0 0 0; 0 1 0 0]
-    # B = [ 0 0; 0 0; 1 0; 0 1 ]
-    # dynamics!(ocp, (x, u) -> A*([-μ*x[1]/(sqrt(x[1]^2 + x[2]^2)^3);-μ*x[2]/(sqrt(x[1]^2 + x[2]^2)^3);x[3];x[4]]) + B*u)
-    # objective!(ocp, :lagrange, (x,u) -> 0.5*(u[1]^2 + u[2]^2)) # default is to minimise
 
+    # ------------------------------------------------------------------------------------------
     # the solution
 
     x0 = [x0;0]

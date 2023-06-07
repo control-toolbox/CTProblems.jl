@@ -18,7 +18,7 @@ function test_double_integrator_time()
     xf = final_condition(ocp)
     #
     function shoot!(s, p0, t1, tf)
-        x1, p1 = fp(t0, x0, p0, tf, t1)
+        x1, p1 = fp(t0, x0, p0, t1, tf)
         xf_, pf = fm(t1, x1, p1, tf, tf)
         s[1:2] = xf_ - xf
         s[3] = p1[2]
@@ -35,7 +35,7 @@ function test_double_integrator_time()
         # concatenation of the flows
         p0 = ξ[1:2]
         t1, tf = ξ[3:4]
-        return t0, x0, p0, tf, fp * (t1, fm), tf
+        return (t0, x0, p0, tf, fp * (t1, fm), tf)
     end
 
     nle = (s, ξ) -> shoot!(s, ξ[1:2], ξ[3], ξ[4])

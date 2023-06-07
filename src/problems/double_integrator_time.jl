@@ -4,6 +4,7 @@ EXAMPLE=(:integrator, :time, :x_dim_2, :u_dim_1, :mayer, :u_cons)
     # 
     title = "Double integrator time - minimise tf under the constraint |u| ≤ γ"
 
+    # ------------------------------------------------------------------------------------------
     # the model
     t0=0
     x0=[-1, 0]
@@ -26,6 +27,7 @@ EXAMPLE=(:integrator, :time, :x_dim_2, :u_dim_1, :mayer, :u_cons)
         tf → min
     end
 
+    # ------------------------------------------------------------------------------------------
     # the solution
     a = x0[1]
     b = x0[2]

@@ -4,9 +4,8 @@ EXAMPLE=(:integrator, :lqr, :free_final_time, :x_dim_1, :u_dim_1, :bolza)
     # 
     title = "simple integrator - bolza cost: tf + ½ ∫ x²+u²"
 
+    # ------------------------------------------------------------------------------------------
     # the model
-    n=1
-    m=1
     t0=0
     x0=0
     xf=1
@@ -21,15 +20,8 @@ EXAMPLE=(:integrator, :lqr, :free_final_time, :x_dim_1, :u_dim_1, :bolza)
         ẋ(t) == u(t)
         tf + ∫(0.5*(u(t)^2 + x(t)^2)) → min
     end
-    # ocp = Model()
-    # state!(ocp, n)   # dimension of the state
-    # control!(ocp, m) # dimension of the control
-    # time!(ocp, :initial, t0)
-    # constraint!(ocp, :initial, x0, :initial_constraint)
-    # constraint!(ocp, :final, xf, :final_constraint)
-    # dynamics!(ocp, (x, u) -> u)
-    # objective!(ocp, :bolza, (t0, x0, tf, xf) -> tf, (x, u) -> 0.5*(u^2+x^2)) # default is to minimise
 
+    # ------------------------------------------------------------------------------------------
     # the solution
     tf = atanh(sqrt(xf^2/(2+xf^2)))
     p0 = xf[1]/sinh(tf)

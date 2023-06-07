@@ -4,6 +4,7 @@ EXAMPLE=(:exponential, :consumption, :x_dim_1, :u_dim_1, :lagrange, :non_diff_wr
     # 
     title = "simple exponential - conso min"
 
+    # ------------------------------------------------------------------------------------------
     # the model
     t0=0
     tf=1
@@ -20,16 +21,8 @@ EXAMPLE=(:exponential, :consumption, :x_dim_1, :u_dim_1, :lagrange, :non_diff_wr
         ẋ(t) == -x(t) + u(t)
         ∫abs(u(t)) → min
     end
-    # ocp = Model()
-    # state!(ocp, n)   # dimension of the state
-    # control!(ocp, m) # dimension of the control
-    # time!(ocp, [t0, tf])
-    # constraint!(ocp, :initial, x0, :initial_constraint)
-    # constraint!(ocp, :final, xf, :final_constraint)
-    # constraint!(ocp, :control, -1, 1, :u_cons) 
-    # dynamics!(ocp, (x, u) -> -x + u)
-    # objective!(ocp, :lagrange, (x, u) -> abs(u)) # default is to minimise
 
+    # ------------------------------------------------------------------------------------------
     # the solution
     p0 = 1/(x0-(xf-1)/exp(-tf))
     p(t) = exp(t)*p0
