@@ -16,7 +16,6 @@ include("utils.jl")
         :double_integrator_energy_state_constraint,
         :double_integrator_energy,
         :double_integrator_time,
-        :goddard_all_constraints,
         :goddard,
         :lqr_ricatti,
         :orbital_transfer_consumption,

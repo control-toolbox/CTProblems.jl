@@ -17,7 +17,7 @@ In the following table, we give some characteristics about the problems and thei
 | [Double integrator energy distance](@ref DIED)   | (2, 1)          | Bolza       | ❌                   | ❌               | ✅                 | autonomous
 | [Double integrator energy sc](@ref DIESC)        | (2, 1)          | Lagrange    | ✅ x                 | ❌               | ✅                 | autonomous
 | [Double integrator time](@ref DIT)               | (2, 1)          | Mayer       | ✅ u                 | ❌               | ✅                 | autonomous
-| [Goddard](@ref Godda) ([version 2](@ref Go2))    | (3, 1)          | Mayer       | ✅ x, u              | ✅               | ✅                 | autonomous
+| [Goddard](@ref Godda)                            | (3, 1)          | Mayer       | ✅ x, u              | ✅               | ✅                 | autonomous
 | [LQR](@ref LQR)                                  | (2, 1)          | Lagrange    | ❌                   | ❌               | ✅                 | autonomous
 | [Orbital transfert consumption](@ref OTC)        | (4, 2)          | Lagrange    | ✅ u                 | ❌               | ❌ u               | autonomous
 | [Orbital transfert energy](@ref OTE)             | (4, 2)          | Lagrange    | ❌                   | ❌               | ✅                 | autonomous
@@ -52,7 +52,7 @@ Legend:
 
 ## Get some problems for tests
 
-To get all the problems as a `Tuple` of [`OptimalControlProblem`](@ref), simply
+To get all the problems as a `Tuple` of `OptimalControlProblem`, simply
 
 ```julia
 Problems()
@@ -66,7 +66,7 @@ Problems(:x_dim_1, :lagrange)
 
 You can use more sophisticated rules to filter. You simply have to define a logical condition with the combination of symbols and the three operators: `!`, `|` and `&`, respectively for the negation, the disjunction and the conjunction.
 
-Here is an example to get the problems, as a `Tuple` of [`OptimalControlProblem`](@ref), whom description does not contain `:lagrange`, or contains `:time` (the `or` is not exclusive):
+Here is an example to get the problems, as a `Tuple` of `OptimalControlProblem`, whom description does not contain `:lagrange`, or contains `:time` (the `or` is not exclusive):
 
 ```julia
 @Problems !:lagrange | :time
