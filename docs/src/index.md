@@ -1,9 +1,13 @@
-# [Introduction to the CTProblems.jl package](@id introduction)
+# [CTProblems.jl](@id introduction)
 
 The `CTProblems.jl` package is part of the [control-toolbox ecosystem](https://github.com/control-toolbox).
-To install this package or another from the control-toolbox ecosystem, please visit the [installation page](https://github.com/control-toolbox#installation).
 
-The `CTProblems.jl` package provides a [list of optimal control problems](@ref problems-list). Each problem is composed of a short title, a model and the solution. You can get access to any problem by a simple `description`, that is a `Tuple` of `Symbol`.
+!!! note "Install"
+
+    To install a package from the control-toolbox ecosystem, 
+    please visit the [installation page](https://github.com/control-toolbox#installation).
+
+This package provides a [list of optimal control problems](@ref problems-list). Each problem is composed of a short title, a model and the solution. You can get access to any problem by a simple [`Description`](https://control-toolbox.org/CTDocs.jl/ctbase/stable/api-description.html), that is a tuple of (Julia) symbols.
 
 For instance, to get the energy minimisation exponential problem, simply
 
@@ -14,7 +18,8 @@ prob = Problem(:exponential, :energy)
 
 !!! note
 
-    In the example above, we have given a partial description to the function `Problem`. The complete description of this problem is
+    In the example above, we have given a partial description to the function `Problem`. 
+    The complete description of this problem is
 
     ```bash
     (:exponential, :energy, :x_dim_1, :u_dim_1, :lagrange)

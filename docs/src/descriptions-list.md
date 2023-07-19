@@ -1,4 +1,4 @@
-# [List of problems descriptions](@id descriptions-list)
+# [List of descriptions](@id descriptions-list)
 
 To print the complete list of problems descriptions:
 
