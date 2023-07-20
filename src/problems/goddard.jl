@@ -78,9 +78,9 @@ EXAMPLE=(:goddard, :classical, :altitude, :x_dim_3, :u_dim_1, :mayer, :x_cons, :
     # singular control
     H0 = Lift(F0)
     H1 = Lift(F1)
-    H01  = @Poisson {H0, H1}
-    H001 = @Poisson {H0, H01}
-    H101 = @Poisson {H1, H01}
+    H01  = @Lie {H0, H1}
+    H001 = @Lie {H0, H01}
+    H101 = @Lie {H1, H01}
     us(x, p) = -H001(x, p) / H101(x, p)
 
     # boundary control
