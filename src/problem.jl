@@ -115,11 +115,6 @@ exception if there is no optimal control problem described by `example`.
 julia> CTProblems.OCPDef{(:ocp, :dummy)}()
 ERROR: there is no optimal control problem described by (:ocp, :dummy)
 ```
-
-!!! note
-
-    To define a new problem, please refer to the page [How to add a new problem](@ref add-new-pb).
-
 """
 struct OCPDef{description} 
     function OCPDef{description}() where {description}
@@ -137,8 +132,7 @@ _problems_without_dummy() = Tuple(setdiff(problems, ((:dummy,),)))
 """
 $(TYPEDSIGNATURES)
 
-Return the list of problems descriptions consistent with the description, as a Tuple of Description, 
-see the page [list of problems descriptions](@ref descriptions-list) for details.
+Return the list of problems descriptions consistent with the description, as a Tuple of Description. 
 
 # Example
 
@@ -159,18 +153,12 @@ Return the list of optimal control problems consistent with the description.
 
 If you give a partial description, then, if several complete descriptions contains the partial one, then, 
 only the problem with the highest priority is returned. The higher in the list, the higher is the priority.
-See the [list of descriptions](@ref descriptions-list) to check the priorities.
 
 # Example
 
 ```@example
 julia> Problems(:integrator, :energy)
 ```
-
-# See also
-
-See the [list of problems descriptions](@ref descriptions-list) or the 
-[list of problems](@ref problems-list) to view all the existing problems.
 """
 function Problems(description::Symbol...)::Tuple{Vararg{OptimalControlProblem}}
     problems_list = ProblemsDescriptions(description...)
@@ -184,18 +172,12 @@ Return the optimal control problem described by `description`.
 
 If you give a partial description, then, if several complete descriptions contains the partial one, then, 
 only the problem with the highest priority is returned. The higher in the list, the higher is the priority.
-See the [list of descriptions](@ref descriptions-list) to check the priorities.
 
 # Example
 
 ```@example
 julia> Problem(:integrator, :energy)
 ```
-
-# See also
-
-See the [list of problems descriptions](@ref descriptions-list) or the 
-[list of problems](@ref problems-list) to view all the existing problems.
 """
 function Problem(description::Symbol...)::OptimalControlProblem 
     example = getFullDescription(description, problems)
@@ -270,11 +252,6 @@ Return the list of problems descriptions consistent with the expression.
 julia> @ProblemsDescriptions :integrator & :energy
 ```
 
-# See also
-
-See the [list of problems descriptions](@ref descriptions-list) or the 
-[list of problems](@ref problems-list) to view all the existing problems.
-
 !!! note
 
     You have to define a logical condition with the combination of symbols and the three 
@@ -300,11 +277,6 @@ Return the list of problems consistent with the description.
 ```@example
 julia> @Problems :integrator & :energy
 ```
-
-# See also
-
-See the [list of problems descriptions](@ref descriptions-list) or the 
-[list of problems](@ref problems-list) to view all the existing problems.
 
 !!! note
 
