@@ -1,5 +1,9 @@
 using Documenter
 using CTProblems
+using CTBase
+
+DocMeta.setdocmeta!(CTBase, :DocTestSetup, :(using CTBase); recursive = true)
+DocMeta.setdocmeta!(CTProblems, :DocTestSetup, :(using CTProblems); recursive = true)
 
 makedocs(
     doctest = true,
