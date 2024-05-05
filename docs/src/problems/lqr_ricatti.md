@@ -3,7 +3,7 @@
 The energy and distance minimisation LQR problem consists in minimising
 
 ```math
-    0.5*\int_{0}^{5} x_1(t)^2 + x_2(t)^2 + u(t)^2 \, \mathrm{d}t 
+    0.5\int_{0}^{5} x_1^2(t) + x_2^2(t) + u^2(t) \, \mathrm{d}t 
 ```
 
 subject to the constraints
