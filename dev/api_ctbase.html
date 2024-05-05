@@ -1253,6 +1253,22 @@ julia&gt; constraint!(ocp, :state, (t, x, v) -&gt; x-t+v[1], [ 0, 0, 0 ])
 julia&gt; constraint!(ocp, :mixed, (t, x, u, v) -&gt; x[1]-u*v[1], 0)</code></pre></div></section></article><article class="docstring"><header><a class="docstring-binding" id="CTBase.constraint!" href="#CTBase.constraint!"><code>CTBase.constraint!</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia hljs">constraint!(
     ocp::OptimalControlModel,
     type::Symbol,
+    rg::Union{Index, OrdinalRange{&lt;:Integer}},
+    val::Union{Real, AbstractVector{&lt;:Real}}
+)
+constraint!(
+    ocp::OptimalControlModel,
+    type::Symbol,
+    rg::Union{Index, OrdinalRange{&lt;:Integer}},
+    val::Union{Real, AbstractVector{&lt;:Real}},
+    label::Symbol
+)
+</code></pre><p>Add an <code>:initial</code> or <code>:final</code> value constraint on a range of the state, or a value constraint on a range of the <code>:variable</code>.</p><div class="admonition is-info"><header class="admonition-header">Note</header><div class="admonition-body"><ul><li>The range of the constraint must be contained in 1:n if the constraint is on the state, or 1:q if the constraint is on the variable.</li><li>The state, control and variable dimensions must be set before. Use state!, control! and variable!.</li><li>The times must be set before. Use time!.</li></ul></div></div><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; constraint!(ocp, :initial, 1:2:5, [ 0, 0, 0 ])
+julia&gt; constraint!(ocp, :initial, 2:3, [ 0, 0 ])
+julia&gt; constraint!(ocp, :final, Index(2), 0)
+julia&gt; constraint!(ocp, :variable, 2:3, [ 0, 3 ])</code></pre></div></section></article><article class="docstring"><header><a class="docstring-binding" id="CTBase.constraint!" href="#CTBase.constraint!"><code>CTBase.constraint!</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia hljs">constraint!(
+    ocp::OptimalControlModel,
+    type::Symbol,
     lb::Union{Real, AbstractVector{&lt;:Real}},
     ub::Union{Real, AbstractVector{&lt;:Real}}
 )
@@ -1280,23 +1296,7 @@ constraint!(
 )
 </code></pre><p>Add an <code>:initial</code> or <code>:final</code> value constraint on the state, or a <code>:variable</code> value. Can also be used with <code>:state</code> and <code>:control</code>.</p><div class="admonition is-info"><header class="admonition-header">Note</header><div class="admonition-body"><ul><li>The state, control and variable dimensions must be set before. Use state!, control! and variable!.</li><li>The times must be set before. Use time!.</li><li>When an element is of dimension 1, consider it as a scalar.</li></ul></div></div><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; constraint!(ocp, :initial, [ 0, 0 ])
 julia&gt; constraint!(ocp, :final, 2) # if the state is of dimension 1
-julia&gt; constraint!(ocp, :variable, [ 3, 0, 1 ])</code></pre></div></section></article><article class="docstring"><header><a class="docstring-binding" id="CTBase.constraint!" href="#CTBase.constraint!"><code>CTBase.constraint!</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia hljs">constraint!(
-    ocp::OptimalControlModel,
-    type::Symbol,
-    rg::Union{Index, OrdinalRange{&lt;:Integer}},
-    val::Union{Real, AbstractVector{&lt;:Real}}
-)
-constraint!(
-    ocp::OptimalControlModel,
-    type::Symbol,
-    rg::Union{Index, OrdinalRange{&lt;:Integer}},
-    val::Union{Real, AbstractVector{&lt;:Real}},
-    label::Symbol
-)
-</code></pre><p>Add an <code>:initial</code> or <code>:final</code> value constraint on a range of the state, or a value constraint on a range of the <code>:variable</code>.</p><div class="admonition is-info"><header class="admonition-header">Note</header><div class="admonition-body"><ul><li>The range of the constraint must be contained in 1:n if the constraint is on the state, or 1:q if the constraint is on the variable.</li><li>The state, control and variable dimensions must be set before. Use state!, control! and variable!.</li><li>The times must be set before. Use time!.</li></ul></div></div><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; constraint!(ocp, :initial, 1:2:5, [ 0, 0, 0 ])
-julia&gt; constraint!(ocp, :initial, 2:3, [ 0, 0 ])
-julia&gt; constraint!(ocp, :final, Index(2), 0)
-julia&gt; constraint!(ocp, :variable, 2:3, [ 0, 3 ])</code></pre></div></section></article><article class="docstring"><header><a class="docstring-binding" id="CTBase.constraint!-Tuple{OptimalControlModel, Symbol}" href="#CTBase.constraint!-Tuple{OptimalControlModel, Symbol}"><code>CTBase.constraint!</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia hljs">constraint!(
+julia&gt; constraint!(ocp, :variable, [ 3, 0, 1 ])</code></pre></div></section></article><article class="docstring"><header><a class="docstring-binding" id="CTBase.constraint!-Tuple{OptimalControlModel, Symbol}" href="#CTBase.constraint!-Tuple{OptimalControlModel, Symbol}"><code>CTBase.constraint!</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia hljs">constraint!(
     ocp::OptimalControlModel,
     type::Symbol;
     rg,
@@ -1666,6 +1666,17 @@ julia&gt; ocp.state_dimension
 julia&gt; ocp.state_components_names
 [&quot;y₁&quot;, &quot;y₂&quot;]</code></pre></div></section></article><article class="docstring"><header><a class="docstring-binding" id="CTBase.time!" href="#CTBase.time!"><code>CTBase.time!</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia hljs">time!(
     ocp::OptimalControlModel{&lt;:TimeDependence, NonFixed},
+    t0::Real,
+    indf::Index
+)
+time!(
+    ocp::OptimalControlModel{&lt;:TimeDependence, NonFixed},
+    t0::Real,
+    indf::Index,
+    name::String
+)
+</code></pre><p>Fix initial time, final time is free and given by the variable at the provided index.</p><div class="admonition is-info"><header class="admonition-header">Note</header><div class="admonition-body"><p>You must use time! only once to set either the initial or the final time, or both.</p></div></div><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; time!(ocp, 0, Index(2), &quot;t&quot;)</code></pre></div></section></article><article class="docstring"><header><a class="docstring-binding" id="CTBase.time!" href="#CTBase.time!"><code>CTBase.time!</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia hljs">time!(
+    ocp::OptimalControlModel{&lt;:TimeDependence, NonFixed},
     ind0::Index,
     tf::Real
 )
@@ -1675,36 +1686,7 @@ time!(
     tf::Real,
     name::String
 )
-</code></pre><p>Fix final time, initial time is free and given by the variable at the provided index.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; time!(ocp, Index(2), 1, &quot;t&quot;)</code></pre></div></section></article><article class="docstring"><header><a class="docstring-binding" id="CTBase.time!" href="#CTBase.time!"><code>CTBase.time!</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia hljs">time!(ocp::OptimalControlModel, t0::Real, tf::Real)
-time!(
-    ocp::OptimalControlModel,
-    t0::Real,
-    tf::Real,
-    name::String
-)
-</code></pre><p>Fix initial and final times to <code>times[1]</code> and <code>times[2]</code>, respectively.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; time!(ocp, 0, 1)
-julia&gt; ocp.initial_time
-0
-julia&gt; ocp.final_time
-1
-julia&gt; ocp.time_name
-&quot;t&quot;
-
-julia&gt; time!(ocp, 0, 1, &quot;s&quot;)
-julia&gt; ocp.initial_time
-0
-julia&gt; ocp.final_time
-1
-julia&gt; ocp.time_name
-&quot;s&quot;
-
-julia&gt; time!(ocp, 0, 1, :s)
-julia&gt; ocp.initial_time
-0
-julia&gt; ocp.final_time
-1
-julia&gt; ocp.time_name
-&quot;s&quot;</code></pre></div></section></article><article class="docstring"><header><a class="docstring-binding" id="CTBase.time!" href="#CTBase.time!"><code>CTBase.time!</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia hljs">time!(
+</code></pre><p>Fix final time, initial time is free and given by the variable at the provided index.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; time!(ocp, Index(2), 1, &quot;t&quot;)</code></pre></div></section></article><article class="docstring"><header><a class="docstring-binding" id="CTBase.time!" href="#CTBase.time!"><code>CTBase.time!</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia hljs">time!(
     ocp::OptimalControlModel{&lt;:TimeDependence, NonFixed},
     ind0::Index,
     indf::Index
@@ -1716,17 +1698,6 @@ time!(
     name::String
 )
 </code></pre><p>Initial and final times are free and given by the variable at the provided indices.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; time!(ocp, Index(2), Index(3), &quot;t&quot;)</code></pre></div></section></article><article class="docstring"><header><a class="docstring-binding" id="CTBase.time!" href="#CTBase.time!"><code>CTBase.time!</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia hljs">time!(
-    ocp::OptimalControlModel{&lt;:TimeDependence, NonFixed},
-    t0::Real,
-    indf::Index
-)
-time!(
-    ocp::OptimalControlModel{&lt;:TimeDependence, NonFixed},
-    t0::Real,
-    indf::Index,
-    name::String
-)
-</code></pre><p>Fix initial time, final time is free and given by the variable at the provided index.</p><div class="admonition is-info"><header class="admonition-header">Note</header><div class="admonition-body"><p>You must use time! only once to set either the initial or the final time, or both.</p></div></div><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; time!(ocp, 0, Index(2), &quot;t&quot;)</code></pre></div></section></article><article class="docstring"><header><a class="docstring-binding" id="CTBase.time!" href="#CTBase.time!"><code>CTBase.time!</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia hljs">time!(
     ocp::OptimalControlModel,
     times::AbstractVector{&lt;:Real}
 ) -&gt; Any
@@ -1752,6 +1723,35 @@ julia&gt; ocp.time_name
 &quot;s&quot;
 
 julia&gt; time!(ocp, [ 0, 1 ], :s)
+julia&gt; ocp.initial_time
+0
+julia&gt; ocp.final_time
+1
+julia&gt; ocp.time_name
+&quot;s&quot;</code></pre></div></section></article><article class="docstring"><header><a class="docstring-binding" id="CTBase.time!" href="#CTBase.time!"><code>CTBase.time!</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia hljs">time!(ocp::OptimalControlModel, t0::Real, tf::Real)
+time!(
+    ocp::OptimalControlModel,
+    t0::Real,
+    tf::Real,
+    name::String
+)
+</code></pre><p>Fix initial and final times to <code>times[1]</code> and <code>times[2]</code>, respectively.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; time!(ocp, 0, 1)
+julia&gt; ocp.initial_time
+0
+julia&gt; ocp.final_time
+1
+julia&gt; ocp.time_name
+&quot;t&quot;
+
+julia&gt; time!(ocp, 0, 1, &quot;s&quot;)
+julia&gt; ocp.initial_time
+0
+julia&gt; ocp.final_time
+1
+julia&gt; ocp.time_name
+&quot;s&quot;
+
+julia&gt; time!(ocp, 0, 1, :s)
 julia&gt; ocp.initial_time
 0
 julia&gt; ocp.final_time
@@ -1817,4 +1817,4 @@ julia&gt; @Lie {H0, H1}([1, 2, 3], [1,0,7])
     -2 ≤ v(t) ≤ 3,      (2)
     ẋ(t) == [ v(t), u(t) ]
     tf → min
-end</code></pre></div></section></article></article><nav class="docs-footer"><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.25 on <span class="colophon-date" title="Sunday 5 May 2024 20:35">Sunday 5 May 2024</span>. Using Julia version 1.10.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+end</code></pre></div></section></article></article><nav class="docs-footer"><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.25 on <span class="colophon-date" title="Sunday 5 May 2024 20:36">Sunday 5 May 2024</span>. Using Julia version 1.10.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
