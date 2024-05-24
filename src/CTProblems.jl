@@ -17,7 +17,6 @@ import Base
 using CTBase
 using CTFlows
 using DocStringExtensions
-using MINPACK
 using OrdinaryDiffEq
 using ForwardDiff
 using LinearAlgebra

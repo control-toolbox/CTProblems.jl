@@ -66,10 +66,10 @@ EXAMPLE=(:orbital_transfert, :energy, :x_dim_4, :u_dim_2, :lagrange)
     end;
 
     # Solve
-    S(ξ) = shoot(ξ[1:5])
-    jS(ξ) = ForwardDiff.jacobian(S, ξ)
-    S!(s, ξ) = ( s[:] = S(ξ); nothing )
-    jS!(js, ξ) = ( js[:] = jS(ξ); nothing )
+    # S(ξ) = shoot(ξ[1:5])
+    # jS(ξ) = ForwardDiff.jacobian(S, ξ)
+    # S!(s, ξ) = ( s[:] = S(ξ); nothing )
+    # jS!(js, ξ) = ( js[:] = jS(ξ); nothing )
 
     # Initial guess
     ξ_guess = [131.44483633582556, 34.16617425832973, 249.1573527073169, -23.9732920325726, 0]   # pour F_max = 100N

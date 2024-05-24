@@ -82,10 +82,10 @@ EXAMPLE=(:orbital_transfert, :consumption, :x_dim_4, :u_dim_2, :lagrange, :u_con
     end;
 
     # Solve
-    S(ξ) = shoot(ξ[1:5], ξ[6],ξ[7],ξ[8],ξ[9])
-    jS(ξ) = ForwardDiff.jacobian(S, ξ)
-    S!(s, ξ) = ( s[:] = S(ξ); nothing )
-    jS!(js, ξ) = ( js[:] = jS(ξ); nothing )
+    # S(ξ) = shoot(ξ[1:5], ξ[6],ξ[7],ξ[8],ξ[9])
+    # jS(ξ) = ForwardDiff.jacobian(S, ξ)
+    # S!(s, ξ) = ( s[:] = S(ξ); nothing )
+    # jS!(js, ξ) = ( js[:] = jS(ξ); nothing )
 
     # Initial guess
     p0_guess = [0.02698412111231433, 0.006910835140705538, 0.050397371862031096, -0.0032972040120747836, -1.0076835239866583e-23]

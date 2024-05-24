@@ -1,6 +1,5 @@
 using CTProblems
 using Test
-using MINPACK
 using CTFlows
 using MLStyle
 using CTBase

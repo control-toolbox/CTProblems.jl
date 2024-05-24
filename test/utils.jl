@@ -44,13 +44,22 @@ function test_by_shooting(ocp, shoot!, ξ, fparams, sol, atol, title;
 
     # solve
     # MINPACK needs a vector of Float64
+    # isreal = ξ isa Real
+    # shoot_sol = fsolve((s, ξ) -> isreal ? shoot!(s, ξ[1]) : shoot!(s, ξ), 
+    #     Float64.(isreal ? [ξ] : ξ), 
+    #     show_trace=display)
+    # display ? println(shoot_sol) : nothing
+    # ξ⁺ = Base.deepcopy(isreal ? shoot_sol.x[1] : shoot_sol.x) # may not work without deepcopy
+
+    # NonLinearSolve
     isreal = ξ isa Real
-    shoot_sol = fsolve((s, ξ) -> isreal ? shoot!(s, ξ[1]) : shoot!(s, ξ), 
-        Float64.(isreal ? [ξ] : ξ), 
-        show_trace=display)
-    display ? println(shoot_sol) : nothing
-    ξ⁺ = Base.deepcopy(isreal ? shoot_sol.x[1] : shoot_sol.x) # may not work without deepcopy
-    
+    function fun(du, u, p)
+        isreal ? shoot!(du, u[1]) : shoot!(du, u)
+    end
+    prob = NonlinearProblem(fun, Float64.(isreal ? [ξ] : ξ))
+    shoot_sol = solve(prob)
+    ξ⁺ = Base.deepcopy(isreal ? shoot_sol.u[1] : shoot_sol.u) # may not work without deepcopy
+
     #
     T = sol.times # flow_sol.ode_sol.t
     n = sol.state_dimension
