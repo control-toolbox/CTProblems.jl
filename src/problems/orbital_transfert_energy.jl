@@ -52,18 +52,18 @@ EXAMPLE=(:orbital_transfert, :energy, :x_dim_4, :u_dim_2, :lagrange)
     f = Flow(Hamiltonian(H), abstol=abstol, reltol=reltol)
 
     # shoot function
-    function shoot(p0)
+    # function shoot(p0)
         
-        s = zeros(eltype(p0), 5)
-        xf, pf = f(t0,x0,p0,tf)
-        s[1] = sqrt(xf[1]^2 + xf[2]^2) - rf
-        s[2] = xf[3] + α*xf[2]
-        s[3] = xf[4] - α*xf[1]
-        s[4] = xf[2]*(pf[1]+α*pf[4]) - xf[1]*(pf[2]-α*pf[3])
-        s[5] = pf[5]
-        return s
+    #     s = zeros(eltype(p0), 5)
+    #     xf, pf = f(t0,x0,p0,tf)
+    #     s[1] = sqrt(xf[1]^2 + xf[2]^2) - rf
+    #     s[2] = xf[3] + α*xf[2]
+    #     s[3] = xf[4] - α*xf[1]
+    #     s[4] = xf[2]*(pf[1]+α*pf[4]) - xf[1]*(pf[2]-α*pf[3])
+    #     s[5] = pf[5]
+    #     return s
     
-    end;
+    # end;
 
     # Solve
     # S(ξ) = shoot(ξ[1:5])

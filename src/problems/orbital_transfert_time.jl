@@ -52,17 +52,17 @@ EXAMPLE=(:orbital_transfert, :time, :x_dim_4, :u_dim_2, :mayer, :u_cons)
     f = Flow(Hamiltonian(H), abstol=abstol, reltol=reltol)
 
     # shoot function
-    function shoot(p0, tf)
+    # function shoot(p0, tf)
         
-        s = zeros(eltype(p0), 5)
-        xf, pf = f(t0,x0,p0,tf)
-        s[1] = sqrt(xf[1]^2 + xf[2]^2) - rf
-        s[2] = xf[3] + α*xf[2]
-        s[3] = xf[4] - α*xf[1]
-        s[4] = xf[2]*(pf[1]+α*pf[4]) - xf[1]*(pf[2]-α*pf[3])
-        s[5] = H(xf,pf) - 1
-        return s
-    end
+    #     s = zeros(eltype(p0), 5)
+    #     xf, pf = f(t0,x0,p0,tf)
+    #     s[1] = sqrt(xf[1]^2 + xf[2]^2) - rf
+    #     s[2] = xf[3] + α*xf[2]
+    #     s[3] = xf[4] - α*xf[1]
+    #     s[4] = xf[2]*(pf[1]+α*pf[4]) - xf[1]*(pf[2]-α*pf[3])
+    #     s[5] = H(xf,pf) - 1
+    #     return s
+    # end
 
     # using MINPACK
     ξ_guess =  [0.00010323118913618907, 4.89264278123618e-5, 0.0003567967293906554, -0.0001553613886286001, 13.403181957149329]   # pour F_max = 100N

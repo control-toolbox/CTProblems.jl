@@ -57,7 +57,10 @@ function test_by_shooting(ocp, shoot!, ξ, fparams, sol, atol, title;
         isreal ? shoot!(du, u[1]) : shoot!(du, u)
     end
     prob = NonlinearProblem(fun, Float64.(isreal ? [ξ] : ξ))
-    shoot_sol = solve(prob)
+    shoot_sol = init(prob, NewtonRaphson(); show_trace = Val(true)) #, sensealg=AutoFiniteDiff());
+    solve!(shoot_sol)
+    println(shoot_sol.timer)
+    #shoot_sol = solve(prob; show_trace=Val(true), sensealg=AutoFiniteDiff())
     ξ⁺ = Base.deepcopy(isreal ? shoot_sol.u[1] : shoot_sol.u) # may not work without deepcopy
 
     #
@@ -80,30 +83,30 @@ function test_by_shooting(ocp, shoot!, ξ, fparams, sol, atol, title;
         for i ∈ 1:n
             subtitle = "state " * string(i)
             @testset "$subtitle" begin
-                @test normL2(T, t -> (x⁺(t)[i] - sol.state(t)[i]) ) ≈ 0 atol=atol
+                Test.@test normL2(T, t -> (x⁺(t)[i] - sol.state(t)[i]) ) ≈ 0 atol=atol
             end
         end
         for i ∈ 1:n
             subtitle = "costate " * string(i)
             @testset "$subtitle" begin
-                @test normL2(T, t -> (p⁺(t)[i] - sol.costate(t)[i]) ) ≈ 0 atol=atol
+                Test.@test normL2(T, t -> (p⁺(t)[i] - sol.costate(t)[i]) ) ≈ 0 atol=atol
             end
         end
         for i ∈ 1:m
             subtitle = "control " * string(i)
             @testset "$subtitle" begin
-                @test normL2(T, t -> (u⁺(t)[i] - sol.control(t)[i]) ) ≈ 0 atol=atol
+                Test.@test normL2(T, t -> (u⁺(t)[i] - sol.control(t)[i]) ) ≈ 0 atol=atol
             end
         end
         if test_objective
             if !isnothing(objective)
                 @testset "objective - perso" begin
-                    @test objective(ξ⁺) ≈ sol.objective atol=atol
+                    Test.@test objective(ξ⁺) ≈ sol.objective atol=atol
                 end
             elseif !isnothing(ocp.mayer) && isnothing(ocp.lagrange)
                 # Mayer case
                 @testset "objective - mayer case" begin
-                    @test ocp.mayer(x0, x⁺(tf), v) ≈ sol.objective atol=atol #@test ocp.mayer(t0, x0, tf, x⁺(tf)) ≈ sol.objective atol=atol
+                    Test.@test ocp.mayer(x0, x⁺(tf), v) ≈ sol.objective atol=atol #Test.@test ocp.mayer(t0, x0, tf, x⁺(tf)) ≈ sol.objective atol=atol
                 end
             elseif isnothing(ocp.mayer) && !isnothing(ocp.lagrange)
                 # Lagrange case
@@ -113,7 +116,7 @@ function test_by_shooting(ocp, shoot!, ξ, fparams, sol, atol, title;
                     x0 = [0.0]
                     prob = ODEProblem(ϕ, x0, tspan)
                     ode_sol = solve(prob, Tsit5(), reltol=1e-6, abstol=1e-6)
-                    @test ode_sol(tf)[1] ≈ sol.objective atol=atol rtol=1e-5
+                    Test.@test ode_sol(tf)[1] ≈ sol.objective atol=atol rtol=1e-5
                 end
             elseif !isnothing(ocp.mayer) && !isnothing(ocp.lagrange)
                 # Bolza case
@@ -123,7 +126,7 @@ function test_by_shooting(ocp, shoot!, ξ, fparams, sol, atol, title;
                     x0 = [0.0]
                     prob = ODEProblem(ϕ, x0, tspan)
                     ode_sol = solve(prob, Tsit5(), reltol=1e-6, abstol=1e-6)
-                    @test ocp.mayer(x0, x⁺(tf), v) + ode_sol(tf)[1] ≈ sol.objective atol=atol rtol=1e-5 #@test ocp.mayer(t0, x0, tf, x⁺(tf)) + ode_sol(tf)[1] ≈ sol.objective atol=atol rtol=1e-5
+                    Test.@test ocp.mayer(x0, x⁺(tf), v) + ode_sol(tf)[1] ≈ sol.objective atol=atol rtol=1e-5 #Test.@test ocp.mayer(t0, x0, tf, x⁺(tf)) + ode_sol(tf)[1] ≈ sol.objective atol=atol rtol=1e-5
                 end
             end
         end

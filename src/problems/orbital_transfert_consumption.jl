@@ -58,28 +58,28 @@ EXAMPLE=(:orbital_transfert, :consumption, :x_dim_4, :u_dim_2, :lagrange, :u_con
     f1 = Flow(Hamiltonian(H1));
 
     # shoot function
-    function shoot(p0, t1, t2, t3, t4)
+    # function shoot(p0, t1, t2, t3, t4)
         
-        s = zeros(eltype(p0),9)
+    #     s = zeros(eltype(p0),9)
         
-        x1, p1 = f1(t0, x0, p0, t1)
-        x2, p2 = f0(t1, x1, p1, t2)
-        x3, p3 = f1(t2, x2, p2, t3)
-        x4, p4 = f0(t3, x3, p3, t4)
-        xf, pf = f1(t4, x4, p4, tf)
+    #     x1, p1 = f1(t0, x0, p0, t1)
+    #     x2, p2 = f0(t1, x1, p1, t2)
+    #     x3, p3 = f1(t2, x2, p2, t3)
+    #     x4, p4 = f0(t3, x3, p3, t4)
+    #     xf, pf = f1(t4, x4, p4, tf)
         
-        s[1] = norm(xf[1:2]) - rf
-        s[2] = xf[3] + α*xf[2]
-        s[3] = xf[4] - α*xf[1]
-        s[4] = xf[2]*(pf[1] + α*pf[4]) - xf[1]*(pf[2] - α*pf[3])
-        s[5] = γ_max*(p1[3]^2 + p1[4]^2) - 1
-        s[6] = γ_max*(p2[3]^2 + p2[4]^2) - 1
-        s[7] = γ_max*(p3[3]^2 + p3[4]^2) - 1
-        s[8] = γ_max*(p4[3]^2 + p4[4]^2) - 1
-        s[9] = pf[5]
-        return s
+    #     s[1] = norm(xf[1:2]) - rf
+    #     s[2] = xf[3] + α*xf[2]
+    #     s[3] = xf[4] - α*xf[1]
+    #     s[4] = xf[2]*(pf[1] + α*pf[4]) - xf[1]*(pf[2] - α*pf[3])
+    #     s[5] = γ_max*(p1[3]^2 + p1[4]^2) - 1
+    #     s[6] = γ_max*(p2[3]^2 + p2[4]^2) - 1
+    #     s[7] = γ_max*(p3[3]^2 + p3[4]^2) - 1
+    #     s[8] = γ_max*(p4[3]^2 + p4[4]^2) - 1
+    #     s[9] = pf[5]
+    #     return s
     
-    end;
+    # end;
 
     # Solve
     # S(ξ) = shoot(ξ[1:5], ξ[6],ξ[7],ξ[8],ξ[9])
