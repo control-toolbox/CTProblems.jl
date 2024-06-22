@@ -18,10 +18,15 @@ and the limit conditions
     x(0) = (0,1)
 ```
 
+```@example main
+using CTProblems
+using DifferentialEquations
+using Plots
+```
+
 You can access the problem in the CTProblems package:
 
 ```@example main
-using CTProblems
 prob = Problem(:lqr, :x_dim_2, :u_dim_1, :lagrange)
 ```
 
@@ -34,5 +39,5 @@ prob.model
 You can plot the solution.
 
 ```@example main
-plot(prob.solution, size=(700, 400))
+plot(prob.solution)
 ```

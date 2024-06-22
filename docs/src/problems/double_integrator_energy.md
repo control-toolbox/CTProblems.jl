@@ -114,5 +114,6 @@ prob.model
 You can plot the solution.
 
 ```@example main
+using Plots
 plot(prob.solution, size=(700, 700))
 ```

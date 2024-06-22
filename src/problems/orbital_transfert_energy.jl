@@ -36,14 +36,19 @@ EXAMPLE=(:orbital_transfert, :energy, :x_dim_4, :u_dim_2, :lagrange)
     x0 = [x0;0]
 
     function control(p)
-        u = zeros(eltype(p),2)
-        u = [p[3], p[4]]
+        u = zeros(eltype(p), 2)
+        u[1] = p[3]
+        u[2] = p[4]
         return u
     end;
 
     function H(x, p)
         u = control(p)
-        h = - 0.5*(u[1]^2 + u[2]^2) + p[1]*x[3] + p[2]*x[4] + p[3]*(-μ*x[1]/norm(x[1:2])^3 + u[1]) + p[4]*(-μ*x[2]/(sqrt(x[1]^2+x[2]^2))^3 + u[2]) + p[5]*0.5*(u[1]^2 + u[2]^2)
+        h = - 0.5*(u[1]^2 + u[2]^2) + 
+            p[1]*x[3] + p[2]*x[4] + 
+            p[3]*(-μ*x[1]/norm(x[1:2])^3 + u[1]) + 
+            p[4]*(-μ*x[2]/(sqrt(x[1]^2+x[2]^2))^3 + u[2]) + 
+            p[5]*0.5*(u[1]^2 + u[2]^2)
         return h
     end
 
@@ -92,27 +97,22 @@ EXAMPLE=(:orbital_transfert, :energy, :x_dim_4, :u_dim_2, :lagrange)
 
     # computing x, p, u
     ode_sol  = f((t0, tf), x0, p0)
-    
-    x(t) = ode_sol(t)[1:4]
-    p(t) = ode_sol(t)[6:9]
-    u(t) = control(p(t))
-    objective =  ode_sol(tf)[5]
 
-    #
+    # 
     N=201
     times = range(t0, tf, N)
     #
     sol = OptimalControlSolution() #n, m, times, x, p, u)
-    copy!(sol,ocp)
-    sol.times = Base.deepcopy(times)
-    sol.state = Base.deepcopy(x)
-    sol.costate = Base.deepcopy(p)
-    sol.control = Base.deepcopy(u)
-    sol.objective = objective
+    copy!(sol, ocp)
+    sol.times      = Base.deepcopy(times)
+    sol.state      = Base.deepcopy( t -> ode_sol(t)[1:4] )
+    sol.costate    = Base.deepcopy( t -> ode_sol(t)[6:9] )
+    sol.control    = Base.deepcopy( t -> control(sol.costate(t)) )
+    sol.objective  = ode_sol(tf)[5]
     sol.iterations = 0
-    sol.stopping = :dummy
-    sol.message = "structure: smooth"
-    sol.success = true
+    sol.stopping   = :dummy
+    sol.message    = "structure: smooth"
+    sol.success    = true
     sol.infos[:resolution] = :numerical
 
     #

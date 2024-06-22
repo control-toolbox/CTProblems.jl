@@ -29,6 +29,8 @@ $v(t) \leq v_{\max}$. The initial state is fixed while only the final mass is pr
 
 ```@example main
 using CTProblems
+using DifferentialEquations
+using Plots
 ```
 
 You can access the problem in the CTProblems package:

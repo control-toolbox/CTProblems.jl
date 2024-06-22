@@ -87,7 +87,7 @@ EXAMPLE=(:orbital_transfert, :time, :x_dim_4, :u_dim_2, :mayer, :u_cons)
 
     x(t) = ode_sol(t)[1:4]
     p(t) = ode_sol(t)[5:8]
-    u(t) = control(ode_sol(t)[5:8])
+    u(t) = control(p(t))
     objective = tf
     
     #
