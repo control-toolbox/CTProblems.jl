@@ -4,7 +4,7 @@ using CTFlows
 using MLStyle
 using CTBase
 using LinearAlgebra
-using DifferentialEquations
+using OrdinaryDiffEq
 using MINPACK
 
 include("utils.jl")
