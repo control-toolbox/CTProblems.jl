@@ -44,24 +44,24 @@ function test_by_shooting(ocp, shoot!, ξ, fparams, sol, atol, title;
 
     # solve
     # MINPACK needs a vector of Float64
-    # isreal = ξ isa Real
-    # shoot_sol = fsolve((s, ξ) -> isreal ? shoot!(s, ξ[1]) : shoot!(s, ξ), 
-    #     Float64.(isreal ? [ξ] : ξ), 
-    #     show_trace=display)
-    # display ? println(shoot_sol) : nothing
-    # ξ⁺ = Base.deepcopy(isreal ? shoot_sol.x[1] : shoot_sol.x) # may not work without deepcopy
+    isreal = ξ isa Real
+    shoot_sol = fsolve((s, ξ) -> isreal ? shoot!(s, ξ[1]) : shoot!(s, ξ), 
+        Float64.(isreal ? [ξ] : ξ), 
+        show_trace=true)
+    display ? println(shoot_sol) : nothing
+    ξ⁺ = Base.deepcopy(isreal ? shoot_sol.x[1] : shoot_sol.x) # may not work without deepcopy
 
     # NonLinearSolve
-    isreal = ξ isa Real
-    function fun(du, u, p)
-        isreal ? shoot!(du, u[1]) : shoot!(du, u)
-    end
-    prob = NonlinearProblem(fun, Float64.(isreal ? [ξ] : ξ))
-    shoot_sol = init(prob, NewtonRaphson(); show_trace = Val(true), abstol=1e-1*atol, reltol=1e-1*atol, maxiters=100) #, sensealg=AutoFiniteDiff());
-    solve!(shoot_sol)
-    #println(shoot_sol.timer)
-    #shoot_sol = solve(prob; show_trace=Val(true), sensealg=AutoFiniteDiff())
-    ξ⁺ = Base.deepcopy(isreal ? shoot_sol.u[1] : shoot_sol.u) # may not work without deepcopy
+    # isreal = ξ isa Real
+    # function fun(du, u, p)
+    #     isreal ? shoot!(du, u[1]) : shoot!(du, u)
+    # end
+    # prob = NonlinearProblem(fun, Float64.(isreal ? [ξ] : ξ))
+    # shoot_sol = init(prob, NewtonRaphson(); show_trace = Val(true), abstol=1e-1*atol, reltol=1e-1*atol, maxiters=100) #, sensealg=AutoFiniteDiff());
+    # solve!(shoot_sol)
+    # #println(shoot_sol.timer)
+    # #shoot_sol = solve(prob; show_trace=Val(true), sensealg=AutoFiniteDiff())
+    # ξ⁺ = Base.deepcopy(isreal ? shoot_sol.u[1] : shoot_sol.u) # may not work without deepcopy
 
     #
     T = sol.times # flow_sol.ode_sol.t
