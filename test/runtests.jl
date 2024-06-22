@@ -36,7 +36,7 @@ include("utils.jl")
         )
         @testset "$(name)" begin
             test_name = Symbol(:test_, name)
-            println("Testing: " * string(test_name))
+            println("\nTesting: " * string(name))
             include("$(test_name).jl")
             @eval $test_name()
         end
