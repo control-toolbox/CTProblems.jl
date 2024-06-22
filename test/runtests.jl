@@ -5,7 +5,7 @@ using MLStyle
 using CTBase
 using LinearAlgebra
 using DifferentialEquations
-using NonlinearSolve
+using MINPACK
 
 include("utils.jl")
 
