@@ -6,6 +6,7 @@ using CTBase
 using LinearAlgebra
 using OrdinaryDiffEq
 using MINPACK
+using NonlinearSolve
 
 include("utils.jl")
 
@@ -35,6 +36,7 @@ include("utils.jl")
         )
         @testset "$(name)" begin
             test_name = Symbol(:test_, name)
+            println("Testing: " * string(test_name))
             include("$(test_name).jl")
             @eval $test_name()
         end
