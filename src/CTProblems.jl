@@ -17,8 +17,6 @@ import Base
 using CTBase
 using CTFlows
 using DocStringExtensions
-using OrdinaryDiffEq
-using ForwardDiff
 using LinearAlgebra
 #
 
@@ -54,6 +52,5 @@ include("list_of_problems.jl")
 
 #
 export ProblemsDescriptions, Problem, Problems, @ProblemsDescriptions, @Problems
-export plot
 
 end # module CTProblems

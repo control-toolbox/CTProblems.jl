@@ -37,10 +37,15 @@ F_{max} = 100 \\
 γ_{max}  = \frac{F_{max}*3600.0^2}{m_0*10^3} \\
 ```
 
+```@example main
+using CTProblems
+using DifferentialEquations
+using Plots
+```
+
 You can access the problem in the CTProblems package:
 
 ```@example main
-using CTProblems
 prob = Problem(:orbital_transfert, :energy)
 ```
 
@@ -53,5 +58,5 @@ prob.model
 You can plot the solution.
 
 ```@example main
-plot(prob.solution, size=(700, 400))
+plot(prob.solution)
 ```

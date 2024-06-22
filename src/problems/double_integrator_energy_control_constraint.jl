@@ -66,10 +66,10 @@ EXAMPLE=(:integrator, :energy, :x_dim_2, :u_dim_1, :lagrange, :u_cons)
     h(α,β) = x_arc_3(tf,α,β)[2]
 
     # solve
-    function shoot!(s,α,β)
-        s[1] = g(α,β) - xf[1]
-        s[2] = h(α,β) - xf[2]
-    end
+    # function shoot!(s,α,β)
+    #     s[1] = g(α,β) - xf[1]
+    #     s[2] = h(α,β) - xf[2]
+    # end
 
     #=
     #using MINPACK
