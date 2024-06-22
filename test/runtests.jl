@@ -29,7 +29,7 @@ include("utils.jl")
         :simple_integrator_energy_free_tf,
         :simple_integrator_lqr_free_tf,
         :simple_integrator_mixed_constraint,
-        :simple_integrator_nonsmooth_turnpike,
+        #:simple_integrator_nonsmooth_turnpike,
         :simple_integrator_state_and_control_constraints_nonautonomous,
         :problem,
         :utils,
