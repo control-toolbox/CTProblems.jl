@@ -7,10 +7,10 @@
 [co-url]: https://codecov.io/gh/control-toolbox/CTProblems.jl
 
 [doc-dev-img]: https://img.shields.io/badge/docs-dev-blue.svg
-[doc-dev-url]: http://control-toolbox.github.io/CTProblems.jl/dev
+[doc-dev-url]: https://control-toolbox.org/docs/ctproblems/dev/
 
 [doc-stable-img]: https://img.shields.io/badge/docs-stable-blue.svg
-[doc-stable-url]: http://control-toolbox.github.io/CTProblems.jl/stable
+[doc-stable-url]: https://control-toolbox.org/docs/ctproblems/stable/
 
 [down-img]: https://shields.io/endpoint?url=https://pkgs.genieframework.com/api/v1/badge/CTProblems
 [down-url]: https://pkgs.genieframework.com?packages=CTProblems
