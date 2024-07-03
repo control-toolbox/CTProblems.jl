@@ -1,7 +1,7 @@
 name = "CTProblems"
 uuid = "45d9ea3f-a92f-411f-833f-222dd4fb9cd8"
 authors = ["Olivier Cots <olivier.cots@enseeiht.fr>"]
-version = "0.7.0"
+version = "0.7.1"
 
 [deps]
 CTBase = "54762871-cc72-4466-b8e8-f6c8b58076cd"
@@ -10,7 +10,7 @@ DocStringExtensions = "ffbed154-4ef7-542d-bbb7-c09d3a79fcae"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 
 [compat]
-CTBase = "0.10"
+CTBase = "0.11"
 CTFlows = "0.4"
 DocStringExtensions = "0.9"
 LinearAlgebra = "1.8"
