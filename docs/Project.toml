@@ -1,10 +1,10 @@
 [deps]
 CTBase = "54762871-cc72-4466-b8e8-f6c8b58076cd"
+CTProblems = "45d9ea3f-a92f-411f-833f-222dd4fb9cd8"
 DifferentialEquations = "0c46a032-eb83-5123-abaf-570d42b7fbaa"
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 
 [compat]
 CTBase = "0.11"
-Documenter = "0.27"
-julia = "1.8"
+julia = "1.10"
