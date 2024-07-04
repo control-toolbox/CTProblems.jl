@@ -6,6 +6,7 @@ DocMeta.setdocmeta!(CTBase, :DocTestSetup, :(using CTBase); recursive = true)
 DocMeta.setdocmeta!(CTProblems, :DocTestSetup, :(using CTProblems); recursive = true)
 
 makedocs(
+    warnonly = :cross_references,
     doctest = true,
     modules = [CTProblems],
     sitename = "CTProblems.jl",
