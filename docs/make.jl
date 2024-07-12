@@ -13,6 +13,7 @@ makedocs(
     sitename = "CTProblems.jl",
     format = Documenter.HTML(
         prettyurls = false,
+        size_threshold_ignore = ["api-ctbase.md"],
         assets=[
             asset("https://control-toolbox.org/assets/css/documentation.css"),
             asset("https://control-toolbox.org/assets/js/documentation.js"),
