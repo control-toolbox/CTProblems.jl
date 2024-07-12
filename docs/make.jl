@@ -11,7 +11,13 @@ makedocs(
     doctest = true,
     modules = [CTProblems],
     sitename = "CTProblems.jl",
-    format = Documenter.HTML(prettyurls = false),
+    format = Documenter.HTML(
+        prettyurls = false,
+        assets=[
+            asset("https://control-toolbox.org/assets/css/documentation.css"),
+            asset("https://control-toolbox.org/assets/js/documentation.js"),
+        ],
+    ),
     pages = [
         "Introduction" => "index.md",
         "Problems" => ["descriptions-list.md", "problems-list.md"],
