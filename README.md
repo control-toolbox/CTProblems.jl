@@ -1,3 +1,7 @@
+# DEPRECATED
+
+Replaced by [OptimalControlProblems.jl](https://github.com/control-toolbox/OptimalControlProblems.jl).
+
 # CTProblems.jl
 
 [ci-img]: https://github.com/control-toolbox/CTProblems.jl/actions/workflows/CI.yml/badge.svg?branch=main
